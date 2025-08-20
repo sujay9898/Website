@@ -2,10 +2,10 @@
 
 /* CSS Variables */
 :root {
-    --primary-color: #a8a8a8;
-    --primary-hover: #909090;
+    --primary-color: #1e3a8a;
+    --primary-hover: #1e40af;
     --secondary-color: #6c757d;
-    --success-color: #a8a8a8;
+    --success-color: #1e3a8a;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --dark-color: #343a40;
@@ -110,6 +110,22 @@ body {
     min-width: 300px;
     text-decoration: none;
     display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .big-button {
+        font-size: 2.5rem;
+        padding: 1.5rem 3rem;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .big-button {
+        font-size: 2rem;
+        padding: 1.2rem 2rem;
+        min-width: 200px;
+    }
 }
 
 /* Posters Hero */
@@ -309,16 +325,16 @@ body {
 }
 
 .btn-payment {
-    background: linear-gradient(135deg, #a8a8a8 0%, #909090 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     color: var(--white);
     width: 100%;
     font-weight: 600;
 }
 
 .btn-payment:hover {
-    background: linear-gradient(135deg, #909090 0%, #a8a8a8 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(168, 168, 168, 0.3);
+    box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
 }
 
 /* Footer */
