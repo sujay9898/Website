@@ -26,46 +26,22 @@
                     <div class="size-options">
                         <h3>Size & Price Options:</h3>
                         
-                        <div class="option-card">
-                            <div class="option-info">
-                                <h4>A4 Unframed Poster</h4>
-                                <p class="option-price">₹129</p>
+                        <div class="dropdown-container">
+                            <select id="posterOptions" class="poster-dropdown">
+                                <option value="129|A4 Unframed">A4 Unframed Poster: ₹129</option>
+                                <option value="399|A4 Framed">A4 Black/White Framed Poster: ₹399</option>
+                                <option value="159|A3 Unframed">A3 Unframed Poster: ₹159</option>
+                                <option value="499|A3 Framed">A3 Black/White Framed Poster: ₹499</option>
+                            </select>
+                            
+                            <div class="price-display">
+                                <span id="selectedPrice">₹129</span>
                             </div>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=129&cu=INR&tn=A4%20Unframed%20{{ poster.name }}" 
-                               class="btn btn-payment">
-                                Get Now
-                            </a>
                         </div>
                         
-                        <div class="option-card">
-                            <div class="option-info">
-                                <h4>A4 Black/White Framed Poster</h4>
-                                <p class="option-price">₹399</p>
-                            </div>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=399&cu=INR&tn=A4%20Framed%20{{ poster.name }}" 
-                               class="btn btn-payment">
-                                Get Now
-                            </a>
-                        </div>
-                        
-                        <div class="option-card">
-                            <div class="option-info">
-                                <h4>A3 Unframed Poster</h4>
-                                <p class="option-price">₹159</p>
-                            </div>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=159&cu=INR&tn=A3%20Unframed%20{{ poster.name }}" 
-                               class="btn btn-payment">
-                                Get Now
-                            </a>
-                        </div>
-                        
-                        <div class="option-card">
-                            <div class="option-info">
-                                <h4>A3 Black/White Framed Poster</h4>
-                                <p class="option-price">₹499</p>
-                            </div>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=499&cu=INR&tn=A3%20Framed%20{{ poster.name }}" 
-                               class="btn btn-payment">
+                        <div class="get-now-container">
+                            <a id="getNowBtn" href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=129&cu=INR&tn=A4%20Unframed%20{{ poster.name }}" 
+                               class="btn btn-payment btn-large">
                                 Get Now
                             </a>
                         </div>
@@ -84,5 +60,20 @@
             <p>&copy; 2025 Filmytea. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        document.getElementById('posterOptions').addEventListener('change', function() {
+            const selectedValue = this.value;
+            const [price, description] = selectedValue.split('|');
+            
+            // Update price display
+            document.getElementById('selectedPrice').textContent = '₹' + price;
+            
+            // Update UPI payment link
+            const posterName = "{{ poster.name }}";
+            const upiLink = `upi://pay?pa=yourupi@upi&pn=Filmytea&am=${price}&cu=INR&tn=${description}%20${encodeURIComponent(posterName)}`;
+            document.getElementById('getNowBtn').href = upiLink;
+        });
+    </script>
 </body>
 </html>

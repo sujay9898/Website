@@ -142,28 +142,58 @@ body {
     margin-bottom: 1.5rem;
 }
 
-.option-card {
-    background: var(--darker-color);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+.dropdown-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border: 1px solid var(--border-color);
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-.option-info h4 {
-    font-size: 1.2rem;
+.poster-dropdown {
+    background: var(--darker-color);
     color: var(--light-color);
-    margin-bottom: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    min-width: 300px;
+    cursor: pointer;
 }
 
-.option-price {
+.poster-dropdown:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.poster-dropdown option {
+    background: var(--darker-color);
+    color: var(--light-color);
+    padding: 0.5rem;
+}
+
+.price-display {
+    background: var(--darker-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    min-width: 100px;
+    text-align: center;
+}
+
+.price-display span {
     font-size: 1.4rem;
     font-weight: bold;
     color: var(--primary-color);
-    margin: 0;
+}
+
+.get-now-container {
+    margin-top: 2rem;
+}
+
+.btn-large {
+    font-size: 1.2rem;
+    padding: 1.2rem 3rem;
+    min-width: 200px;
 }
 
 .btn-secondary {
@@ -193,10 +223,19 @@ body {
         text-align: center;
     }
     
-    .option-card {
+    .dropdown-container {
         flex-direction: column;
-        text-align: center;
         gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .poster-dropdown {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .price-display {
+        text-align: center;
     }
     
     .poster-detail-image img {
