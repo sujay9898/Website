@@ -12,12 +12,12 @@
     <header class="header">
         <div class="container">
             <div class="header-brand">
-                <a href="{{ url_for('home') }}" class="brand-link">
+                <a href="{{ url_for('index') }}" class="brand-link">
                     <h1 class="brand-name">Filmytea</h1>
                 </a>
             </div>
             <nav class="header-nav">
-                <a href="{{ url_for('home') }}" class="nav-link">
+                <a href="{{ url_for('index') }}" class="nav-link">
                     <i data-feather="home"></i> Home
                 </a>
                 <a href="{{ url_for('posters') }}" class="nav-link">
@@ -149,25 +149,24 @@
 
         // Load cart items and display in preview
         document.addEventListener('DOMContentLoaded', function() {
-            const cart = new Cart();
+            const cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
             const previewItems = document.getElementById('preview-items');
             const previewTotal = document.getElementById('preview-total');
             
             let total = 0;
             
-            cart.items.forEach(item => {
-                const itemPrice = cart.getItemPrice(item.size, item.frame);
-                const itemTotal = itemPrice * item.quantity;
+            cartData.forEach(item => {
+                const itemTotal = item.price * item.quantity;
                 total += itemTotal;
                 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'summary-item';
                 itemDiv.innerHTML = `
                     <div class="item-details">
-                        <img src="${item.image_url.replace('/upload/', '/upload/w_60,h_60,c_fill,f_auto,q_auto/')}" alt="${item.name}" class="item-image">
+                        <img src="${item.image.replace('/upload/', '/upload/w_60,h_60,c_fill,f_auto,q_auto/')}" alt="${item.name}" class="item-image">
                         <div class="item-info">
                             <h4>${item.name}</h4>
-                            <p>Size: ${item.size}, Frame: ${item.frame}</p>
+                            <p>Size: ${item.size}, Frame: ${item.frameText}</p>
                             <p>Qty: ${item.quantity}</p>
                         </div>
                         <div class="item-price">₹${itemTotal}.00</div>
@@ -178,7 +177,7 @@
             
             previewTotal.textContent = total.toFixed(2);
             
-            if (cart.items.length === 0) {
+            if (cartData.length === 0) {
                 previewItems.innerHTML = '<p>Your cart is empty.</p>';
                 document.querySelector('button[type="submit"]').disabled = true;
             }
