@@ -1,21 +1,22 @@
 import os
 import secrets
 import string
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def generate_order_id():
     """Generate a random order ID"""
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
 def send_order_confirmation_email(order_data, cart_items):
-    """Send order confirmation email to customer"""
-    api_key = os.environ.get('SENDGRID_API_KEY')
-    if not api_key:
-        print("SendGrid API key not found")
-        return False
+    """Send order confirmation email to customer using Gmail SMTP"""
+    gmail_user = "filmyteacare@gmail.com"
+    gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
     
-    sg = SendGridAPIClient(api_key)
+    if not gmail_password:
+        print("Gmail app password not found")
+        return False
     
     # Generate order ID
     order_id = generate_order_id()
@@ -52,19 +53,30 @@ Sujay
 Filmytea Team
 contact: filmyteacare@gmail.com"""
 
-    message = Mail(
-        from_email=Email("filmyteacare@gmail.com", "Filmytea"),
-        to_emails=To(order_data['Email']),
-        subject=f"Order Confirmation - {order_id} - Filmytea"
-    )
-    
-    message.content = Content("text/plain", email_content)
-
     try:
-        response = sg.send(message)
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = f"Filmytea <{gmail_user}>"
+        msg['To'] = order_data['Email']
+        msg['Subject'] = f"Order Confirmation - {order_id} - Filmytea"
+        
+        # Add body to email
+        msg.attach(MIMEText(email_content, 'plain'))
+        
+        # Gmail SMTP configuration
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()  # Enable security
+        server.login(gmail_user, gmail_password)
+        
+        # Send email
+        text = msg.as_string()
+        server.sendmail(gmail_user, order_data['Email'], text)
+        server.quit()
+        
         print(f"Order confirmation email sent successfully to {order_data['Email']}")
         print(f"Order ID: {order_id}")
         return order_id
+        
     except Exception as e:
-        print(f"SendGrid error: {e}")
+        print(f"Gmail SMTP error: {e}")
         return False
