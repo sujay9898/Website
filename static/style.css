@@ -195,9 +195,10 @@ body {
 
 .posters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
+    justify-items: center;
 }
 
 /* Category Cards */
@@ -256,6 +257,8 @@ body {
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: var(--transition);
+    width: 220px;
+    max-width: 100%;
 }
 
 .poster-card:hover {
@@ -265,15 +268,18 @@ body {
 
 .poster-image {
     width: 100%;
-    height: 250px;
+    height: 300px;
     overflow: hidden;
 }
 
 .poster-image img {
-    width: 100%;
-    height: 100%;
+    width: 200px;
+    height: 300px;
     object-fit: cover;
+    border-radius: 8px;
     transition: var(--transition);
+    margin: 0 auto;
+    display: block;
 }
 
 .poster-card:hover .poster-image img {
@@ -375,8 +381,22 @@ body {
     }
     
     .posters-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 1.5rem;
+    }
+    
+    .poster-card {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .poster-image img {
+        width: 100%;
+        height: 250px;
+    }
+    
+    .poster-image {
+        height: 250px;
     }
     
     .category-content,
@@ -395,7 +415,22 @@ body {
     }
     
     .posters-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+    
+    .poster-card {
+        width: 100%;
+        max-width: 180px;
+    }
+    
+    .poster-image img {
+        width: 100%;
+        height: 220px;
+    }
+    
+    .poster-image {
+        height: 220px;
     }
     
     .btn {
