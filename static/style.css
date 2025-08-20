@@ -194,12 +194,12 @@ body {
 }
 
 .posters-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 3rem;
     padding: 1rem 0;
+    justify-items: center;
 }
 
 /* Category Cards */
@@ -253,8 +253,8 @@ body {
 
 /* Poster Cards */
 .poster-card {
-    flex-shrink: 0;
     width: 200px;
+    max-width: 100%;
 }
 
 .poster-card:hover {
@@ -375,6 +375,7 @@ body {
     }
     
     .posters-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 0.8rem;
     }
     
@@ -408,6 +409,7 @@ body {
     }
     
     .posters-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
     
