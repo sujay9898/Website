@@ -21,86 +21,85 @@
 <main class="main checkout-main">
     <div class="container">
         <section class="checkout-hero">
-            <h2>Checkout</h2>
+            <h2>Please enter order details:</h2>
         </section>
 
         <div class="checkout-content">
             <div class="checkout-form-section">
-                <h3>Order Details</h3>
-                <form method="POST" action="{{ url_for('process_order') }}" class="checkout-form">
+                <form method="POST" action="{{ url_for('process_order') }}" class="checkout-form" id="order-form">
                     <div class="form-group">
-                        <label for="reference_number">Reference Number</label>
+                        <label for="reference_number">Reference Number:</label>
                         <input type="text" id="reference_number" name="reference_number" required 
-                               value="ORD{{ range(10000, 99999) | random }}">
+                               value="ORD{{ range(10000, 99999) | random }}" placeholder="Reference Number">
                     </div>
 
                     <div class="form-group">
-                        <label for="retail_price">Total Amount</label>
-                        <input type="text" id="retail_price" name="retail_price" required readonly>
+                        <label for="retail_price">Retail Price:</label>
+                        <input type="text" id="retail_price" name="retail_price" required readonly placeholder="Retail Price">
                     </div>
 
                     <div class="form-group">
-                        <label for="customer_name">Customer Name</label>
-                        <input type="text" id="customer_name" name="customer_name" required>
+                        <label for="customer_name">Customer Name:</label>
+                        <input type="text" id="customer_name" name="customer_name" required placeholder="Customer Name">
                     </div>
 
-                    <h4>Shipping Address</h4>
+                    <h4>Shipping Address:</h4>
                     
                     <div class="form-group">
-                        <label for="address_line1">Address Line 1</label>
-                        <input type="text" id="address_line1" name="address_line1" required>
+                        <label for="address_line1">Address Line 1:</label>
+                        <input type="text" id="address_line1" name="address_line1" required placeholder="Address Line 1">
                     </div>
 
                     <div class="form-group">
-                        <label for="address_line2">Address Line 2</label>
-                        <input type="text" id="address_line2" name="address_line2">
+                        <label for="address_line2">Address Line 2:</label>
+                        <input type="text" id="address_line2" name="address_line2" placeholder="Address Line 2">
                     </div>
 
                     <div class="form-group">
-                        <label for="address_line3">Address Line 3 / Landmark</label>
-                        <input type="text" id="address_line3" name="address_line3">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="pincode">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <input type="text" id="city" name="city" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="state">State</label>
-                            <input type="text" id="state" name="state" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone_number">Phone Number</label>
-                            <input type="tel" id="phone_number" name="phone_number" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
+                        <label for="address_line3">Address Line 3 / Landmark:</label>
+                        <input type="text" id="address_line3" name="address_line3" placeholder="Address Line 3 / Landmark">
                     </div>
 
                     <div class="form-group">
-                        <label for="cash_on_delivery">Payment Method</label>
+                        <label for="pincode">Pincode:</label>
+                        <input type="text" id="pincode" name="pincode" required placeholder="Pincode">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" id="city" name="city" required placeholder="City">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">State:</label>
+                        <input type="text" id="state" name="state" required placeholder="State">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="tel" id="phone_number" name="phone_number" required placeholder="Phone Number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required placeholder="Email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cash_on_delivery">Collect Cash on Delivery? (Yes/No):</label>
                         <select id="cash_on_delivery" name="cash_on_delivery" required>
-                            <option value="Yes">Cash on Delivery</option>
-                            <option value="No">Online Payment</option>
+                            <option value="">Select option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-large">Place Order</button>
+                    <button type="submit" class="btn btn-primary btn-large">Submit Order</button>
                 </form>
             </div>
 
             <div class="order-summary">
-                <h3>Order Summary</h3>
+                <h3>Cart Items</h3>
                 <div id="checkout-items"></div>
                 <div class="order-total">
                     <strong>Total: ₹<span id="checkout-total">0</span></strong>

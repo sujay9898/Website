@@ -321,25 +321,31 @@ def checkout():
 
 @app.route('/process-order', methods=['POST'])
 def process_order():
-    """Process the order with buy now functionality"""
-    # Collect order details from form
-    order = {
-        'Reference Number': request.form.get('reference_number'),
-        'Retail Price': request.form.get('retail_price'),
-        'Customer Name': request.form.get('customer_name'),
-        'Address Line 1': request.form.get('address_line1'),
-        'Address Line 2': request.form.get('address_line2'),
-        'Address Line 3 / Landmark': request.form.get('address_line3'),
-        'Pincode': request.form.get('pincode'),
-        'City': request.form.get('city'),
-        'State': request.form.get('state'),
-        'Phone Number': request.form.get('phone_number'),
-        'Email': request.form.get('email'),
-        'Cash on Delivery': request.form.get('cash_on_delivery')
-    }
+    """Process the order with buy now functionality - matches the Python code sample"""
+    # Collect order details from form (simulating the input() calls from the Python code)
+    order = {}
+    order['Reference Number'] = request.form.get('reference_number')
+    order['Retail Price'] = request.form.get('retail_price')
+    order['Customer Name'] = request.form.get('customer_name')
+    # Shipping Address section
+    order['Address Line 1'] = request.form.get('address_line1')
+    order['Address Line 2'] = request.form.get('address_line2')
+    order['Address Line 3 / Landmark'] = request.form.get('address_line3')
+    order['Pincode'] = request.form.get('pincode')
+    order['City'] = request.form.get('city')
+    order['State'] = request.form.get('state')
+    order['Phone Number'] = request.form.get('phone_number')
+    order['Email'] = request.form.get('email')
+    order['Cash on Delivery'] = request.form.get('cash_on_delivery')
     
-    # Log order details for processing
-    logging.info("Order captured successfully!")
+    # Exact output as in the Python code
+    print("Order captured successfully! Here are the details:")
+    print()
+    for key, value in order.items():
+        print(f"{key}: {value}")
+    
+    # Also log to application logger
+    logging.info("Order captured successfully! Here are the details:")
     for key, value in order.items():
         logging.info(f"{key}: {value}")
     
