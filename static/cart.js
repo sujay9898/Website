@@ -173,24 +173,9 @@ class Cart {
             alert('Your cart is empty!');
             return;
         }
-
-        // Create UPI payment link with all items
-        const totalPrice = this.getTotalPrice();
-        const itemsList = this.items.map(item => 
-            `${item.quantity}x ${item.name} (${item.size} ${item.frameText})`
-        ).join(', ');
         
-        const upiLink = `upi://pay?pa=yourupi@upi&pn=Filmytea&am=${totalPrice}&cu=INR&tn=${encodeURIComponent(itemsList)}`;
-        
-        // Try to open UPI link
-        window.location.href = upiLink;
-        
-        // Show confirmation
-        setTimeout(() => {
-            if (confirm('Payment completed? Clear your cart?')) {
-                this.clearCart();
-            }
-        }, 2000);
+        // Redirect to checkout page
+        window.location.href = 'checkout.html';
     }
 
     showAddToCartFeedback() {
