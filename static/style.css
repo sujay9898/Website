@@ -136,54 +136,55 @@ body {
     margin-bottom: 2rem;
 }
 
-.size-options h3 {
-    font-size: 1.5rem;
-    color: var(--light-color);
-    margin-bottom: 1.5rem;
+.poster-options {
+    margin-top: 2rem;
 }
 
-.dropdown-container {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
+.price-section {
     margin-bottom: 2rem;
 }
 
-.poster-dropdown {
-    background: var(--darker-color);
-    color: var(--light-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    min-width: 300px;
-    cursor: pointer;
-}
-
-.poster-dropdown:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-.poster-dropdown option {
-    background: var(--darker-color);
-    color: var(--light-color);
-    padding: 0.5rem;
-}
-
-.price-display {
-    background: var(--darker-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 1rem 1.5rem;
-    min-width: 100px;
-    text-align: center;
-}
-
-.price-display span {
-    font-size: 1.4rem;
+.price-section span {
+    font-size: 2rem;
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--light-color);
+}
+
+.size-section, .frame-section {
+    margin-bottom: 2rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--light-color);
+    margin-bottom: 0.8rem;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.toggle-btn {
+    background: var(--dark-color);
+    color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background: var(--border-color);
+}
+
+.toggle-btn.active {
+    background: var(--light-color);
+    color: var(--dark-color);
+    border-color: var(--light-color);
 }
 
 .get-now-container {
@@ -223,19 +224,13 @@ body {
         text-align: center;
     }
     
-    .dropdown-container {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
+    .toggle-group {
+        flex-wrap: wrap;
     }
     
-    .poster-dropdown {
-        min-width: auto;
-        width: 100%;
-    }
-    
-    .price-display {
-        text-align: center;
+    .toggle-btn {
+        flex: 1;
+        min-width: 80px;
     }
     
     .poster-detail-image img {
