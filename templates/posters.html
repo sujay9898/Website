@@ -26,13 +26,6 @@
                         <div class="poster-image">
                             <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
                         </div>
-                        <div class="poster-content">
-                            <h3>{{ poster.name }}</h3>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&cu=INR&tn=Purchase%20{{ poster.name }}" 
-                               class="btn btn-payment">
-                                Get Now
-                            </a>
-                        </div>
                     </div>
                     {% endfor %}
                 </div>
