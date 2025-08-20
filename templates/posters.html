@@ -33,22 +33,17 @@
                     <div class="poster-card">
                         <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link">
                             <div class="poster-image">
-                                <img src="{{ poster.image_url.replace('/upload/', '/upload/w_300,h_400,c_fill,f_auto,q_auto/') }}" 
+                                <img src="{{ poster.image_url.replace('/upload/', '/upload/w_400,h_280,c_fill,f_auto,q_auto/') }}" 
                                      alt="{{ poster.name }}" 
                                      loading="{% if loop.index <= 6 %}eager{% else %}lazy{% endif %}"
                                      decoding="async"
-                                     width="300" 
-                                     height="400">
+                                     width="400" 
+                                     height="280">
+                            </div>
+                            <div class="poster-card-info">
+                                <h3 class="poster-card-name">{{ poster.name }}</h3>
                             </div>
                         </a>
-                        <div class="poster-card-info">
-                            <h3 class="poster-card-name">{{ poster.name }}</h3>
-                            <p class="poster-card-price">From ₹99.00</p>
-                            <button class="btn btn-primary btn-small add-to-cart-btn" 
-                                    onclick="addToCartFromGrid('{{ poster.id }}', '{{ poster.name }}', '{{ poster.image_url }}')">
-                                Add to Cart
-                            </button>
-                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -93,16 +88,7 @@
             });
         });
         
-        // Add to cart function for grid items
-        window.addToCartFromGrid = function(posterId, posterName, posterImage) {
-            const poster = {
-                id: posterId,
-                name: posterName,
-                image_url: posterImage
-            };
-            
-            cart.addItem(poster, 'A4', 'no'); // Default options
-        };
+        // Grid items no longer have add to cart functionality - removed
     </script>
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
 </body>

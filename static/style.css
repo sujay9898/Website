@@ -178,7 +178,6 @@ body {
 /* Skeleton loading for images */
 .poster-image {
     background: linear-gradient(135deg, var(--dark-color) 0%, var(--border-color) 100%);
-    border-radius: var(--border-radius);
     overflow: hidden;
     position: relative;
 }
@@ -208,19 +207,14 @@ body {
 .poster-card-info {
     padding: 1rem;
     text-align: center;
+    background: var(--darker-color);
 }
 
 .poster-card-name {
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--light-color);
-    margin: 0 0 0.5rem 0;
-}
-
-.poster-card-price {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin: 0 0 1rem 0;
+    margin: 0;
 }
 
 .btn-small {
@@ -278,7 +272,6 @@ body {
 .cart-item-image img {
     width: 100%;
     height: auto;
-    border-radius: var(--border-radius);
     opacity: 1 !important;
 }
 
