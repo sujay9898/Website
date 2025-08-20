@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posters - Filmytea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+        </div>
+    </header>
+
+    <main class="main posters-main">
+        <div class="container">
+            <section class="posters-hero">
+                <h2>Posters</h2>
+            </section>
+
+            <section class="posters">
+                <div class="posters-grid">
+                    {% for poster in posters %}
+                    <div class="poster-card">
+                        <div class="poster-image">
+                            <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
+                        </div>
+                        <div class="poster-content">
+                            <h3>{{ poster.name }}</h3>
+                            <p class="price">₹{{ poster.price }}</p>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am={{ poster.price }}&cu=INR&tn=Purchase%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Get Now
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

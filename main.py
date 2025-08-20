@@ -99,8 +99,13 @@ ALL_POSTERS = [
 
 @app.route('/')
 def index():
-    """Homepage displaying all posters"""
-    return render_template('index.html', posters=ALL_POSTERS)
+    """Homepage with posters button"""
+    return render_template('index.html')
+
+@app.route('/posters')
+def posters():
+    """Posters page displaying all posters"""
+    return render_template('posters.html', posters=ALL_POSTERS)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -89,6 +89,13 @@ body {
     justify-content: center;
 }
 
+.posters-main {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    padding-top: 2rem;
+}
+
 /* Centered Button Section */
 .centered-button {
     text-align: center;
@@ -101,6 +108,22 @@ body {
     border-radius: 15px;
     font-weight: bold;
     min-width: 300px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Posters Hero */
+.posters-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+.posters-hero h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
 /* Hero Section */
