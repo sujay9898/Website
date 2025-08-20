@@ -26,12 +26,16 @@
         <div class="container">
             <div class="poster-detail">
                 <div class="poster-detail-image">
-                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
-                         alt="{{ poster.name }}"
-                         loading="eager"
-                         decoding="async"
-                         width="600"
-                         height="800">
+                    <div class="mockup-container">
+                        <div class="mockup-frame" id="mockup-frame">
+                            <img id="poster-mockup" 
+                                 src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
+                                 alt="{{ poster.name }}"
+                                 loading="eager"
+                                 decoding="async">
+                        </div>
+                        <div class="size-indicator" id="size-indicator">A4 Size</div>
+                    </div>
                 </div>
                 
                 <div class="poster-detail-info">
@@ -96,7 +100,33 @@
             const price = pricing[selectedSize][selectedFrame];
             document.getElementById('selectedPrice').textContent = '₹ ' + price + '.00';
             
-            // Update checkout link - no UPI needed as it goes to checkout page
+            // Update mockup preview
+            updateMockup();
+        }
+        
+        function updateMockup() {
+            const mockupFrame = document.getElementById('mockup-frame');
+            const sizeIndicator = document.getElementById('size-indicator');
+            
+            // Remove existing classes
+            mockupFrame.classList.remove('no-frame', 'black-frame', 'white-frame', 'size-a4', 'size-a3');
+            
+            // Add frame class
+            if (selectedFrame === 'no') {
+                mockupFrame.classList.add('no-frame');
+            } else if (selectedFrame === 'black') {
+                mockupFrame.classList.add('black-frame');
+            } else if (selectedFrame === 'white') {
+                mockupFrame.classList.add('white-frame');
+            }
+            
+            // Add size class
+            mockupFrame.classList.add('size-' + selectedSize.toLowerCase());
+            
+            // Update size indicator
+            const frameText = selectedFrame === 'no' ? 'No Frame' : 
+                             selectedFrame === 'black' ? 'Black Frame' : 'White Frame';
+            sizeIndicator.textContent = selectedSize + ' Size - ' + frameText;
         }
         
         // Handle size toggle
@@ -118,6 +148,10 @@
                 updatePrice();
             });
         });
+        
+        // Initialize default selection
+        updatePrice();
+        updateMockup();
         
         // Add to Cart functionality
         document.getElementById('addToCartBtn').addEventListener('click', function() {
