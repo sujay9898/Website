@@ -326,9 +326,7 @@ def process_order():
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
     # Shipping Address section
-    order['Address Line 1'] = request.form.get('address_line1')
-    order['Address Line 2'] = request.form.get('address_line2')
-    order['Address Line 3 / Landmark'] = request.form.get('address_line3')
+    order['Address'] = request.form.get('address')
     order['Pincode'] = request.form.get('pincode')
     order['City'] = request.form.get('city')
     order['State'] = request.form.get('state')
@@ -344,9 +342,7 @@ def confirm_order():
     # Collect order details from form again
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
-    order['Address Line 1'] = request.form.get('address_line1')
-    order['Address Line 2'] = request.form.get('address_line2')
-    order['Address Line 3 / Landmark'] = request.form.get('address_line3')
+    order['Address'] = request.form.get('address')
     order['Pincode'] = request.form.get('pincode')
     order['City'] = request.form.get('city')
     order['State'] = request.form.get('state')
