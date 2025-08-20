@@ -520,7 +520,12 @@ body {
     display: flex;
     gap: 1rem;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+}
+
+.get-now-container .btn-payment {
+    width: auto;
+    flex: 1;
 }
 
 .btn-large {
