@@ -321,11 +321,29 @@ def checkout():
 
 @app.route('/process-order', methods=['POST'])
 def process_order():
-    """Process the order with buy now functionality - matches the Python code sample"""
+    """Show order preview with customer details and edit options"""
     # Collect order details from form (simulating the input() calls from the Python code)
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
     # Shipping Address section
+    order['Address Line 1'] = request.form.get('address_line1')
+    order['Address Line 2'] = request.form.get('address_line2')
+    order['Address Line 3 / Landmark'] = request.form.get('address_line3')
+    order['Pincode'] = request.form.get('pincode')
+    order['City'] = request.form.get('city')
+    order['State'] = request.form.get('state')
+    order['Phone Number'] = request.form.get('phone_number')
+    order['Email'] = request.form.get('email')
+    order['Cash on Delivery'] = request.form.get('cash_on_delivery')
+    
+    return render_template('order_preview.html', order=order)
+
+@app.route('/confirm-order', methods=['POST'])
+def confirm_order():
+    """Final order confirmation after preview"""
+    # Collect order details from form again
+    order = {}
+    order['Customer Name'] = request.form.get('customer_name')
     order['Address Line 1'] = request.form.get('address_line1')
     order['Address Line 2'] = request.form.get('address_line2')
     order['Address Line 3 / Landmark'] = request.form.get('address_line3')

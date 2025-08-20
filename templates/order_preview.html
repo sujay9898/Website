@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Preview - Filmytea</title>
+    <link href="https://replit.com/@replit/Bootstrap-Dark-Theme/bootstrap-dark.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-brand">
+                <a href="{{ url_for('home') }}" class="brand-link">
+                    <h1 class="brand-name">Filmytea</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <a href="{{ url_for('home') }}" class="nav-link">
+                    <i data-feather="home"></i> Home
+                </a>
+                <a href="{{ url_for('posters') }}" class="nav-link">
+                    <i data-feather="image"></i> Posters
+                </a>
+                <a href="{{ url_for('cart') }}" class="nav-link">
+                    <i data-feather="shopping-cart"></i> Cart
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="checkout-hero">
+                <h2>Order Preview</h2>
+                <p>Please review your order details and make any necessary changes</p>
+            </section>
+
+            <div class="preview-content">
+                <div class="preview-form-section">
+                    <form method="POST" action="{{ url_for('confirm_order') }}" class="preview-form" id="preview-form">
+                        <!-- Customer Information -->
+                        <div class="form-section">
+                            <h3>Customer Information</h3>
+                            <div class="form-group">
+                                <label for="customer_name">Customer Name:</label>
+                                <input type="text" id="customer_name" name="customer_name" required 
+                                       value="{{ order['Customer Name'] }}" placeholder="Customer Name">
+                            </div>
+                        </div>
+
+                        <!-- Shipping Address -->
+                        <div class="form-section">
+                            <h3>Shipping Address</h3>
+                            <div class="form-group">
+                                <label for="address_line1">Address Line 1:</label>
+                                <input type="text" id="address_line1" name="address_line1" required 
+                                       value="{{ order['Address Line 1'] }}" placeholder="Street Address">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address_line2">Address Line 2:</label>
+                                <input type="text" id="address_line2" name="address_line2" 
+                                       value="{{ order['Address Line 2'] }}" placeholder="Apartment, suite, etc.">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address_line3">Address Line 3 / Landmark:</label>
+                                <input type="text" id="address_line3" name="address_line3" 
+                                       value="{{ order['Address Line 3 / Landmark'] }}" placeholder="Landmark">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pincode">Pincode:</label>
+                                    <input type="text" id="pincode" name="pincode" required 
+                                           value="{{ order['Pincode'] }}" placeholder="Pincode">
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">City:</label>
+                                    <input type="text" id="city" name="city" required 
+                                           value="{{ order['City'] }}" placeholder="City">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state">State:</label>
+                                <input type="text" id="state" name="state" required 
+                                       value="{{ order['State'] }}" placeholder="State">
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number:</label>
+                                <input type="tel" id="phone_number" name="phone_number" required 
+                                       value="{{ order['Phone Number'] }}" placeholder="Phone Number">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" required 
+                                       value="{{ order['Email'] }}" placeholder="Email Address">
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="form-section">
+                            <h3>Payment Method</h3>
+                            <div class="form-group">
+                                <label for="cash_on_delivery">Cash on Delivery:</label>
+                                <select id="cash_on_delivery" name="cash_on_delivery" required>
+                                    <option value="Yes" {% if order['Cash on Delivery'] == 'Yes' %}selected{% endif %}>Yes</option>
+                                    <option value="No" {% if order['Cash on Delivery'] == 'No' %}selected{% endif %}>No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="preview-actions">
+                            <a href="{{ url_for('checkout') }}" class="btn btn-secondary btn-large">← Back to Edit</a>
+                            <button type="submit" class="btn btn-primary btn-large">Order Now</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="preview-items"></div>
+                    <div class="summary-total">
+                        <strong>Total: ₹<span id="preview-total">0.00</span></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script>
+        feather.replace();
+
+        // Load cart items and display in preview
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = new Cart();
+            const previewItems = document.getElementById('preview-items');
+            const previewTotal = document.getElementById('preview-total');
+            
+            let total = 0;
+            
+            cart.items.forEach(item => {
+                const itemPrice = cart.getItemPrice(item.size, item.frame);
+                const itemTotal = itemPrice * item.quantity;
+                total += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.innerHTML = `
+                    <div class="item-details">
+                        <img src="${item.image_url.replace('/upload/', '/upload/w_60,h_60,c_fill,f_auto,q_auto/')}" alt="${item.name}" class="item-image">
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <p>Size: ${item.size}, Frame: ${item.frame}</p>
+                            <p>Qty: ${item.quantity}</p>
+                        </div>
+                        <div class="item-price">₹${itemTotal}.00</div>
+                    </div>
+                `;
+                previewItems.appendChild(itemDiv);
+            });
+            
+            previewTotal.textContent = total.toFixed(2);
+            
+            if (cart.items.length === 0) {
+                previewItems.innerHTML = '<p>Your cart is empty.</p>';
+                document.querySelector('button[type="submit"]').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
