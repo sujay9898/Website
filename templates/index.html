@@ -17,22 +17,22 @@
     <main class="main">
         <div class="container">
             <section class="hero">
-                <h2>Crafted for you</h2>
-                <p>Transform your space with our carefully curated poster categories</p>
+                <h2>Posters</h2>
             </section>
 
-            <section class="categories">
-                <div class="categories-grid">
-                    {% for category in categories %}
-                    <div class="category-card">
-                        <div class="category-image">
-                            <img src="{{ category.image_url }}" alt="{{ category.name }}" loading="lazy">
+            <section class="posters">
+                <div class="posters-grid">
+                    {% for poster in posters %}
+                    <div class="poster-card">
+                        <div class="poster-image">
+                            <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
                         </div>
-                        <div class="category-content">
-                            <h3>{{ category.name }}</h3>
-                            <p>{{ category.description }}</p>
-                            <a href="{{ url_for('category', category_id=category.id) }}" class="btn btn-primary">
-                                Browse Collection
+                        <div class="poster-content">
+                            <h3>{{ poster.name }}</h3>
+                            <p class="price">₹{{ poster.price }}</p>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am={{ poster.price }}&cu=INR&tn=Purchase%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Pay with PhonePe
                             </a>
                         </div>
                     </div>
