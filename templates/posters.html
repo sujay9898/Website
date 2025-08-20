@@ -33,12 +33,12 @@
                     <div class="poster-card">
                         <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link">
                             <div class="poster-image">
-                                <img src="{{ poster.image_url.replace('/upload/', '/upload/w_400,h_280,c_fill,f_auto,q_auto/') }}" 
+                                <img src="{{ poster.image_url.replace('/upload/', '/upload/w_1449,h_2047,c_fill,f_auto,q_auto/') }}" 
                                      alt="{{ poster.name }}" 
                                      loading="{% if loop.index <= 6 %}eager{% else %}lazy{% endif %}"
                                      decoding="async"
-                                     width="400" 
-                                     height="280">
+                                     width="1449" 
+                                     height="2047">
                             </div>
                         </a>
                     </div>
