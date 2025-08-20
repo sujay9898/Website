@@ -12,6 +12,12 @@
     <header class="header">
         <div class="container">
             <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -35,6 +41,14 @@
                                      height="400">
                             </div>
                         </a>
+                        <div class="poster-card-info">
+                            <h3 class="poster-card-name">{{ poster.name }}</h3>
+                            <p class="poster-card-price">From ₹99.00</p>
+                            <button class="btn btn-primary btn-small add-to-cart-btn" 
+                                    onclick="addToCartFromGrid('{{ poster.id }}', '{{ poster.name }}', '{{ poster.image_url }}')">
+                                Add to Cart
+                            </button>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -78,6 +92,18 @@
                 }
             });
         });
+        
+        // Add to cart function for grid items
+        window.addToCartFromGrid = function(posterId, posterName, posterImage) {
+            const poster = {
+                id: posterId,
+                name: posterName,
+                image_url: posterImage
+            };
+            
+            cart.addItem(poster, 'A4', 'no'); // Default options
+        };
     </script>
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
 </body>
 </html>

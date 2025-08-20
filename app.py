@@ -305,3 +305,9 @@ def poster_detail(poster_id):
         abort(404)
     
     return render_template('poster_detail.html', poster=poster)
+
+
+@app.route('/cart')
+def cart():
+    """Cart page displaying items from localStorage"""
+    return render_template('cart.html')

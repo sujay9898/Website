@@ -13,6 +13,12 @@
     <header class="header">
         <div class="container">
             <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -54,9 +60,12 @@
                         </div>
                         
                         <div class="get-now-container">
+                            <button id="addToCartBtn" class="btn btn-primary btn-large" style="margin-right: 1rem;">
+                                Add to Cart
+                            </button>
                             <a id="getNowBtn" href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=99&cu=INR&tn=A4%20No%20Frame%20{{ poster.name }}" 
                                class="btn btn-payment btn-large">
-                                Get Now
+                                Buy Now
                             </a>
                         </div>
                     </div>
@@ -117,6 +126,17 @@
             });
         });
         
+        // Add to Cart functionality
+        document.getElementById('addToCartBtn').addEventListener('click', function() {
+            const poster = {
+                id: '{{ poster.id }}',
+                name: '{{ poster.name }}',
+                image_url: '{{ poster.image_url }}'
+            };
+            
+            cart.addItem(poster, selectedSize, selectedFrame);
+        });
+        
         // Optimize image loading
         const detailImg = document.querySelector('.poster-detail-image img');
         if (detailImg) {
@@ -130,5 +150,6 @@
             });
         }
     </script>
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
 </body>
 </html>

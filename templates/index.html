@@ -9,7 +9,13 @@
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">Filmytea</h1>
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -26,5 +32,7 @@
             <p>&copy; 2025 Filmytea. All rights reserved.</p>
         </div>
     </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
 </body>
 </html>
