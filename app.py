@@ -352,15 +352,10 @@ def confirm_order():
     order['Email'] = request.form.get('email')
     order['Cash on Delivery'] = request.form.get('cash_on_delivery')
     
-    # Get cart items from session storage (we'll simulate this with JavaScript data)
-    # In a real app, you'd get this from the session or database
-    cart_items = []
-    
-    # Try to get cart data - for now we'll use a fallback
-    # This would normally come from the frontend via AJAX or session
+    # Get cart items from the hidden form field
+    cart_items_json = request.form.get('cart_items', '[]')
     try:
-        # We'll get cart data from localStorage via JavaScript when the page loads
-        pass
+        cart_items = json.loads(cart_items_json)
     except:
         cart_items = []
     
@@ -375,11 +370,17 @@ def confirm_order():
     for key, value in order.items():
         logging.info(f"{key}: {value}")
     
-    # Send order confirmation email
+    # Send order confirmation email immediately
     order_id = None
     if order.get('Email'):
-        # We'll handle cart items in the template with JavaScript
-        order_id = "PENDING"  # Will be updated by JavaScript
+        try:
+            order_id = send_order_confirmation_email(order, cart_items)
+            if order_id:
+                logging.info(f"Order confirmation email sent successfully to {order['Email']}")
+                logging.info(f"Order ID: {order_id}")
+        except Exception as e:
+            logging.error(f"Failed to send order confirmation email: {e}")
+            order_id = "EMAIL_FAILED"
     
     # Render success page with order details
     return render_template('order_success.html', order=order, order_id=order_id)

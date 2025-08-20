@@ -81,55 +81,11 @@
 
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
     <script>
-        // Send order confirmation email with cart data
+        // Clear cart after successful order
         document.addEventListener('DOMContentLoaded', function() {
-            const cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
-            const orderData = {
-                'Customer Name': '{{ order["Customer Name"] }}',
-                'Address': '{{ order["Address"] }}',
-                'City': '{{ order["City"] }}',
-                'State': '{{ order["State"] }}',
-                'Pincode': '{{ order["Pincode"] }}',
-                'Phone Number': '{{ order["Phone Number"] }}',
-                'Email': '{{ order["Email"] }}',
-                'Cash on Delivery': '{{ order["Cash on Delivery"] }}'
-            };
-            
-            if (cartData.length > 0 && orderData.Email) {
-                fetch('/send-order-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        order: orderData,
-                        cart_items: cartData
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Order confirmation email sent successfully');
-                        console.log('Order ID:', data.order_id);
-                        
-                        // Update the page with the actual order ID
-                        const orderIdElement = document.querySelector('.order-id');
-                        if (orderIdElement) {
-                            orderIdElement.textContent = data.order_id;
-                        }
-                        
-                        // Clear cart after successful order
-                        localStorage.removeItem('filmytea_cart');
-                        if (typeof cart !== 'undefined') {
-                            cart.updateCartCount();
-                        }
-                    } else {
-                        console.error('Failed to send order confirmation email:', data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error sending order confirmation email:', error);
-                });
+            localStorage.removeItem('filmytea_cart');
+            if (typeof cart !== 'undefined') {
+                cart.updateCartCount();
             }
         });
     </script>

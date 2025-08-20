@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="preview-actions">
-                        <form method="POST" action="{{ url_for('confirm_order') }}" style="width: 100%;">
+                        <form method="POST" action="{{ url_for('confirm_order') }}" style="width: 100%;" id="order-form">
                             <input type="hidden" name="customer_name" value="{{ order['Customer Name'] }}">
                             <input type="hidden" name="address" value="{{ order['Address'] }}">
                             <input type="hidden" name="pincode" value="{{ order['Pincode'] }}">
@@ -104,6 +104,7 @@
                             <input type="hidden" name="phone_number" value="{{ order['Phone Number'] }}">
                             <input type="hidden" name="email" value="{{ order['Email'] }}">
                             <input type="hidden" name="cash_on_delivery" value="{{ order['Cash on Delivery'] }}">
+                            <input type="hidden" name="cart_items" id="cart_items_field" value="">
                             <button type="submit" class="btn btn-primary btn-large order-now-btn">Order Now</button>
                         </form>
                     </div>
@@ -163,6 +164,9 @@
             if (cartData.length === 0) {
                 previewItems.innerHTML = '<p>Your cart is empty.</p>';
                 document.querySelector('button[type="submit"]').disabled = true;
+            } else {
+                // Populate the cart items field with the cart data
+                document.getElementById('cart_items_field').value = JSON.stringify(cartData);
             }
         });
     </script>
