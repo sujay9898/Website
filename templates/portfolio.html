@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - Modern Flask App{% endblock %}
+
+{% block content %}
+<!-- Portfolio Hero Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold mb-3">Portfolio</h1>
+                <p class="lead text-muted">
+                    Explore a collection of projects built with modern web technologies and best practices.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Filter Tabs -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <ul class="nav nav-pills justify-content-center" id="portfolioTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab">
+                            All Projects
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed" type="button" role="tab">
+                            Completed
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="progress-tab" data-bs-toggle="pill" data-bs-target="#progress" type="button" role="tab">
+                            In Progress
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Portfolio Content -->
+        <div class="tab-content" id="portfolioTabContent">
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                <div class="row g-4">
+                    {% for project in projects %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="portfolio-item h-100 border rounded-3 overflow-hidden bg-body">
+                            <div class="portfolio-image bg-gradient-primary p-5 text-center">
+                                <i data-feather="code" class="text-white" style="width: 64px; height: 64px;"></i>
+                            </div>
+                            <div class="p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0">{{ project.title }}</h5>
+                                    <span class="badge {% if project.status == 'Completed' %}bg-success{% elif project.status == 'In Progress' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                        {{ project.status }}
+                                    </span>
+                                </div>
+                                <p class="text-muted mb-3">{{ project.description }}</p>
+                                <div class="technologies mb-3">
+                                    <small class="text-muted d-block mb-2">Technologies:</small>
+                                    {% for tech in project.technologies %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-1 mb-1">{{ tech }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="#" class="btn btn-outline-primary btn-sm" onclick="showProjectDetails('{{ project.title }}')">
+                                        <i data-feather="eye" class="me-1"></i>View Details
+                                    </a>
+                                    <div class="project-links">
+                                        <a href="#" class="text-muted me-2" title="View Code">
+                                            <i data-feather="github"></i>
+                                        </a>
+                                        <a href="#" class="text-muted" title="Live Demo">
+                                            <i data-feather="external-link"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="completed" role="tabpanel">
+                <div class="row g-4">
+                    {% for project in projects %}
+                    {% if project.status == 'Completed' %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="portfolio-item h-100 border rounded-3 overflow-hidden bg-body">
+                            <div class="portfolio-image bg-gradient-success p-5 text-center">
+                                <i data-feather="check-circle" class="text-white" style="width: 64px; height: 64px;"></i>
+                            </div>
+                            <div class="p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0">{{ project.title }}</h5>
+                                    <span class="badge bg-success">{{ project.status }}</span>
+                                </div>
+                                <p class="text-muted mb-3">{{ project.description }}</p>
+                                <div class="technologies mb-3">
+                                    <small class="text-muted d-block mb-2">Technologies:</small>
+                                    {% for tech in project.technologies %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-1 mb-1">{{ tech }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="#" class="btn btn-success btn-sm" onclick="showProjectDetails('{{ project.title }}')">
+                                        <i data-feather="eye" class="me-1"></i>View Details
+                                    </a>
+                                    <div class="project-links">
+                                        <a href="#" class="text-muted me-2" title="View Code">
+                                            <i data-feather="github"></i>
+                                        </a>
+                                        <a href="#" class="text-muted" title="Live Demo">
+                                            <i data-feather="external-link"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="progress" role="tabpanel">
+                <div class="row g-4">
+                    {% for project in projects %}
+                    {% if project.status == 'In Progress' %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="portfolio-item h-100 border rounded-3 overflow-hidden bg-body">
+                            <div class="portfolio-image bg-gradient-primary p-5 text-center">
+                                <i data-feather="clock" class="text-white" style="width: 64px; height: 64px;"></i>
+                            </div>
+                            <div class="p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="mb-0">{{ project.title }}</h5>
+                                    <span class="badge bg-primary">{{ project.status }}</span>
+                                </div>
+                                <p class="text-muted mb-3">{{ project.description }}</p>
+                                <div class="technologies mb-3">
+                                    <small class="text-muted d-block mb-2">Technologies:</small>
+                                    {% for tech in project.technologies %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary me-1 mb-1">{{ tech }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 65%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="#" class="btn btn-primary btn-sm" onclick="showProjectDetails('{{ project.title }}')">
+                                        <i data-feather="eye" class="me-1"></i>View Details
+                                    </a>
+                                    <small class="text-muted">65% Complete</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills & Tools Section -->
+<section class="py-5 bg-light bg-opacity-10">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold mb-3">Development Tools & Technologies</h2>
+                <p class="lead text-muted">
+                    Technologies and tools used across various projects.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-category text-center p-4 rounded-3 border bg-body h-100">
+                    <i data-feather="server" class="text-primary mb-3" style="width: 48px; height: 48px;"></i>
+                    <h5>Backend</h5>
+                    <div class="tools-list">
+                        <span class="badge bg-primary bg-opacity-10 text-primary m-1">Flask</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary m-1">Python</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary m-1">SQLAlchemy</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary m-1">FastAPI</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-category text-center p-4 rounded-3 border bg-body h-100">
+                    <i data-feather="layout" class="text-success mb-3" style="width: 48px; height: 48px;"></i>
+                    <h5>Frontend</h5>
+                    <div class="tools-list">
+                        <span class="badge bg-success bg-opacity-10 text-success m-1">HTML5</span>
+                        <span class="badge bg-success bg-opacity-10 text-success m-1">CSS3</span>
+                        <span class="badge bg-success bg-opacity-10 text-success m-1">JavaScript</span>
+                        <span class="badge bg-success bg-opacity-10 text-success m-1">Bootstrap</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-category text-center p-4 rounded-3 border bg-body h-100">
+                    <i data-feather="database" class="text-info mb-3" style="width: 48px; height: 48px;"></i>
+                    <h5>Database</h5>
+                    <div class="tools-list">
+                        <span class="badge bg-info bg-opacity-10 text-info m-1">SQLite</span>
+                        <span class="badge bg-info bg-opacity-10 text-info m-1">PostgreSQL</span>
+                        <span class="badge bg-info bg-opacity-10 text-info m-1">MongoDB</span>
+                        <span class="badge bg-info bg-opacity-10 text-info m-1">Redis</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-category text-center p-4 rounded-3 border bg-body h-100">
+                    <i data-feather="tool" class="text-warning mb-3" style="width: 48px; height: 48px;"></i>
+                    <h5>Tools</h5>
+                    <div class="tools-list">
+                        <span class="badge bg-warning bg-opacity-10 text-warning m-1">Git</span>
+                        <span class="badge bg-warning bg-opacity-10 text-warning m-1">Docker</span>
+                        <span class="badge bg-warning bg-opacity-10 text-warning m-1">VS Code</span>
+                        <span class="badge bg-warning bg-opacity-10 text-warning m-1">Replit</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="display-6 fw-bold mb-3">Interested in Working Together?</h2>
+                <p class="lead text-muted mb-4">
+                    Let's discuss your next project and how we can bring your ideas to life.
+                </p>
+                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg me-3">
+                    <i data-feather="mail" class="me-2"></i>Start a Project
+                </a>
+                <a href="#" class="btn btn-outline-secondary btn-lg">
+                    <i data-feather="download" class="me-2"></i>Download Resume
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Details Modal -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="projectModalLabel">Project Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="projectDetails">
+                    <!-- Project details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" class="btn btn-primary">View Live Demo</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
