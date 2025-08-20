@@ -1108,7 +1108,8 @@ body {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid var(--border-color);
@@ -1116,10 +1117,17 @@ body {
     background: var(--darker-color);
     color: var(--light-color);
     font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
