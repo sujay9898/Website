@@ -63,8 +63,8 @@
                             <button id="addToCartBtn" class="btn btn-primary btn-large" style="margin-right: 1rem;">
                                 Add to Cart
                             </button>
-                            <a id="getNowBtn" href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=99&cu=INR&tn=A4%20No%20Frame%20{{ poster.name }}" 
-                               class="btn btn-payment btn-large">
+                            <a id="getNowBtn" href="{{ url_for('checkout') }}" target="_blank"
+                               class="btn btn-payment btn-large" onclick="addToCartAndCheckout()">
                                 Buy Now
                             </a>
                         </div>
@@ -97,13 +97,7 @@
             const price = pricing[selectedSize][selectedFrame];
             document.getElementById('selectedPrice').textContent = '₹ ' + price + '.00';
             
-            // Update UPI payment link
-            const posterName = "{{ poster.name }}";
-            const frameText = selectedFrame === 'no' ? 'No Frame' : 
-                             selectedFrame === 'black' ? 'Black Frame' : 'White Frame';
-            const description = `${selectedSize} ${frameText}`;
-            const upiLink = `upi://pay?pa=yourupi@upi&pn=Filmytea&am=${price}&cu=INR&tn=${description}%20${encodeURIComponent(posterName)}`;
-            document.getElementById('getNowBtn').href = upiLink;
+            // Update checkout link - no UPI needed as it goes to checkout page
         }
         
         // Handle size toggle
@@ -136,6 +130,18 @@
             
             cart.addItem(poster, selectedSize, selectedFrame);
         });
+        
+        // Buy Now functionality - add to cart and open checkout in new tab
+        function addToCartAndCheckout() {
+            const poster = {
+                id: '{{ poster.id }}',
+                name: '{{ poster.name }}',
+                image_url: '{{ poster.image_url }}'
+            };
+            
+            cart.addItem(poster, selectedSize, selectedFrame);
+            // Link will automatically open checkout in new tab due to target="_blank"
+        }
         
         // Optimize image loading
         const detailImg = document.querySelector('.poster-detail-image img');
