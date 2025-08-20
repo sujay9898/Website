@@ -2,10 +2,10 @@
 
 /* CSS Variables */
 :root {
-    --primary-color: #007bff;
-    --primary-hover: #0056b3;
+    --primary-color: #a8a8a8;
+    --primary-hover: #909090;
     --secondary-color: #6c757d;
-    --success-color: #28a745;
+    --success-color: #a8a8a8;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --dark-color: #343a40;
@@ -269,16 +269,16 @@ body {
 }
 
 .btn-payment {
-    background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
+    background: linear-gradient(135deg, #a8a8a8 0%, #909090 100%);
     color: var(--white);
     width: 100%;
     font-weight: 600;
 }
 
 .btn-payment:hover {
-    background: linear-gradient(135deg, #341f97 0%, #5f27cd 100%);
+    background: linear-gradient(135deg, #909090 0%, #a8a8a8 100%);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(95, 39, 205, 0.3);
+    box-shadow: 0 5px 15px rgba(168, 168, 168, 0.3);
 }
 
 /* Footer */

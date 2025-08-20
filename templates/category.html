@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ category.name }} - PosterShop</title>
+    <title>{{ category.name }} - Filmytea</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo"><a href="{{ url_for('index') }}">PosterShop</a></h1>
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
             <nav class="breadcrumb">
                 <a href="{{ url_for('index') }}">Home</a> / {{ category.name }}
             </nav>
@@ -33,7 +33,7 @@
                         <div class="poster-content">
                             <h3>{{ poster.name }}</h3>
                             <p class="price">₹{{ poster.price }}</p>
-                            <a href="upi://pay?pa=yourupi@upi&pn=PosterShop&am={{ poster.price }}&cu=INR&tn=Purchase%20{{ poster.name }}" 
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am={{ poster.price }}&cu=INR&tn=Purchase%20{{ poster.name }}" 
                                class="btn btn-payment">
                                 Pay with PhonePe
                             </a>
@@ -47,7 +47,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 PosterShop. All rights reserved.</p>
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
         </div>
     </footer>
 </body>
