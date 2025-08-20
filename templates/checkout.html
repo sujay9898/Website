@@ -27,16 +27,7 @@
         <div class="checkout-content">
             <div class="checkout-form-section">
                 <form method="POST" action="{{ url_for('process_order') }}" class="checkout-form" id="order-form">
-                    <div class="form-group">
-                        <label for="reference_number">Reference Number:</label>
-                        <input type="text" id="reference_number" name="reference_number" required 
-                               value="ORD{{ range(10000, 99999) | random }}" placeholder="Reference Number">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="retail_price">Retail Price:</label>
-                        <input type="text" id="retail_price" name="retail_price" required readonly placeholder="Retail Price">
-                    </div>
 
                     <div class="form-group">
                         <label for="customer_name">Customer Name:</label>
@@ -135,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     checkoutTotal.textContent = total;
-    retailPriceInput.value = '₹' + total;
     
     if (cart.length === 0) {
         checkoutItems.innerHTML = '<p>Your cart is empty.</p>';

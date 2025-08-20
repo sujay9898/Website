@@ -324,8 +324,6 @@ def process_order():
     """Process the order with buy now functionality - matches the Python code sample"""
     # Collect order details from form (simulating the input() calls from the Python code)
     order = {}
-    order['Reference Number'] = request.form.get('reference_number')
-    order['Retail Price'] = request.form.get('retail_price')
     order['Customer Name'] = request.form.get('customer_name')
     # Shipping Address section
     order['Address Line 1'] = request.form.get('address_line1')
