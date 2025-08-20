@@ -23,9 +23,11 @@
                 <div class="posters-grid">
                     {% for poster in posters %}
                     <div class="poster-card">
-                        <div class="poster-image">
-                            <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
-                        </div>
+                        <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link">
+                            <div class="poster-image">
+                                <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
+                            </div>
+                        </a>
                     </div>
                     {% endfor %}
                 </div>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ poster.name }} - Filmytea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+        </div>
+    </header>
+
+    <main class="main poster-detail-main">
+        <div class="container">
+            <div class="poster-detail">
+                <div class="poster-detail-image">
+                    <img src="{{ poster.image_url }}" alt="{{ poster.name }}">
+                </div>
+                
+                <div class="poster-detail-info">
+                    <h1 class="poster-title">{{ poster.name }}</h1>
+                    
+                    <div class="size-options">
+                        <h3>Size & Price Options:</h3>
+                        
+                        <div class="option-card">
+                            <div class="option-info">
+                                <h4>A4 Unframed Poster</h4>
+                                <p class="option-price">₹129</p>
+                            </div>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=129&cu=INR&tn=A4%20Unframed%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Get Now
+                            </a>
+                        </div>
+                        
+                        <div class="option-card">
+                            <div class="option-info">
+                                <h4>A4 Black/White Framed Poster</h4>
+                                <p class="option-price">₹399</p>
+                            </div>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=399&cu=INR&tn=A4%20Framed%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Get Now
+                            </a>
+                        </div>
+                        
+                        <div class="option-card">
+                            <div class="option-info">
+                                <h4>A3 Unframed Poster</h4>
+                                <p class="option-price">₹159</p>
+                            </div>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=159&cu=INR&tn=A3%20Unframed%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Get Now
+                            </a>
+                        </div>
+                        
+                        <div class="option-card">
+                            <div class="option-info">
+                                <h4>A3 Black/White Framed Poster</h4>
+                                <p class="option-price">₹499</p>
+                            </div>
+                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am=499&cu=INR&tn=A3%20Framed%20{{ poster.name }}" 
+                               class="btn btn-payment">
+                                Get Now
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="back-link">
+                        <a href="{{ url_for('posters') }}" class="btn btn-secondary">← Back to Posters</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

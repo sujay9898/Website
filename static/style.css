@@ -97,6 +97,113 @@ body {
     padding-top: 2rem;
 }
 
+.poster-detail-main {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    padding-top: 2rem;
+}
+
+/* Poster Detail Styles */
+.poster-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.poster-detail-image {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.poster-detail-image img {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.poster-detail-info {
+    padding: 1rem 0;
+}
+
+.poster-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--light-color);
+    margin-bottom: 2rem;
+}
+
+.size-options h3 {
+    font-size: 1.5rem;
+    color: var(--light-color);
+    margin-bottom: 1.5rem;
+}
+
+.option-card {
+    background: var(--darker-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.option-info h4 {
+    font-size: 1.2rem;
+    color: var(--light-color);
+    margin-bottom: 0.5rem;
+}
+
+.option-price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.btn-secondary {
+    background-color: var(--border-color);
+    color: var(--light-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+}
+
+.back-link {
+    margin-top: 2rem;
+}
+
+/* Mobile Responsive for Detail Page */
+@media (max-width: 768px) {
+    .poster-detail {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .poster-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .option-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .poster-detail-image img {
+        max-width: 300px;
+    }
+}
+
 /* Centered Button Section */
 .centered-button {
     text-align: center;
@@ -260,6 +367,11 @@ body {
 
 .poster-card:hover {
     transform: scale(1.02);
+}
+
+.poster-link {
+    text-decoration: none;
+    display: block;
 }
 
 .poster-image {

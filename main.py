@@ -250,5 +250,19 @@ def posters():
     """Posters page displaying all posters"""
     return render_template('posters.html', posters=ALL_POSTERS)
 
+@app.route('/poster/<poster_id>')
+def poster_detail(poster_id):
+    """Individual poster details page"""
+    poster = None
+    for p in ALL_POSTERS:
+        if p['id'] == poster_id:
+            poster = p
+            break
+    
+    if not poster:
+        return "Poster not found", 404
+    
+    return render_template('poster_detail.html', poster=poster)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
