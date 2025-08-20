@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posters - Filmytea</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
 </head>
 <body>
     <header class="header">
@@ -25,7 +27,12 @@
                     <div class="poster-card">
                         <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link">
                             <div class="poster-image">
-                                <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
+                                <img src="{{ poster.image_url.replace('/upload/', '/upload/w_300,h_400,c_fill,f_auto,q_auto/') }}" 
+                                     alt="{{ poster.name }}" 
+                                     loading="{% if loop.index <= 6 %}eager{% else %}lazy{% endif %}"
+                                     decoding="async"
+                                     width="300" 
+                                     height="400">
                             </div>
                         </a>
                     </div>
@@ -40,5 +47,37 @@
             <p>&copy; 2025 Filmytea. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Optimize image loading
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.poster-image img');
+            
+            images.forEach((img, index) => {
+                img.addEventListener('load', function() {
+                    this.style.opacity = '1';
+                    this.parentElement.style.setProperty('--loaded', '1');
+                });
+                
+                img.addEventListener('error', function() {
+                    this.style.opacity = '0.5';
+                    this.alt = 'Image failed to load';
+                });
+            });
+            
+            // Preload next batch of images when scrolling near bottom
+            let preloadTriggered = false;
+            window.addEventListener('scroll', function() {
+                if (!preloadTriggered && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                    preloadTriggered = true;
+                    // Preload remaining lazy images
+                    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                    lazyImages.forEach(img => {
+                        img.loading = 'eager';
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Overview
 
-A modern Flask web application featuring a portfolio/personal website with responsive design, clean architecture, and Replit deployment optimization. The application showcases projects, provides contact functionality, and includes a keep-alive service for reliable hosting on Replit.
+A modern Flask web application featuring a poster gallery (Filmytea) with optimized image loading, responsive design, clean architecture, and Replit deployment optimization. The application showcases movie and entertainment posters with fast image loading and e-commerce functionality.
 
 # User Preferences
 
@@ -16,16 +16,18 @@ Preferred communication style: Simple, everyday language.
 - **Responsive Design**: Mobile-first approach with Bootstrap grid system
 
 ## Backend Architecture
-- **Web Framework**: Flask with simple routing structure
-- **Data Storage**: In-memory data structures (PROJECTS list) for portfolio content
-- **Session Management**: Flask sessions with configurable secret key
-- **Error Handling**: Flash messaging system for user feedback
+- **Web Framework**: Flask with secure routing structure and ProxyFix middleware
+- **Data Storage**: In-memory data structures (ALL_POSTERS list) for poster catalog
+- **Database**: PostgreSQL with SQLAlchemy ORM and connection pooling
+- **Session Management**: Flask sessions with environment-based secret key
+- **Error Handling**: HTTP error codes with proper abort handling
 - **Logging**: Python logging module configured for debugging
 
 ## Application Structure
-- **Route Organization**: Single-file routing with dedicated endpoints for home, about, portfolio, and contact
-- **Static Assets**: Organized CSS and JavaScript files in dedicated static directories
-- **Template Hierarchy**: Base template with page-specific extensions for consistent layout
+- **Route Organization**: Clean routing with dedicated endpoints for home, poster gallery, and poster details
+- **Static Assets**: Optimized CSS with image loading animations and responsive design
+- **Template Hierarchy**: Individual templates with image optimization and progressive loading
+- **Image Optimization**: Cloudinary CDN integration with automatic resizing, format conversion, and quality optimization
 
 ## Deployment Architecture
 - **Keep-Alive Service**: Dedicated Flask server on port 8000 to prevent Replit hibernation

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ poster.name }} - Filmytea</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
+    <link rel="preload" href="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" as="image">
 </head>
 <body>
     <header class="header">
@@ -17,7 +20,12 @@
         <div class="container">
             <div class="poster-detail">
                 <div class="poster-detail-image">
-                    <img src="{{ poster.image_url }}" alt="{{ poster.name }}">
+                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
+                         alt="{{ poster.name }}"
+                         loading="eager"
+                         decoding="async"
+                         width="600"
+                         height="800">
                 </div>
                 
                 <div class="poster-detail-info">
@@ -108,6 +116,19 @@
                 updatePrice();
             });
         });
+        
+        // Optimize image loading
+        const detailImg = document.querySelector('.poster-detail-image img');
+        if (detailImg) {
+            detailImg.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            
+            detailImg.addEventListener('error', function() {
+                this.style.opacity = '0.5';
+                this.alt = 'Image failed to load';
+            });
+        }
     </script>
 </body>
 </html>
