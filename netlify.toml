@@ -1,0 +1,12 @@
+# Note: Netlify doesn't support Flask/Python apps
+# This Flask app needs to be deployed on platforms like:
+# - Railway (railway.app) 
+# - Render (render.com)
+# - Heroku (heroku.com)
+# - PythonAnywhere
+
+# For static site deployment on Netlify, you'd need to convert to pure HTML/CSS/JS
+
+[build]
+  publish = "static"
+  command = "echo 'This is a Flask app - use Railway/Render/Heroku instead'"
