@@ -276,7 +276,6 @@ body {
     width: 200px;
     height: 300px;
     object-fit: cover;
-    border-radius: 8px;
     transition: var(--transition);
     margin: 0 auto;
     display: block;
