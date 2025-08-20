@@ -517,6 +517,10 @@ body {
 
 .get-now-container {
     margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn-large {
