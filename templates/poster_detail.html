@@ -63,10 +63,9 @@
                             <button id="addToCartBtn" class="btn btn-primary btn-large" style="margin-right: 1rem;">
                                 Add to Cart
                             </button>
-                            <a id="getNowBtn" href="{{ url_for('checkout') }}" target="_blank"
-                               class="btn btn-payment btn-large" onclick="addToCartAndCheckout()">
+                            <button id="getNowBtn" class="btn btn-payment btn-large" onclick="addToCartAndCheckout()">
                                 Buy Now
-                            </a>
+                            </button>
                         </div>
                     </div>
                     
@@ -131,7 +130,7 @@
             cart.addItem(poster, selectedSize, selectedFrame);
         });
         
-        // Buy Now functionality - add to cart and open checkout in new tab
+        // Buy Now functionality - add to cart and redirect to checkout
         function addToCartAndCheckout() {
             const poster = {
                 id: '{{ poster.id }}',
@@ -140,7 +139,8 @@
             };
             
             cart.addItem(poster, selectedSize, selectedFrame);
-            // Link will automatically open checkout in new tab due to target="_blank"
+            // Redirect to checkout page in same window
+            window.location.href = '{{ url_for("checkout") }}';
         }
         
         // Optimize image loading
