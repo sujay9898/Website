@@ -1,186 +1,51 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PosterShop - Beautiful Posters for Every Space</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">PosterShop</h1>
+            <p class="tagline">Beautiful Posters for Every Space</p>
+        </div>
+    </header>
 
-{% block title %}Home - Modern Flask App{% endblock %}
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <h2>Discover Amazing Poster Collections</h2>
+                <p>Transform your space with our carefully curated poster categories</p>
+            </section>
 
-{% block content %}
-<!-- Hero Section -->
-<section class="hero-section py-5 bg-gradient">
-    <div class="container">
-        <div class="row align-items-center min-vh-75">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">
-                    Welcome to <span class="text-primary">Flask Modern</span>
-                </h1>
-                <p class="lead mb-4">
-                    A complete Flask web application with modern responsive design, 
-                    proper project structure, and Replit deployment configuration.
-                </p>
-                <div class="d-flex gap-3 mb-4">
-                    <a href="{{ url_for('about') }}" class="btn btn-primary btn-lg">
-                        <i data-feather="info" class="me-2"></i>Learn More
-                    </a>
-                    <a href="{{ url_for('portfolio') }}" class="btn btn-outline-secondary btn-lg">
-                        <i data-feather="eye" class="me-2"></i>View Work
-                    </a>
-                </div>
-                <div class="row text-center">
-                    <div class="col-4">
-                        <div class="stat-item">
-                            <h3 class="fw-bold text-primary">100%</h3>
-                            <p class="text-muted">Responsive</p>
+            <section class="categories">
+                <div class="categories-grid">
+                    {% for category in categories %}
+                    <div class="category-card">
+                        <div class="category-image">
+                            <img src="{{ category.image_url }}" alt="{{ category.name }}" loading="lazy">
+                        </div>
+                        <div class="category-content">
+                            <h3>{{ category.name }}</h3>
+                            <p>{{ category.description }}</p>
+                            <a href="{{ url_for('category', category_id=category.id) }}" class="btn btn-primary">
+                                Browse Collection
+                            </a>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="stat-item">
-                            <h3 class="fw-bold text-success">Modern</h3>
-                            <p class="text-muted">Design</p>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-item">
-                            <h3 class="fw-bold text-info">Flask</h3>
-                            <p class="text-muted">Powered</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="hero-image text-center">
-                    <div class="code-preview bg-dark rounded p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="window-controls d-flex gap-2">
-                                <div class="window-control bg-danger rounded-circle"></div>
-                                <div class="window-control bg-warning rounded-circle"></div>
-                                <div class="window-control bg-success rounded-circle"></div>
-                            </div>
-                            <span class="ms-auto text-muted">main.py</span>
-                        </div>
-                        <pre class="text-start text-light"><code>@app.route('/')
-def index():
-    return render_template('index.html')
+            </section>
+        </div>
+    </main>
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)</code></pre>
-                    </div>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 PosterShop. All rights reserved.</p>
         </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-5 fw-bold mb-3">Built with Modern Technologies</h2>
-                <p class="lead text-muted">
-                    This Flask application demonstrates best practices and modern web development techniques.
-                </p>
-            </div>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4 border rounded-3">
-                    <div class="feature-icon mb-3">
-                        <i data-feather="server" class="text-primary" style="width: 48px; height: 48px;"></i>
-                    </div>
-                    <h4>Flask Backend</h4>
-                    <p class="text-muted">
-                        Powered by Flask with proper routing, template inheritance, and form handling.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4 border rounded-3">
-                    <div class="feature-icon mb-3">
-                        <i data-feather="smartphone" class="text-success" style="width: 48px; height: 48px;"></i>
-                    </div>
-                    <h4>Responsive Design</h4>
-                    <p class="text-muted">
-                        Bootstrap 5 ensures your app looks great on all devices and screen sizes.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="feature-card h-100 p-4 border rounded-3">
-                    <div class="feature-icon mb-3">
-                        <i data-feather="zap" class="text-warning" style="width: 48px; height: 48px;"></i>
-                    </div>
-                    <h4>Replit Ready</h4>
-                    <p class="text-muted">
-                        Configured for seamless deployment on Replit with keep-alive functionality.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Recent Projects Section -->
-{% if projects %}
-<section class="py-5 bg-light bg-opacity-10">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="display-6 fw-bold mb-3">Recent Projects</h2>
-                <p class="lead text-muted">
-                    Check out some of the latest work and projects.
-                </p>
-            </div>
-        </div>
-        
-        <div class="row g-4">
-            {% for project in projects %}
-            <div class="col-md-6">
-                <div class="project-card h-100 p-4 border rounded-3 bg-body">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h4>{{ project.title }}</h4>
-                        <span class="badge bg-secondary">{{ project.status }}</span>
-                    </div>
-                    <p class="text-muted mb-3">{{ project.description }}</p>
-                    <div class="technologies mb-3">
-                        {% for tech in project.technologies %}
-                        <span class="badge bg-primary me-1">{{ tech }}</span>
-                        {% endfor %}
-                    </div>
-                    <a href="{{ url_for('portfolio') }}" class="btn btn-outline-primary">
-                        View Details <i data-feather="arrow-right" class="ms-1"></i>
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="text-center mt-4">
-            <a href="{{ url_for('portfolio') }}" class="btn btn-primary">
-                View All Projects <i data-feather="external-link" class="ms-2"></i>
-            </a>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- CTA Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h2 class="display-6 fw-bold mb-3">Ready to Get Started?</h2>
-                <p class="lead text-muted mb-4">
-                    This Flask application is ready to deploy on Replit. Start building your next project today!
-                </p>
-                <a href="{{ url_for('contact') }}" class="btn btn-primary btn-lg me-3">
-                    <i data-feather="mail" class="me-2"></i>Get in Touch
-                </a>
-                <a href="{{ url_for('about') }}" class="btn btn-outline-secondary btn-lg">
-                    <i data-feather="info" class="me-2"></i>Learn More
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
+    </footer>
+</body>
+</html>
