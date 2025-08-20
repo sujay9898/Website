@@ -34,84 +34,79 @@
         <div class="container">
             <section class="checkout-hero">
                 <h2>Order Preview</h2>
-                <p>Please review your order details and make any necessary changes</p>
+                <p>Please review your order details</p>
+                <a href="{{ url_for('checkout') }}" class="edit-btn">✏️ Edit</a>
             </section>
 
             <div class="preview-content">
-                <div class="preview-form-section">
-                    <form method="POST" action="{{ url_for('confirm_order') }}" class="preview-form" id="preview-form">
-                        <!-- Customer Information -->
-                        <div class="form-section">
-                            <h3>Customer Information</h3>
-                            <div class="form-group">
-                                <label for="customer_name">Customer Name:</label>
-                                <input type="text" id="customer_name" name="customer_name" required 
-                                       value="{{ order['Customer Name'] }}" placeholder="Customer Name">
+                <div class="preview-info-section">
+                    <!-- Customer Information -->
+                    <div class="info-section">
+                        <h3>Customer Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Customer Name:</span>
+                            <span class="info-value">{{ order['Customer Name'] }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="info-section">
+                        <h3>Shipping Address</h3>
+                        <div class="info-item">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value address-value">{{ order['Address'] }}</span>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Pincode:</span>
+                                <span class="info-value">{{ order['Pincode'] }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">City:</span>
+                                <span class="info-value">{{ order['City'] }}</span>
                             </div>
                         </div>
-
-                        <!-- Shipping Address -->
-                        <div class="form-section">
-                            <h3>Shipping Address</h3>
-                            <div class="form-group">
-                                <label for="address">Address:</label>
-                                <textarea id="address" name="address" required rows="3" 
-                                          placeholder="Complete Address">{{ order['Address'] }}</textarea>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="pincode">Pincode:</label>
-                                    <input type="text" id="pincode" name="pincode" required 
-                                           value="{{ order['Pincode'] }}" placeholder="Pincode">
-                                </div>
-                                <div class="form-group">
-                                    <label for="city">City:</label>
-                                    <input type="text" id="city" name="city" required 
-                                           value="{{ order['City'] }}" placeholder="City">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="state">State:</label>
-                                <input type="text" id="state" name="state" required 
-                                       value="{{ order['State'] }}" placeholder="State">
-                            </div>
+                        <div class="info-item">
+                            <span class="info-label">State:</span>
+                            <span class="info-value">{{ order['State'] }}</span>
                         </div>
+                    </div>
 
-                        <!-- Contact Information -->
-                        <div class="form-section">
-                            <h3>Contact Information</h3>
-                            <div class="form-group">
-                                <label for="phone_number">Phone Number:</label>
-                                <input type="tel" id="phone_number" name="phone_number" required 
-                                       value="{{ order['Phone Number'] }}" placeholder="Phone Number">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" id="email" name="email" required 
-                                       value="{{ order['Email'] }}" placeholder="Email Address">
-                            </div>
+                    <!-- Contact Information -->
+                    <div class="info-section">
+                        <h3>Contact Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Phone Number:</span>
+                            <span class="info-value">{{ order['Phone Number'] }}</span>
                         </div>
-
-                        <!-- Payment Method -->
-                        <div class="form-section">
-                            <h3>Payment Method</h3>
-                            <div class="form-group">
-                                <label for="cash_on_delivery">Cash on Delivery:</label>
-                                <select id="cash_on_delivery" name="cash_on_delivery" required>
-                                    <option value="Yes" {% if order['Cash on Delivery'] == 'Yes' %}selected{% endif %}>Yes</option>
-                                    <option value="No" {% if order['Cash on Delivery'] == 'No' %}selected{% endif %}>No</option>
-                                </select>
-                            </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ order['Email'] }}</span>
                         </div>
+                    </div>
 
-                        <div class="preview-actions">
-                            <a href="{{ url_for('checkout') }}" class="btn btn-secondary btn-large">← Back to Edit</a>
-                            <button type="submit" class="btn btn-primary btn-large">Order Now</button>
+                    <!-- Payment Method -->
+                    <div class="info-section">
+                        <h3>Payment Method</h3>
+                        <div class="info-item">
+                            <span class="info-label">Cash on Delivery:</span>
+                            <span class="info-value">{{ order['Cash on Delivery'] }}</span>
                         </div>
-                    </form>
+                    </div>
+
+                    <div class="preview-actions">
+                        <form method="POST" action="{{ url_for('confirm_order') }}" style="width: 100%;">
+                            <input type="hidden" name="customer_name" value="{{ order['Customer Name'] }}">
+                            <input type="hidden" name="address" value="{{ order['Address'] }}">
+                            <input type="hidden" name="pincode" value="{{ order['Pincode'] }}">
+                            <input type="hidden" name="city" value="{{ order['City'] }}">
+                            <input type="hidden" name="state" value="{{ order['State'] }}">
+                            <input type="hidden" name="phone_number" value="{{ order['Phone Number'] }}">
+                            <input type="hidden" name="email" value="{{ order['Email'] }}">
+                            <input type="hidden" name="cash_on_delivery" value="{{ order['Cash on Delivery'] }}">
+                            <button type="submit" class="btn btn-primary btn-large order-now-btn">Order Now</button>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="order-summary">
