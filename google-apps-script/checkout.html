@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Filmytea</title>
+    <?!= include('style'); ?>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="?">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="?page=posters" class="nav-link">Posters</a>
+                <a href="?page=cart" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main checkout-main">
+        <div class="container">
+            <section class="checkout-hero">
+                <h2>Please enter order details:</h2>
+            </section>
+
+            <div class="checkout-content">
+                <div class="checkout-form-section">
+                    <form class="checkout-form" id="order-form" method="POST">
+                        <input type="hidden" name="action" value="place_order">
+                        <input type="hidden" name="cart_items" id="cart_items_input">
+                        
+                        <div class="form-group">
+                            <label for="customer_name">Customer Name:</label>
+                            <input type="text" id="customer_name" name="customer_name" required placeholder="Customer Name">
+                        </div>
+
+                        <h4>Shipping Address:</h4>
+                        
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <textarea id="address" name="address" required placeholder="Complete Address" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode:</label>
+                            <input type="text" id="pincode" name="pincode" required placeholder="Pincode">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text" id="city" name="city" required placeholder="City">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State:</label>
+                            <input type="text" id="state" name="state" required placeholder="State">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number:</label>
+                            <input type="tel" id="phone_number" name="phone_number" required placeholder="Phone Number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required placeholder="Email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cash_on_delivery">Collect Cash on Delivery? (Yes/No):</label>
+                            <select id="cash_on_delivery" name="cash_on_delivery" required>
+                                <option value="">Select option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">Place Order</button>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <h3>Cart Items</h3>
+                    <div id="checkout-items"></div>
+                    <div class="order-total">
+                        <strong>Total: ₹<span id="checkout-total">0</span></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
+            const checkoutItems = document.getElementById('checkout-items');
+            const checkoutTotal = document.getElementById('checkout-total');
+            const cartItemsInput = document.getElementById('cart_items_input');
+            
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'checkout-item';
+                itemDiv.innerHTML = `
+                    <div class="checkout-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Size: ${item.size}, Frame: ${item.frameText}</p>
+                        <p>Quantity: ${item.quantity} × ₹${item.price} = ₹${itemTotal}</p>
+                    </div>
+                `;
+                checkoutItems.appendChild(itemDiv);
+            });
+            
+            checkoutTotal.textContent = total;
+            cartItemsInput.value = JSON.stringify(cart);
+            
+            if (cart.length === 0) {
+                checkoutItems.innerHTML = '<p>Your cart is empty. <a href="?page=cart">Go to Cart</a></p>';
+                document.querySelector('.btn-primary').disabled = true;
+            }
+
+            // Handle form submission
+            document.getElementById('order-form').addEventListener('submit', function(e) {
+                if (cart.length === 0) {
+                    e.preventDefault();
+                    alert('Your cart is empty!');
+                    return false;
+                }
+            });
+        });
+    </script>
+    <?!= include('cart_js'); ?>
+</body>
+</html>

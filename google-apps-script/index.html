@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filmytea</title>
+    <?!= include('style'); ?>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="?">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="?page=posters" class="nav-link">Posters</a>
+                <a href="?page=cart" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="centered-button">
+                <a href="?page=posters" class="btn btn-primary big-button">Posters</a>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <?!= include('cart_js'); ?>
+</body>
+</html>
