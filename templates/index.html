@@ -16,28 +16,8 @@
 
     <main class="main">
         <div class="container">
-            <section class="hero">
-                <h2>Posters</h2>
-            </section>
-
-            <section class="posters">
-                <div class="posters-grid">
-                    {% for poster in posters %}
-                    <div class="poster-card">
-                        <div class="poster-image">
-                            <img src="{{ poster.image_url }}" alt="{{ poster.name }}" loading="lazy">
-                        </div>
-                        <div class="poster-content">
-                            <h3>{{ poster.name }}</h3>
-                            <p class="price">₹{{ poster.price }}</p>
-                            <a href="upi://pay?pa=yourupi@upi&pn=Filmytea&am={{ poster.price }}&cu=INR&tn=Purchase%20{{ poster.name }}" 
-                               class="btn btn-payment">
-                                Pay with PhonePe
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+            <section class="centered-button">
+                <button class="btn btn-primary big-button">Posters</button>
             </section>
         </div>
     </main>

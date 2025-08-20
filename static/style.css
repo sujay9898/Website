@@ -84,6 +84,23 @@ body {
 .main {
     min-height: calc(100vh - 200px);
     padding-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Centered Button Section */
+.centered-button {
+    text-align: center;
+    width: 100%;
+}
+
+.big-button {
+    font-size: 3rem;
+    padding: 2rem 4rem;
+    border-radius: 15px;
+    font-weight: bold;
+    min-width: 300px;
 }
 
 /* Hero Section */
