@@ -21,7 +21,9 @@
 <main class="main order-success-main">
     <div class="container">
         <section class="order-success-hero">
-            <h2>Order captured successfully! Here are the details:</h2>
+            <h2>Order confirmed successfully!</h2>
+            <p>Order ID: <span class="order-id">{{ order_id or 'Generating...' }}</span></p>
+            <p>A confirmation email has been sent to {{ order['Email'] }}</p>
         </section>
 
         <div class="order-details">
@@ -36,9 +38,7 @@
             <div class="order-info-card">
                 <h3>Shipping Address</h3>
                 <div class="address-details">
-                    <p>{{ order['Address Line 1'] }}</p>
-                    {% if order['Address Line 2'] %}<p>{{ order['Address Line 2'] }}</p>{% endif %}
-                    {% if order['Address Line 3 / Landmark'] %}<p>{{ order['Address Line 3 / Landmark'] }}</p>{% endif %}
+                    <p>{{ order['Address'] }}</p>
                     <p>{{ order['City'] }}, {{ order['State'] }} - {{ order['Pincode'] }}</p>
                 </div>
             </div>
@@ -73,14 +73,6 @@
     </div>
 </main>
 
-<script>
-// Clear cart after successful order
-localStorage.removeItem('cart');
-if (typeof updateCartCount === 'function') {
-    updateCartCount();
-}
-</script>
-
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Filmytea. All rights reserved.</p>
@@ -88,5 +80,58 @@ if (typeof updateCartCount === 'function') {
     </footer>
 
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script>
+        // Send order confirmation email with cart data
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
+            const orderData = {
+                'Customer Name': '{{ order["Customer Name"] }}',
+                'Address': '{{ order["Address"] }}',
+                'City': '{{ order["City"] }}',
+                'State': '{{ order["State"] }}',
+                'Pincode': '{{ order["Pincode"] }}',
+                'Phone Number': '{{ order["Phone Number"] }}',
+                'Email': '{{ order["Email"] }}',
+                'Cash on Delivery': '{{ order["Cash on Delivery"] }}'
+            };
+            
+            if (cartData.length > 0 && orderData.Email) {
+                fetch('/send-order-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        order: orderData,
+                        cart_items: cartData
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Order confirmation email sent successfully');
+                        console.log('Order ID:', data.order_id);
+                        
+                        // Update the page with the actual order ID
+                        const orderIdElement = document.querySelector('.order-id');
+                        if (orderIdElement) {
+                            orderIdElement.textContent = data.order_id;
+                        }
+                        
+                        // Clear cart after successful order
+                        localStorage.removeItem('filmytea_cart');
+                        if (typeof cart !== 'undefined') {
+                            cart.updateCartCount();
+                        }
+                    } else {
+                        console.error('Failed to send order confirmation email:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending order confirmation email:', error);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

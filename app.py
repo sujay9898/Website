@@ -1,7 +1,9 @@
 import os
 import logging
+import json
 
 from flask import Flask, render_template, abort, request, redirect, url_for
+from email_service import send_order_confirmation_email
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -350,6 +352,18 @@ def confirm_order():
     order['Email'] = request.form.get('email')
     order['Cash on Delivery'] = request.form.get('cash_on_delivery')
     
+    # Get cart items from session storage (we'll simulate this with JavaScript data)
+    # In a real app, you'd get this from the session or database
+    cart_items = []
+    
+    # Try to get cart data - for now we'll use a fallback
+    # This would normally come from the frontend via AJAX or session
+    try:
+        # We'll get cart data from localStorage via JavaScript when the page loads
+        pass
+    except:
+        cart_items = []
+    
     # Exact output as in the Python code
     print("Order captured successfully! Here are the details:")
     print()
@@ -361,5 +375,30 @@ def confirm_order():
     for key, value in order.items():
         logging.info(f"{key}: {value}")
     
+    # Send order confirmation email
+    order_id = None
+    if order.get('Email'):
+        # We'll handle cart items in the template with JavaScript
+        order_id = "PENDING"  # Will be updated by JavaScript
+    
     # Render success page with order details
-    return render_template('order_success.html', order=order)
+    return render_template('order_success.html', order=order, order_id=order_id)
+
+@app.route('/send-order-email', methods=['POST'])
+def send_order_email():
+    """Send order confirmation email with cart data"""
+    try:
+        data = request.get_json()
+        order_data = data.get('order', {})
+        cart_items = data.get('cart_items', [])
+        
+        order_id = send_order_confirmation_email(order_data, cart_items)
+        
+        if order_id:
+            return {'success': True, 'order_id': order_id}
+        else:
+            return {'success': False, 'error': 'Failed to send email'}, 500
+            
+    except Exception as e:
+        logging.error(f"Error sending order email: {e}")
+        return {'success': False, 'error': str(e)}, 500
