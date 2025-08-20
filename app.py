@@ -1,7 +1,7 @@
 import os
 import logging
 
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -311,3 +311,37 @@ def poster_detail(poster_id):
 def cart():
     """Cart page displaying items from localStorage"""
     return render_template('cart.html')
+
+
+@app.route('/checkout')
+def checkout():
+    """Checkout page for order processing"""
+    return render_template('checkout.html')
+
+
+@app.route('/process-order', methods=['POST'])
+def process_order():
+    """Process the order with buy now functionality"""
+    # Collect order details from form
+    order = {
+        'Reference Number': request.form.get('reference_number'),
+        'Retail Price': request.form.get('retail_price'),
+        'Customer Name': request.form.get('customer_name'),
+        'Address Line 1': request.form.get('address_line1'),
+        'Address Line 2': request.form.get('address_line2'),
+        'Address Line 3 / Landmark': request.form.get('address_line3'),
+        'Pincode': request.form.get('pincode'),
+        'City': request.form.get('city'),
+        'State': request.form.get('state'),
+        'Phone Number': request.form.get('phone_number'),
+        'Email': request.form.get('email'),
+        'Cash on Delivery': request.form.get('cash_on_delivery')
+    }
+    
+    # Log order details for processing
+    logging.info("Order captured successfully!")
+    for key, value in order.items():
+        logging.info(f"{key}: {value}")
+    
+    # Render success page with order details
+    return render_template('order_success.html', order=order)

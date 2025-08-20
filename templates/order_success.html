@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed - Filmytea{% endblock %}
+{% block content %}
+<main class="main order-success-main">
+    <div class="container">
+        <section class="order-success-hero">
+            <h2>Order Confirmed!</h2>
+            <p>Thank you for your order. Here are your order details:</p>
+        </section>
+
+        <div class="order-details">
+            <div class="order-info-card">
+                <h3>Order Information</h3>
+                <div class="order-detail-row">
+                    <span class="label">Reference Number:</span>
+                    <span class="value">{{ order['Reference Number'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Total Amount:</span>
+                    <span class="value">{{ order['Retail Price'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Customer Name:</span>
+                    <span class="value">{{ order['Customer Name'] }}</span>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Shipping Address</h3>
+                <div class="address-details">
+                    <p>{{ order['Address Line 1'] }}</p>
+                    {% if order['Address Line 2'] %}<p>{{ order['Address Line 2'] }}</p>{% endif %}
+                    {% if order['Address Line 3 / Landmark'] %}<p>{{ order['Address Line 3 / Landmark'] }}</p>{% endif %}
+                    <p>{{ order['City'] }}, {{ order['State'] }} - {{ order['Pincode'] }}</p>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Contact Details</h3>
+                <div class="order-detail-row">
+                    <span class="label">Phone:</span>
+                    <span class="value">{{ order['Phone Number'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ order['Email'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Payment Method:</span>
+                    <span class="value">
+                        {% if order['Cash on Delivery'] == 'Yes' %}
+                            Cash on Delivery
+                        {% else %}
+                            Online Payment
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="{{ url_for('posters') }}" class="btn btn-primary">Continue Shopping</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</main>
+
+<script>
+// Clear cart after successful order
+localStorage.removeItem('cart');
+if (typeof updateCartCount === 'function') {
+    updateCartCount();
+}
+</script>
+{% endblock %}
