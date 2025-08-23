@@ -27,9 +27,9 @@ def send_order_confirmation_email(order_data, cart_items):
     # Create item list string for HTML
     item_list = []
     for item in cart_items:
-        item_list.append(f"                🎨 <strong>{item['name']}</strong><br>")
-        item_list.append(f"                   📏 Size: {item['size']} | 🖼️ Frame: {item['frameText']}<br>")
-        item_list.append(f"                   📦 Quantity: {item['quantity']} | 💵 Price: ₹{item['price'] * item['quantity']}<br><br>")
+        item_list.append(f"                <strong>{item['name']}</strong><br>")
+        item_list.append(f"                   Size: {item['size']} | Frame: {item['frameText']}<br>")
+        item_list.append(f"                   Quantity: {item['quantity']} | Price: ₹{item['price'] * item['quantity']}<br><br>")
     
     items_text = '\n'.join(item_list)
     
@@ -53,7 +53,7 @@ def send_order_confirmation_email(order_data, cart_items):
 </head>
 <body>
     <div class="header">
-        <h1>🎬 Filmytea</h1>
+        <h1>Filmytea</h1>
         <p>Your Order Confirmation</p>
     </div>
     
@@ -63,30 +63,30 @@ def send_order_confirmation_email(order_data, cart_items):
         <p>Thank you for placing your order with <strong>Filmytea</strong>! We are excited to let you know that your order has been successfully received and is currently being processed.</p>
         
         <div class="order-section">
-            <div class="order-id">📋 Order ID: {order_id}</div>
+            <div class="order-id">Order ID: {order_id}</div>
             
-            <h3>🛍️ Item Details:</h3>
+            <h3>Item Details:</h3>
             <div class="item-list">
 {items_text}
             </div>
             
-            <div class="total">💰 Total Amount: ₹{total_amount}</div>
+            <div class="total">Total Amount: ₹{total_amount}</div>
         </div>
         
         <div class="order-section">
-            <h3>🚚 Delivery Information:</h3>
+            <h3>Delivery Information:</h3>
             <div class="address">
                 <strong>Delivery Address:</strong><br>
-                {order_data['Address']}<br>
-                {order_data['City']}, {order_data['State']} - {order_data['Pincode']}
+                <span style="color: #333; text-decoration: none;">{order_data['Address']}</span><br>
+                <span style="color: #333; text-decoration: none;">{order_data['City']}, {order_data['State']} - {order_data['Pincode']}</span>
             </div>
         </div>
         
-        <p>📦 Once your order is shipped, you will receive another email with tracking details.</p>
+        <p>Once your order is shipped, you will receive another email with tracking details.</p>
         
-        <p>❓ If you have any questions or need further assistance, feel free to reach out to us!</p>
+        <p>If you have any questions or need further assistance, feel free to reach out to us!</p>
         
-        <p>Thank you for your support, and we look forward to delivering your amazing posters soon! 🎉</p>
+        <p>Thank you for your support, and we look forward to delivering your amazing posters soon!</p>
         
         <div class="footer">
             <p><strong>Best Regards,</strong><br>
@@ -94,8 +94,8 @@ def send_order_confirmation_email(order_data, cart_items):
             <em>Filmytea Team</em></p>
             
             <div class="signature">
-                📧 Contact: <a href="mailto:filmyteacare@gmail.com">filmyteacare@gmail.com</a><br>
-                🌐 Visit us at Filmytea for more amazing posters!
+                Contact: <a href="mailto:filmyteacare@gmail.com">filmyteacare@gmail.com</a><br>
+                Visit us at Filmytea for more amazing posters!
             </div>
         </div>
     </div>
