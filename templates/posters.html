@@ -21,12 +21,12 @@
             <article class="poster-card" role="gridcell">
                 <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details">
                     <div class="poster-image">
-                        <img {% if loop.index <= 4 %}src{% else %}data-src{% endif %}="{{ poster.image_url.replace('/upload/', '/upload/w_300,h_450,c_fill,f_webp,q_auto:eco/') }}" 
+                        <img {% if loop.index <= 4 %}src{% else %}data-src{% endif %}="{{ poster.image_url.replace('/upload/', '/upload/w_400,h_600,c_fill,f_auto,q_auto/') }}" 
                              alt="{{ poster.name }} movie poster" 
                              loading="{% if loop.index <= 4 %}eager{% else %}lazy{% endif %}"
                              decoding="async"
-                             width="300" 
-                             height="450">
+                             width="400" 
+                             height="600">
                     </div>
                     <div class="poster-info">
                         <h3>{{ poster.name }}</h3>
