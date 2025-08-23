@@ -21,9 +21,9 @@
             <article class="poster-card" role="gridcell">
                 <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details">
                     <div class="poster-image">
-                        <img {% if loop.index <= 4 %}src{% else %}data-src{% endif %}="{{ poster.image_url.replace('/upload/', '/upload/w_400,h_600,c_fill,f_auto,q_auto/') }}" 
+                        <img src="{{ poster.image_url }}" 
                              alt="{{ poster.name }} movie poster" 
-                             loading="{% if loop.index <= 4 %}eager{% else %}lazy{% endif %}"
+                             loading="lazy"
                              decoding="async"
                              width="400" 
                              height="600">
@@ -41,47 +41,27 @@
 
 {% block scripts %}
 <script>
-        // Ultra-fast image loading optimization
+        // Simple and reliable image loading
         document.addEventListener('DOMContentLoaded', function() {
             const images = document.querySelectorAll('.poster-image img');
             
-            images.forEach((img, index) => {
+            images.forEach((img) => {
                 img.addEventListener('load', function() {
                     this.setAttribute('data-loaded', 'true');
+                    this.style.opacity = '1';
                 });
                 
                 img.addEventListener('error', function() {
+                    console.log('Failed to load image:', this.src);
                     this.style.opacity = '0.3';
-                    this.alt = 'Image unavailable';
+                    this.alt = 'Image failed to load';
                 });
-            });
-            
-            // Efficient scroll-based preloading
-            let ticking = false;
-            function updateImages() {
-                const lazyImages = document.querySelectorAll('img[data-src]:not([src])');
-                const windowHeight = window.innerHeight;
-                const scrollTop = window.pageYOffset;
                 
-                lazyImages.forEach(img => {
-                    const rect = img.getBoundingClientRect();
-                    if (rect.top < windowHeight + 200) { // 200px buffer
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                    }
-                });
-                ticking = false;
-            }
-            
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    requestAnimationFrame(updateImages);
-                    ticking = true;
+                // Force load if src is set but image hasn't loaded
+                if (img.src && !img.complete) {
+                    img.src = img.src; // Force reload
                 }
             });
-            
-            // Initial load
-            updateImages();
         });
         
         // Grid items no longer have add to cart functionality - removed
