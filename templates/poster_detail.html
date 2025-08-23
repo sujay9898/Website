@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ poster.name }} - Filmytea</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="preconnect" href="https://res.cloudinary.com">
-    <link rel="dns-prefetch" href="//res.cloudinary.com">
-    <link rel="preload" href="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" as="image">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
-            <nav class="header-nav">
-                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
-                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
-                    Cart (<span id="cart-count">0</span>)
-                </a>
-            </nav>
-        </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="main poster-detail-main">
-        <div class="container">
-            <div class="poster-detail">
-                <div class="poster-detail-image">
-                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
-                         alt="{{ poster.name }}"
-                         loading="eager"
-                         decoding="async"
-                         width="600"
-                         height="800">
-                </div>
+{% block title %}{{ poster.name }} Poster - Filmytea{% endblock %}
+
+{% block description %}{{ poster.name }} movie poster. High-quality print available in A4 and A3 sizes with custom framing options. Order now for fast delivery.{% endblock %}
+
+{% block keywords %}{{ poster.name }}, movie poster, film print, {{ poster.name }} art, poster print{% endblock %}
+
+{% block og_title %}{{ poster.name }} Movie Poster - Filmytea{% endblock %}
+{% block og_description %}Premium {{ poster.name }} poster available in multiple sizes with framing options.{% endblock %}
+{% block og_image %}{{ poster.image_url }}{% endblock %}
+
+{% block preload %}
+<link rel="preload" href="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" as="image">
+{% endblock %}
+
+{% block main_class %}poster-detail-main{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="{{ url_for('index') }}">Home</a> → 
+        <a href="{{ url_for('posters') }}">Posters</a> → 
+        <span aria-current="page">{{ poster.name }}</span>
+    </nav>
+    
+    <article class="poster-detail">
+        <div class="poster-detail-image">
+            <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
+                 alt="{{ poster.name }} movie poster"
+                 loading="eager"
+                 decoding="async"
+                 width="600"
+                 height="800">
+        </div>
                 
                 <div class="poster-detail-info">
                     <h1 class="poster-title">{{ poster.name }}</h1>
@@ -74,16 +74,12 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+    </article>
+</div>
+{% endblock %}
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Filmytea. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script>
+{% block scripts %}
+<script>
         const pricing = {
             'A4': { 'no': 129, 'black': 399, 'white': 399 },
             'A3': { 'no': 159, 'black': 499, 'white': 499 }

@@ -2,7 +2,7 @@ import os
 import logging
 import json
 
-from flask import Flask, render_template, abort, request, redirect, url_for
+from flask import Flask, render_template, abort, request, redirect, url_for, jsonify
 from email_service import send_order_confirmation_email
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -32,18 +32,34 @@ else:
     # Fallback for development without database
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 
-# Enable debug logging
-logging.basicConfig(level=logging.DEBUG)
+# Environment-based logging
+log_level = logging.DEBUG if os.environ.get('FLASK_ENV') == 'development' else logging.INFO
+logging.basicConfig(level=log_level)
+
+# Security headers
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
+
+# Cache static files
+@app.after_request
+def add_cache_headers(response):
+    if request.endpoint == 'static':
+        response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 # initialize the app with the extension, flask-sqlalchemy >= 3.0.x
 db.init_app(app)
 
 with app.app_context():
-    # Make sure to import the models here or their tables won't be created
-    # import models  # noqa: F401
+    # Create tables if needed
     db.create_all()
 
-# All posters data
+# Poster data - prices from individual items not used (pricing handled by cart.js)
 ALL_POSTERS = [
     {
         'id': 'poster_1',
@@ -384,6 +400,30 @@ def confirm_order():
     
     # Render success page with order details
     return render_template('order_success.html', order=order, order_id=order_id)
+
+# Error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', 
+                         error_code=404, 
+                         error_message="Page not found"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html', 
+                         error_code=500, 
+                         error_message="Internal server error"), 500
+
+# API endpoint for poster search
+@app.route('/api/search')
+def api_search():
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify([])
+    
+    results = [poster for poster in ALL_POSTERS 
+              if query in poster['name'].lower()]
+    return jsonify(results[:10])  # Limit to 10 results
 
 @app.route('/send-order-email', methods=['POST'])
 def send_order_email():

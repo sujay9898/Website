@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Filmytea - Premium Movie Posters{% endblock %}</title>
+    <meta name="description" content="{% block description %}Shop premium movie posters and entertainment art. High-quality prints available in A4 and A3 sizes with custom framing options.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}movie posters, film posters, entertainment art, movie prints, custom frames, A4 posters, A3 posters{% endblock %}">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.url }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='filmytea-social.jpg', _external=True) }}{% endblock %}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.og_title() }}">
+    <meta name="twitter:description" content="{{ self.og_description() }}">
+    <meta name="twitter:image" content="{{ self.og_image() }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#1e3a8a">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
+    {% block preload %}{% endblock %}
+    
+    <!-- Additional Head Content -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <h1 class="logo">
+                <a href="{{ url_for('index') }}" aria-label="Filmytea Home">Filmytea</a>
+            </h1>
+            <nav class="header-nav" role="navigation" aria-label="Main navigation">
+                <a href="{{ url_for('posters') }}" class="nav-link" {% if request.endpoint == 'posters' %}aria-current="page"{% endif %}>Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link" {% if request.endpoint == 'cart' %}aria-current="page"{% endif %}>
+                    Cart (<span id="cart-count" aria-live="polite">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main {% block main_class %}{% endblock %}" role="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+            {% block footer_extra %}{% endblock %}
+        </div>
+    </footer>
+
+    <!-- Core JavaScript -->
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    
+    <!-- Remove loading overlay after page load -->
+    <script>
+        window.addEventListener('load', function() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => loadingOverlay.style.display = 'none', 300);
+            }
+        });
+    </script>
+    
+    <!-- Additional Scripts -->
+    {% block scripts %}{% endblock %}
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Filmytea",
+        "description": "Premium movie posters and entertainment art",
+        "url": "{{ request.url_root }}",
+        "sameAs": []
+    }
+    </script>
+    {% block structured_data %}{% endblock %}
+</body>
+</html>

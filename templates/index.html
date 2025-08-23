@@ -1,38 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filmytea</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
-            <nav class="header-nav">
-                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
-                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
-                    Cart (<span id="cart-count">0</span>)
-                </a>
-            </nav>
-        </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="main">
-        <div class="container">
-            <section class="centered-button">
-                <a href="{{ url_for('posters') }}" class="btn btn-primary big-button">Posters</a>
-            </section>
-        </div>
-    </main>
+{% block title %}Filmytea - Premium Movie Posters & Entertainment Art{% endblock %}
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Filmytea. All rights reserved.</p>
-        </div>
-    </footer>
+{% block description %}Discover premium movie posters and entertainment art. Shop high-quality prints in A4 and A3 sizes with custom framing options. Fast shipping across India.{% endblock %}
 
-    <script src="{{ url_for('static', filename='cart.js') }}"></script>
-</body>
-</html>
+{% block content %}
+<div class="container">
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2>Premium Movie Posters</h2>
+            <p>Discover our collection of high-quality movie and entertainment posters</p>
+            <a href="{{ url_for('posters') }}" class="btn btn-primary big-button" aria-label="Browse our poster collection">Browse Posters</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Filmytea",
+    "url": "{{ request.url_root }}",
+    "description": "Premium movie posters and entertainment art",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ url_for('posters', _external=True) }}?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+{% endblock %}
