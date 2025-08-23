@@ -79,13 +79,36 @@
     <!-- Core JavaScript -->
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
     
-    <!-- Remove loading overlay after page load -->
+    <!-- Ultra-fast loading optimization -->
     <script>
-        window.addEventListener('load', function() {
+        // Immediate DOM ready for faster response
+        document.addEventListener('DOMContentLoaded', function() {
             const loadingOverlay = document.getElementById('loading-overlay');
             if (loadingOverlay) {
                 loadingOverlay.style.opacity = '0';
-                setTimeout(() => loadingOverlay.style.display = 'none', 300);
+                setTimeout(() => loadingOverlay.style.display = 'none', 200);
+            }
+            
+            // Preload critical images
+            const images = document.querySelectorAll('img[data-src]');
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.onload = () => img.setAttribute('data-loaded', 'true');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                images.forEach(img => imageObserver.observe(img));
+            } else {
+                // Fallback for older browsers
+                images.forEach(img => {
+                    img.src = img.dataset.src;
+                    img.onload = () => img.setAttribute('data-loaded', 'true');
+                });
             }
         });
     </script>

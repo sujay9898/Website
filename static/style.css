@@ -98,15 +98,21 @@
     font-weight: 600;
 }
 
-/* Performance Optimizations */
+/* Ultra-Fast Performance Optimizations */
 .poster-image {
     position: relative;
     overflow: hidden;
+    transform: translateZ(0); /* GPU acceleration */
+    will-change: transform;
+    contain: layout style paint;
+    backface-visibility: hidden;
 }
 
 .poster-image img {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: opacity 0.2s ease;
     opacity: 0;
+    transform: translateZ(0); /* GPU acceleration */
+    will-change: opacity;
 }
 
 .poster-image img[data-loaded="true"] {
@@ -489,12 +495,13 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* Image loading optimization */
+/* Ultra-Fast Image loading optimization */
 .poster-image img, .poster-detail-image img {
     opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-    will-change: opacity;
+    animation: fadeIn 0.3s ease forwards;
+    will-change: opacity, transform;
     background: linear-gradient(135deg, var(--dark-color) 0%, var(--border-color) 100%);
+    transform: translateZ(0); /* GPU acceleration */
 }
 
 @keyframes fadeIn {
@@ -503,18 +510,20 @@ body {
     }
 }
 
-/* Skeleton loading for images */
+/* Ultra-Fast Skeleton loading for images */
 .poster-image {
     background: linear-gradient(135deg, var(--dark-color) 0%, var(--border-color) 100%);
     overflow: hidden;
     position: relative;
+    transform: translateZ(0); /* GPU acceleration */
+    contain: layout style paint;
 }
 
 .poster-image::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
     background: linear-gradient(
@@ -523,21 +532,25 @@ body {
         rgba(255, 255, 255, 0.1),
         transparent
     );
-    animation: shimmer 1.5s infinite;
+    transform: translateX(-100%);
+    animation: shimmer 1.2s infinite;
+    will-change: transform;
 }
 
 @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 /* Poster Card - Clean image only */
 .poster-card {
-    transition: transform 0.2s ease;
+    transition: transform 0.15s ease;
+    transform: translateZ(0); /* GPU acceleration */
+    will-change: transform;
 }
 
 .poster-card:hover {
-    transform: scale(1.02);
+    transform: scale(1.02) translateZ(0);
 }
 
 .poster-link {
@@ -1294,11 +1307,12 @@ body {
 
 .posters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
     margin-bottom: 3rem;
     padding: 1rem 0;
     justify-items: center;
+    contain: layout;
 }
 
 /* Category Cards */
