@@ -152,7 +152,28 @@
                 this.alt = 'Image failed to load';
             });
         }
-    </script>
-    <script src="{{ url_for('static', filename='cart.js') }}"></script>
-</body>
-</html>
+</script>
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ poster.name }}",
+    "image": "{{ poster.image_url }}",
+    "description": "{{ poster.name }} movie poster available in A4 and A3 sizes",
+    "brand": {
+        "@type": "Brand",
+        "name": "Filmytea"
+    },
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "129",
+        "highPrice": "499",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock"
+    }
+}
+</script>
+{% endblock %}
