@@ -1249,19 +1249,19 @@ body {
     
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-        padding: 1rem 0.5rem;
+        gap: 0.5rem;
+        padding: 0.5rem;
     }
     
     .poster-card {
         width: 100%;
-        max-width: 200px;
+        max-width: 180px;
         margin: 0 auto;
     }
     
     .poster-image {
         width: 100%;
-        height: 283px;
+        height: 220px;
     }
     
     .poster-image img {
@@ -1294,19 +1294,19 @@ body {
     
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-        padding: 0.5rem;
+        gap: 0.3rem;
+        padding: 0.3rem;
     }
     
     .poster-card {
         width: 100%;
-        max-width: 150px;
+        max-width: 140px;
         margin: 0 auto;
     }
     
     .poster-image {
         width: 100%;
-        height: 200px;
+        height: 160px;
     }
     
     .poster-image img {
@@ -1316,12 +1316,13 @@ body {
     }
     
     .poster-content {
-        padding: 0.8rem;
+        padding: 0.5rem;
     }
     
     .poster-content h3 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+        line-height: 1.2;
     }
     
     .price {
