@@ -47,6 +47,9 @@ def send_order_confirmation_email(order_data, cart_items):
         .item-list {{ background-color: #ecf0f1; padding: 15px; border-radius: 4px; margin: 10px 0; }}
         .total {{ font-size: 18px; font-weight: bold; color: #27ae60; text-align: right; margin-top: 15px; }}
         .address {{ background-color: #fff; padding: 15px; border-radius: 4px; border: 1px solid #ddd; margin: 10px 0; }}
+        .no-link {{ color: #333 !important; text-decoration: none !important; }}
+        .no-link a {{ color: #333 !important; text-decoration: none !important; pointer-events: none; }}
+        span[data-auto-link] {{ color: #333 !important; text-decoration: none !important; }}
         .footer {{ margin-top: 30px; padding-top: 20px; border-top: 2px solid #3498db; text-align: center; }}
         .signature {{ color: #7f8c8d; font-size: 14px; }}
     </style>
@@ -77,8 +80,8 @@ def send_order_confirmation_email(order_data, cart_items):
             <h3>Delivery Information:</h3>
             <div class="address">
                 <strong>Delivery Address:</strong><br>
-                <span style="color: #333; text-decoration: none;">{order_data['Address']}</span><br>
-                <span style="color: #333; text-decoration: none;">{order_data['City']}, {order_data['State']} - {order_data['Pincode']}</span>
+                <div class="no-link" style="color: #333 !important; text-decoration: none !important; font-family: Arial, sans-serif;">{order_data['Address']}</div>
+                <div class="no-link" style="color: #333 !important; text-decoration: none !important; font-family: Arial, sans-serif;">{order_data['City']}, {order_data['State']} - {order_data['Pincode']}</div>
             </div>
         </div>
         
