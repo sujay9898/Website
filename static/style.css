@@ -1790,13 +1790,13 @@ body {
 
 @media (max-width: 768px) {
     .poster-image img {
-        object-fit: cover;
+        object-fit: contain;
     }
 }
 
 @media (max-width: 480px) {
     .poster-image img {
-        object-fit: cover;
+        object-fit: contain;
     }
 }
 
