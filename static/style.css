@@ -775,6 +775,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #ffffff;
 }
 
 .posters-main {
@@ -782,6 +783,7 @@ body {
     align-items: initial;
     justify-content: initial;
     padding-top: 2rem;
+    background: #ffffff;
 }
 
 .poster-detail-main {
@@ -789,6 +791,7 @@ body {
     align-items: initial;
     justify-content: initial;
     padding-top: 2rem;
+    background: #ffffff;
 }
 
 /* Poster Detail Styles */
@@ -906,7 +909,7 @@ body {
     grid-template-columns: 150px 1fr auto;
     gap: 1.5rem;
     padding: 2rem;
-    background: var(--darker-color);
+    background: #f8f9fa;
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     align-items: center;
@@ -996,7 +999,7 @@ body {
 }
 
 .cart-summary {
-    background: var(--darker-color);
+    background: #f8f9fa;
     border-radius: var(--border-radius);
     padding: 2rem;
     margin-top: 2rem;
@@ -2030,7 +2033,7 @@ body {
 
 /* Checkout Form Styles */
 .checkout-main {
-    background: var(--darker-color);
+    background: #ffffff;
     min-height: calc(100vh - 200px);
 }
 
