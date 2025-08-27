@@ -11,14 +11,14 @@
     }
     
     .container {
-        padding: 0 0.3rem !important;
+        padding: 0 0.5rem !important;
         max-width: 100% !important;
         margin: 0 auto !important;
     }
     
     .main.posters-main {
         background: #1a1a1a !important;
-        padding: 0.3rem 0 !important;
+        padding: 0.5rem 0 !important;
         min-height: 100vh !important;
         display: block !important;
         align-items: flex-start !important;
@@ -28,7 +28,7 @@
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 1rem !important;
-        padding: 1rem 0.8rem !important;
+        padding: 1rem !important;
         width: 100% !important;
         max-width: 100% !important;
         justify-items: center !important;
@@ -37,23 +37,24 @@
     
     .poster-card {
         width: 100% !important;
-        max-width: 150px !important;
+        max-width: 160px !important;
         display: flex !important;
         flex-direction: column !important;
         margin: 0 !important;
-        padding: 0.2rem !important;
+        padding: 0.4rem !important;
+        background: transparent !important;
     }
     
     .poster-image {
         width: 100% !important;
-        height: 200px !important;
+        aspect-ratio: 2/3 !important;
         overflow: hidden !important;
         border-radius: 8px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         background: #333 !important;
-        margin-bottom: 0.3rem !important;
+        margin-bottom: 0.5rem !important;
     }
     
     .poster-image img {
@@ -64,17 +65,21 @@
     }
     
     .poster-content {
-        padding: 0.4rem 0.1rem !important;
+        padding: 0.4rem !important;
         background: transparent !important;
         text-align: center !important;
+        flex-grow: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
     }
     
     .poster-content h3 {
-        font-size: 0.8rem !important;
+        font-size: 0.85rem !important;
         color: #ffffff !important;
         margin: 0.2rem 0 !important;
         text-align: center !important;
-        line-height: 1.2 !important;
+        line-height: 1.3 !important;
         font-weight: 400 !important;
     }
     
