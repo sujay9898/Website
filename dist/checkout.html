@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Filmytea</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="index.html">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="posters.html" class="nav-link">Posters</a>
+                <a href="cart.html" class="nav-link cart-link">
+                    <span class="cart-icon">🛒</span>
+                    <span id="cart-count">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main checkout-main">
+        <div class="container">
+            <section class="checkout-hero">
+                <h2>Please enter order details:</h2>
+            </section>
+
+            <div class="checkout-content">
+                <div class="checkout-form-section">
+                    <form class="checkout-form" id="order-form">
+                        <div class="form-group">
+                            <label for="customer_name">Customer Name:</label>
+                            <input type="text" id="customer_name" name="customer_name" required placeholder="Customer Name">
+                        </div>
+
+                        <h4>Shipping Address:</h4>
+                        
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <textarea id="address" name="address" required placeholder="Complete Address" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode:</label>
+                            <input type="text" id="pincode" name="pincode" required placeholder="Pincode">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text" id="city" name="city" required placeholder="City">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State:</label>
+                            <input type="text" id="state" name="state" required placeholder="State">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number:</label>
+                            <input type="tel" id="phone_number" name="phone_number" required placeholder="Phone Number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required placeholder="Email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cash_on_delivery">Collect Cash on Delivery? (Yes/No):</label>
+                            <select id="cash_on_delivery" name="cash_on_delivery" required>
+                                <option value="">Select option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">Place Order</button>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <h3>Cart Items</h3>
+                    <div id="checkout-items"></div>
+                    <div class="order-total">
+                        <strong>Total: ₹<span id="checkout-total">0</span></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize EmailJS (you'll need to set this up)
+        emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
+            const checkoutItems = document.getElementById('checkout-items');
+            const checkoutTotal = document.getElementById('checkout-total');
+            
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'checkout-item';
+                itemDiv.innerHTML = `
+                    <div class="checkout-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Size: ${item.size}, Frame: ${item.frameText}</p>
+                        <p>Quantity: ${item.quantity} × ₹${item.price} = ₹${itemTotal}</p>
+                    </div>
+                `;
+                checkoutItems.appendChild(itemDiv);
+            });
+            
+            checkoutTotal.textContent = total;
+            
+            if (cart.length === 0) {
+                checkoutItems.innerHTML = '<p>Your cart is empty. <a href="cart.html">Go to Cart</a></p>';
+                document.querySelector('.btn-primary').disabled = true;
+            }
+
+            // Handle form submission
+            document.getElementById('order-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (cart.length === 0) {
+                    alert('Your cart is empty!');
+                    return;
+                }
+                
+                // Generate order ID
+                const orderId = 'FL' + Date.now().toString().slice(-6) + Math.random().toString(36).substr(2, 2).toUpperCase();
+                
+                // Collect form data
+                const formData = new FormData(this);
+                const orderData = Object.fromEntries(formData);
+                
+                // Create order details
+                const orderDetails = {
+                    orderId: orderId,
+                    customerName: orderData.customer_name,
+                    email: orderData.email,
+                    phone: orderData.phone_number,
+                    address: orderData.address,
+                    city: orderData.city,
+                    state: orderData.state,
+                    pincode: orderData.pincode,
+                    cashOnDelivery: orderData.cash_on_delivery,
+                    items: cart,
+                    totalAmount: total,
+                    orderDate: new Date().toLocaleDateString()
+                };
+                
+                // Create items list for email
+                const itemsList = cart.map(item => 
+                    `• ${item.name} (Size: ${item.size}, Frame: ${item.frameText}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}`
+                ).join('\\n');
+                
+                // Send email using EmailJS (optional - requires setup)
+                const emailParams = {
+                    to_email: orderData.email,
+                    to_name: orderData.customer_name,
+                    order_id: orderId,
+                    items_list: itemsList,
+                    total_amount: total,
+                    delivery_address: `${orderData.address}, ${orderData.city}, ${orderData.state} - ${orderData.pincode}`
+                };
+                
+                // For now, we'll just show success and save order locally
+                // You can set up EmailJS later for actual email functionality
+                
+                // Save order to localStorage for record
+                const existingOrders = JSON.parse(localStorage.getItem('filmytea_orders')) || [];
+                existingOrders.push(orderDetails);
+                localStorage.setItem('filmytea_orders', JSON.stringify(existingOrders));
+                
+                // Clear cart
+                localStorage.removeItem('filmytea_cart');
+                
+                // Redirect to success page with order ID
+                window.location.href = `order-success.html?id=${orderId}`;
+            });
+        });
+    </script>
+    <script src="static/cart.js"></script>
+</body>
+</html>

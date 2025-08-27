@@ -1,0 +1,14 @@
+* {
+    cursor: default !important;
+}
+
+a, button, input[type="submit"], input[type="button"] {
+    cursor: default !important;
+}
+
+*:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background: inherit !important;
+    color: inherit !important;
+}

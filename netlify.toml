@@ -1,9 +1,27 @@
-# Static website configuration for Netlify
+# Netlify configuration for Flask application
 [build]
-  publish = "."
+  publish = "dist"
+  command = "python build.py"
 
-# Handle client-side routing
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[functions]
+  directory = "netlify/functions"
+
+# Redirect all API routes to serverless function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/app/:splat"
+  status = 200
+
+# Handle all other routes through the Flask app
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 404
+  to = "/.netlify/functions/app/:splat"
+  status = 200
+  force = false
+
+[dev]
+  command = "python app.py"
+  port = 5000

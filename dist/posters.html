@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posters - Filmytea</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="dns-prefetch" href="//res.cloudinary.com">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="index.html">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="posters.html" class="nav-link">Posters</a>
+                <a href="cart.html" class="nav-link cart-link">
+                    <span class="cart-icon">🛒</span>
+                    <span id="cart-count">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main posters-main">
+        <div class="container">
+            <section class="posters-hero">
+                <h2>Posters</h2>
+            </section>
+
+            <section class="posters">
+                <div class="posters-grid" id="posters-grid">
+                    <!-- Posters will be loaded by JavaScript -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="posters-data.js"></script>
+    <script>
+        // Load posters dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            const postersGrid = document.getElementById('posters-grid');
+            
+            const postersHtml = ALL_POSTERS.map((poster, index) => `
+                <div class="poster-card">
+                    <a href="poster.html?id=${poster.id}" class="poster-link">
+                        <div class="poster-image">
+                            <img src="${poster.image_url.replace('/upload/', '/upload/w_1449,h_2047,c_fill,f_auto,q_auto/')}" 
+                                 alt="${poster.name}" 
+                                 loading="${index < 6 ? 'eager' : 'lazy'}"
+                                 decoding="async"
+                                 width="1449" 
+                                 height="2047">
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+            
+            postersGrid.innerHTML = postersHtml;
+
+            // Optimize image loading
+            const images = document.querySelectorAll('.poster-image img');
+            
+            images.forEach((img, index) => {
+                img.addEventListener('load', function() {
+                    this.style.opacity = '1';
+                    this.parentElement.style.setProperty('--loaded', '1');
+                });
+                
+                img.addEventListener('error', function() {
+                    this.style.opacity = '0.5';
+                    this.alt = 'Image failed to load';
+                });
+            });
+            
+            // Preload next batch of images when scrolling near bottom
+            let preloadTriggered = false;
+            window.addEventListener('scroll', function() {
+                if (!preloadTriggered && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                    preloadTriggered = true;
+                    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                    lazyImages.forEach(img => {
+                        img.loading = 'eager';
+                    });
+                }
+            });
+        });
+    </script>
+    <script src="static/cart.js"></script>
+</body>
+</html>
