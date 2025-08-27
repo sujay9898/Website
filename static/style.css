@@ -1440,12 +1440,13 @@ body {
 /* Mobile Responsive for Detail Page */
 @media (max-width: 768px) {
     .poster-detail {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        align-items: start;
     }
     
     .poster-detail-image {
-        order: -1;
+        order: 0;
     }
     
     .poster-title {
@@ -1467,7 +1468,8 @@ body {
     }
     
     .poster-detail-image img {
-        max-width: 300px;
+        max-width: 100%;
+        width: 100%;
     }
     
     .get-now-container {
@@ -1491,7 +1493,8 @@ body {
     }
     
     .poster-detail-image img {
-        max-width: 250px;
+        max-width: 100%;
+        width: 100%;
     }
     
     .toggle-btn {
