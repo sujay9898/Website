@@ -16,7 +16,7 @@
         <div class="posters-grid" role="grid">
             {% for poster in posters %}
             <article class="poster-card" role="gridcell">
-                <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details">
+                <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details" style="cursor: default;">
                     <div class="poster-image">
                         <img src="{{ poster.image_url }}" 
                              alt="{{ poster.name }} movie poster" 
