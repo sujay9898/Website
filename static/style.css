@@ -742,10 +742,6 @@ body {
 }
 
 .posters-main {
-    display: block;
-    align-items: initial;
-    justify-content: initial;
-    padding-top: 2rem;
     background: #ffffff;
 }
 
@@ -1564,49 +1560,36 @@ body {
 
 .posters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
     margin: 0 auto;
-    padding: 2rem 1rem;
-    max-width: 1400px;
+    padding: 1rem;
+    max-width: 1200px;
     justify-items: center;
-    align-items: start;
 }
 
 /* Mobile-first responsive grid */
 @media (max-width: 768px) {
     .posters-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-        padding: 1.5rem 0.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.8rem;
+        padding: 0.8rem;
     }
 }
 
 @media (max-width: 480px) {
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-        padding: 1rem 0.5rem;
-    }
-    
-    .poster-card {
-        max-width: none;
-    }
-    
-    .poster-image {
-        height: 280px;
+        gap: 0.5rem;
+        padding: 0.5rem;
     }
 }
 
 @media (max-width: 360px) {
     .posters-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
-        padding: 1rem;
-    }
-    
-    .poster-image {
-        height: 320px;
+        gap: 0.8rem;
+        padding: 0.8rem;
     }
 }
 
@@ -1656,13 +1639,7 @@ body {
 /* Poster Cards */
 .poster-card {
     width: 100%;
-    max-width: 250px;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    cursor: default;
+    max-width: 220px;
 }
 
 
@@ -1677,36 +1654,30 @@ body {
 
 .poster-image {
     width: 100%;
-    height: 350px;
+    height: auto;
     overflow: hidden;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 
 
 .poster-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     display: block;
 }
 
 /* No image hover effects for clean design */
 
 .poster-content {
-    padding: 1rem;
+    padding: 0.5rem 0;
     text-align: center;
 }
 
 .poster-content h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333333;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.3;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000000;
+    margin: 0.3rem 0;
 }
 
 .price {

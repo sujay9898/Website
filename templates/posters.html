@@ -18,14 +18,15 @@
             <article class="poster-card" role="gridcell">
                 <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details" style="cursor: default;">
                     <div class="poster-image">
-                        <img src="{{ poster.image_url }}" 
-                             alt="{{ poster.name }} movie poster" 
+                        <img src="{{ poster.image_url.replace('upload/', 'upload/f_webp,q_auto,w_400/') }}" 
+                             alt="{{ poster.name }}" 
                              loading="lazy"
                              decoding="async"
                              width="400" 
-                             height="600">
+                             height="600"
+                             fetchpriority="low">
                     </div>
-                    <div class="poster-info">
+                    <div class="poster-content">
                         <h3>{{ poster.name }}</h3>
                     </div>
                 </a>
@@ -38,28 +39,23 @@
 
 {% block scripts %}
 <script>
-        // Simple and reliable image loading
-        document.addEventListener('DOMContentLoaded', function() {
-            const images = document.querySelectorAll('.poster-image img');
-            
-            images.forEach((img) => {
-                img.addEventListener('load', function() {
-                    this.setAttribute('data-loaded', 'true');
-                    this.style.opacity = '1';
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.poster-image img');
+    images.forEach((img) => {
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (!img.src) img.src = img.dataset.src;
+                        observer.unobserve(img);
+                    }
                 });
-                
-                img.addEventListener('error', function() {
-                    console.log('Failed to load image:', this.src);
-                    this.style.opacity = '0.3';
-                    this.alt = 'Image failed to load';
-                });
-                
-                // Force load if src is set but image hasn't loaded
-                if (img.src && !img.complete) {
-                    img.src = img.src; // Force reload
-                }
             });
-        });
+            observer.observe(img);
+        }
+    });
+});
         
         // Grid items no longer have add to cart functionality - removed
 </script>
