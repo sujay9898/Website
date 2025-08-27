@@ -566,24 +566,27 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2px;
+    padding: 0 15px;
 }
 
-@media (min-width: 769px) {
+@media (max-width: 768px) {
     .container {
-        padding: 0 15px;
+        padding: 0;
+        max-width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 0 1px;
+        padding: 0;
+        max-width: 100%;
     }
 }
 
 @media (max-width: 360px) {
     .container {
         padding: 0;
+        max-width: 100%;
     }
 }
 
@@ -799,17 +802,20 @@ body {
     background: var(--dark-color);
     align-items: flex-start;
     padding-top: 0.5rem;
+    min-height: 100vh;
 }
 
 @media (max-width: 768px) {
     .posters-main {
-        padding-top: 0.1rem;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 }
 
 @media (max-width: 480px) {
     .posters-main {
-        padding-top: 0.05rem;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 }
 
@@ -1634,24 +1640,30 @@ body {
 @media (max-width: 768px) {
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.15rem;
-        padding: 0.1rem 0;
+        gap: 0.2rem;
+        padding: 0;
+        width: 100vw;
+        margin: 0;
     }
 }
 
 @media (max-width: 480px) {
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.1rem;
-        padding: 0.05rem 0;
+        gap: 0.2rem;
+        padding: 0;
+        width: 100vw;
+        margin: 0;
     }
 }
 
 @media (max-width: 360px) {
     .posters-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.05rem;
-        padding: 0.02rem 0;
+        gap: 0.1rem;
+        padding: 0;
+        width: 100vw;
+        margin: 0;
     }
 }
 
@@ -1707,6 +1719,18 @@ body {
 @media (max-width: 768px) {
     .poster-card {
         max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .poster-card {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
 }
 
@@ -1733,15 +1757,19 @@ body {
 
 @media (max-width: 768px) {
     .poster-image {
-        aspect-ratio: 3/4;
-        border-radius: 4px;
+        aspect-ratio: 2/3;
+        border-radius: 2px;
+        width: 100%;
+        height: auto;
     }
 }
 
 @media (max-width: 480px) {
     .poster-image {
-        aspect-ratio: 3/4;
-        border-radius: 3px;
+        aspect-ratio: 2/3;
+        border-radius: 2px;
+        width: 100%;
+        height: auto;
     }
 }
 
@@ -1775,13 +1803,13 @@ body {
 
 @media (max-width: 768px) {
     .poster-content {
-        padding: 0.15rem 0.05rem;
+        padding: 0.3rem 0.1rem;
     }
 }
 
 @media (max-width: 480px) {
     .poster-content {
-        padding: 0.1rem 0.02rem;
+        padding: 0.2rem 0.1rem;
     }
 }
 
@@ -1795,17 +1823,19 @@ body {
 
 @media (max-width: 768px) {
     .poster-content h3 {
-        font-size: 0.75rem;
-        margin: 0.15rem 0;
+        font-size: 0.8rem;
+        margin: 0.2rem 0;
         font-weight: 400;
+        color: var(--light-color);
     }
 }
 
 @media (max-width: 480px) {
     .poster-content h3 {
-        font-size: 0.7rem;
-        margin: 0.1rem 0;
+        font-size: 0.75rem;
+        margin: 0.15rem 0;
         font-weight: 400;
+        color: var(--light-color);
     }
 }
 
