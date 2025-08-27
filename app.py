@@ -2,11 +2,12 @@ import os
 import logging
 import json
 
-from flask import Flask, render_template, abort, request, redirect, url_for, jsonify
+from flask import Flask, render_template, abort, request, redirect, url_for, jsonify, flash
 from email_service import send_order_confirmation_email
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from instamojo_wrapper import Instamojo
 
 
 class Base(DeclarativeBase):
@@ -58,6 +59,21 @@ db.init_app(app)
 with app.app_context():
     # Create tables if needed
     db.create_all()
+
+# Initialize Instamojo
+api_key = os.environ.get("INSTAMOJO_API_KEY")
+auth_token = os.environ.get("INSTAMOJO_AUTH_TOKEN")
+
+if api_key and auth_token:
+    # Use test endpoint - change to production endpoint when going live
+    instamojo_api = Instamojo(
+        api_key=api_key,
+        auth_token=auth_token,
+        endpoint='https://test.instamojo.com/api/1.1/'
+    )
+else:
+    instamojo_api = None
+    logging.warning("Instamojo credentials not configured")
 
 # Poster data - prices from individual items not used (pricing handled by cart.js)
 ALL_POSTERS = [
@@ -424,6 +440,157 @@ def api_search():
     results = [poster for poster in ALL_POSTERS 
               if query in poster['name'].lower()]
     return jsonify(results[:10])  # Limit to 10 results
+
+@app.route('/create-payment', methods=['POST'])
+def create_payment():
+    """Create Instamojo payment request"""
+    try:
+        if not instamojo_api:
+            flash('Payment system not configured', 'error')
+            return redirect(url_for('checkout'))
+        
+        # Get order details from form
+        customer_name = request.form.get('customer_name')
+        email = request.form.get('email')
+        phone = request.form.get('phone_number')
+        cart_total = float(request.form.get('cart_total', 0))
+        
+        # Get cart items for payment description
+        cart_items_json = request.form.get('cart_items', '[]')
+        try:
+            cart_items = json.loads(cart_items_json)
+        except:
+            cart_items = []
+        
+        # Create payment purpose description
+        purpose = f"Poster purchase by {customer_name}"
+        if cart_items:
+            poster_names = [item.get('name', 'Poster') for item in cart_items[:3]]
+            purpose = f"Filmytea Posters: {', '.join(poster_names)}"
+            if len(cart_items) > 3:
+                purpose += f" (+{len(cart_items)-3} more)"
+        
+        # Get current domain for redirect URLs
+        domain = request.host_url.rstrip('/')
+        
+        # Create payment request
+        response = instamojo_api.payment_request_create(
+            amount=str(cart_total),
+            purpose=purpose,
+            buyer_name=customer_name,
+            email=email,
+            phone=phone,
+            send_email=True,
+            redirect_url=f"{domain}/payment-success",
+            webhook=f"{domain}/payment-webhook"
+        )
+        
+        # Store order data in session for later use
+        from flask import session
+        session['pending_order'] = {
+            'customer_name': customer_name,
+            'email': email,
+            'phone_number': phone,
+            'address': request.form.get('address'),
+            'pincode': request.form.get('pincode'),
+            'city': request.form.get('city'),
+            'state': request.form.get('state'),
+            'cart_items': cart_items,
+            'cart_total': cart_total,
+            'payment_id': response['payment_request']['id']
+        }
+        
+        logging.info(f"Payment request created: {response['payment_request']['id']}")
+        
+        # Redirect to Instamojo payment page
+        return redirect(response['payment_request']['longurl'])
+        
+    except Exception as e:
+        logging.error(f"Error creating payment: {e}")
+        flash('Error processing payment. Please try again.', 'error')
+        return redirect(url_for('checkout'))
+
+@app.route('/payment-success')
+def payment_success():
+    """Handle successful payment redirect"""
+    from flask import session
+    
+    payment_id = request.args.get('payment_id')
+    payment_request_id = request.args.get('payment_request_id')
+    
+    # Get order data from session
+    pending_order = session.get('pending_order')
+    
+    if pending_order and payment_request_id:
+        try:
+            # Verify payment status with Instamojo
+            if instamojo_api:
+                response = instamojo_api.payment_request_status(payment_request_id)
+                status = response['payment_request']['status']
+                
+                if status == 'Completed':
+                    # Payment successful - process the order
+                    order = {
+                        'Customer Name': pending_order['customer_name'],
+                        'Email': pending_order['email'],
+                        'Phone Number': pending_order['phone_number'],
+                        'Address': pending_order['address'],
+                        'Pincode': pending_order['pincode'],
+                        'City': pending_order['city'],
+                        'State': pending_order['state'],
+                        'Payment Status': 'Paid',
+                        'Payment ID': payment_id,
+                        'Amount': pending_order['cart_total']
+                    }
+                    
+                    cart_items = pending_order['cart_items']
+                    
+                    # Log successful order
+                    logging.info("Order completed successfully with payment!")
+                    for key, value in order.items():
+                        logging.info(f"{key}: {value}")
+                    
+                    # Send order confirmation email
+                    order_id = None
+                    if order.get('Email'):
+                        try:
+                            order_id = send_order_confirmation_email(order, cart_items)
+                            if order_id:
+                                logging.info(f"Order confirmation email sent successfully to {order['Email']}")
+                        except Exception as e:
+                            logging.error(f"Failed to send order confirmation email: {e}")
+                    
+                    # Clear session data
+                    session.pop('pending_order', None)
+                    
+                    return render_template('order_success.html', order=order, order_id=order_id, paid=True)
+                else:
+                    flash('Payment verification failed. Please contact support.', 'error')
+                    return redirect(url_for('checkout'))
+        except Exception as e:
+            logging.error(f"Error verifying payment: {e}")
+            flash('Error verifying payment. Please contact support.', 'error')
+            return redirect(url_for('checkout'))
+    
+    flash('Invalid payment session. Please try again.', 'error')
+    return redirect(url_for('checkout'))
+
+@app.route('/payment-webhook', methods=['POST'])
+def payment_webhook():
+    """Handle Instamojo payment webhook"""
+    try:
+        data = request.form.to_dict()
+        logging.info(f"Payment webhook received: {data}")
+        
+        # Here you would typically verify the webhook MAC and update order status
+        # For now, just log the payment notification
+        if data.get('status') == 'Credit':
+            logging.info(f"Payment successful webhook: {data.get('payment_id')}")
+        
+        return "OK"
+    except Exception as e:
+        logging.error(f"Webhook error: {e}")
+        return "Error", 500
 
 @app.route('/send-order-email', methods=['POST'])
 def send_order_email():

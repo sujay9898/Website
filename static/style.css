@@ -1,5 +1,60 @@
 /* Filmytea - Optimized CSS */
 
+/* Payment Methods Styling */
+.payment-methods {
+    margin: 1rem 0;
+}
+
+.payment-option {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--card-background);
+}
+
+.payment-option:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.payment-option input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.payment-option input[type="radio"]:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.payment-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #218838, #1ea085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+@media (max-width: 768px) {
+    .payment-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
 /* Loading Overlay */
 .loading-overlay {
     position: fixed;

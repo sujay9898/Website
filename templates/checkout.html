@@ -67,15 +67,27 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="cash_on_delivery">Collect Cash on Delivery? (Yes/No):</label>
-                        <select id="cash_on_delivery" name="cash_on_delivery" required>
-                            <option value="">Select option</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
+                        <label>Payment Method:</label>
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="online" required>
+                                <span>Pay Online (Cards, UPI, Net Banking)</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment_method" value="cod" required>
+                                <span>Cash on Delivery</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-large">Preview Order</button>
+                    <div class="payment-buttons">
+                        <button type="button" id="pay-online-btn" class="btn btn-success btn-large" style="display: none;">
+                            Pay Now ₹<span id="pay-amount">0</span>
+                        </button>
+                        <button type="submit" id="cod-btn" class="btn btn-primary btn-large" style="display: none;">
+                            Place COD Order
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -95,7 +107,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const cart = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
     const checkoutItems = document.getElementById('checkout-items');
     const checkoutTotal = document.getElementById('checkout-total');
-    const retailPriceInput = document.getElementById('retail_price');
+    const payAmount = document.getElementById('pay-amount');
+    const payOnlineBtn = document.getElementById('pay-online-btn');
+    const codBtn = document.getElementById('cod-btn');
+    const form = document.getElementById('order-form');
     
     let total = 0;
     
@@ -116,11 +131,73 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     checkoutTotal.textContent = total;
+    payAmount.textContent = total;
     
     if (cart.length === 0) {
         checkoutItems.innerHTML = '<p>Your cart is empty.</p>';
-        document.querySelector('.btn-primary').disabled = true;
+        payOnlineBtn.disabled = true;
+        codBtn.disabled = true;
+        return;
     }
+    
+    // Handle payment method selection
+    const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            if (this.value === 'online') {
+                payOnlineBtn.style.display = 'inline-block';
+                codBtn.style.display = 'none';
+            } else if (this.value === 'cod') {
+                payOnlineBtn.style.display = 'none';
+                codBtn.style.display = 'inline-block';
+            }
+        });
+    });
+    
+    // Handle online payment
+    payOnlineBtn.addEventListener('click', function() {
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Create hidden form for payment
+        const paymentForm = document.createElement('form');
+        paymentForm.method = 'POST';
+        paymentForm.action = '/create-payment';
+        
+        // Add all form data
+        const formData = new FormData(form);
+        formData.append('cart_total', total);
+        formData.append('cart_items', JSON.stringify(cart));
+        
+        for (let [key, value] of formData.entries()) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            paymentForm.appendChild(input);
+        }
+        
+        document.body.appendChild(paymentForm);
+        paymentForm.submit();
+    });
+    
+    // Handle COD order (existing behavior)
+    form.addEventListener('submit', function(e) {
+        const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+        if (selectedPayment && selectedPayment.value === 'online') {
+            e.preventDefault(); // Prevent form submission for online payment
+            return;
+        }
+        
+        // For COD, add cash_on_delivery field
+        const codInput = document.createElement('input');
+        codInput.type = 'hidden';
+        codInput.name = 'cash_on_delivery';
+        codInput.value = 'Yes';
+        form.appendChild(codInput);
+    });
 });
 </script>
 

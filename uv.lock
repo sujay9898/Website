@@ -225,6 +225,18 @@ wheels = [
 ]
 
 [[package]]
+name = "instamojo-wrapper"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/9f/86bb0e1a2e161f0d6da043ec98d8306e5ff9aa6c99321835635bfbc29c2e/instamojo_wrapper-1.2.0.tar.gz", hash = "sha256:d83eeb0ec712630aa8649b9fb32211638a50643a58f21438dec130767237c4c5", size = 8948 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/c0/7ea990655c7242d3150699a48277a597b4a8208eee120a8d8af92737b02a/instamojo_wrapper-1.2.0-py2.py3-none-any.whl", hash = "sha256:5771567d41fa8db940e367d952abe7ba651c40e23945b298fd4f62c9691dbde8", size = 8038 },
+]
+
+[[package]]
 name = "itsdangerous"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -363,6 +375,7 @@ dependencies = [
     { name = "flask" },
     { name = "flask-sqlalchemy" },
     { name = "gunicorn" },
+    { name = "instamojo-wrapper" },
     { name = "psycopg2-binary" },
     { name = "requests" },
     { name = "sendgrid" },
@@ -376,6 +389,7 @@ requires-dist = [
     { name = "flask", specifier = ">=3.1.2" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
     { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "instamojo-wrapper", specifier = ">=1.2.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "sendgrid", specifier = ">=6.12.4" },
