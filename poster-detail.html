@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Detail - Filmytea</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="index.html">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="posters.html" class="nav-link">Posters</a>
+                <a href="cart.html" class="nav-link cart-link">
+                    <span class="cart-icon">🛒</span>
+                    <span id="cart-count">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main poster-detail-main">
+        <div class="container">
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+                <a href="index.html">Home</a> → 
+                <a href="posters.html">Posters</a> → 
+                <span aria-current="page" id="poster-breadcrumb">Loading...</span>
+            </nav>
+            
+            <div class="poster-detail-content" id="poster-content">
+                <div class="poster-loading">Loading poster details...</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="posters-data.js"></script>
+    <script src="static/cart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get poster ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const posterId = urlParams.get('id');
+            
+            if (!posterId) {
+                document.getElementById('poster-content').innerHTML = '<p>Poster not found. <a href="posters.html">Browse all posters</a></p>';
+                return;
+            }
+            
+            // Find poster data
+            const poster = ALL_POSTERS.find(p => p.id === posterId);
+            
+            if (!poster) {
+                document.getElementById('poster-content').innerHTML = '<p>Poster not found. <a href="posters.html">Browse all posters</a></p>';
+                return;
+            }
+            
+            // Update page title and breadcrumb
+            document.title = `${poster.name} - Filmytea`;
+            document.getElementById('poster-breadcrumb').textContent = poster.name;
+            
+            // Render poster detail
+            document.getElementById('poster-content').innerHTML = `
+                <div class="poster-detail-layout">
+                    <div class="poster-detail-image">
+                        <img src="${poster.image_url}" alt="${poster.name}" width="400" height="600">
+                    </div>
+                    <div class="poster-detail-info">
+                        <h1>${poster.name}</h1>
+                        <p class="poster-detail-price">₹${poster.price}</p>
+                        
+                        <div class="poster-options">
+                            <div class="option-group">
+                                <label for="size-select">Size:</label>
+                                <select id="size-select">
+                                    <option value="A4">A4 (210 × 297 mm) - ₹${poster.price}</option>
+                                    <option value="A3">A3 (297 × 420 mm) - ₹${poster.price + 100}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label for="frame-select">Frame:</label>
+                                <select id="frame-select">
+                                    <option value="no-frame">No Frame - ₹0</option>
+                                    <option value="basic-frame">Basic Frame - ₹150</option>
+                                    <option value="premium-frame">Premium Frame - ₹300</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label for="quantity-select">Quantity:</label>
+                                <select id="quantity-select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="total-price">
+                            <strong>Total: ₹<span id="total-price">${poster.price}</span></strong>
+                        </div>
+                        
+                        <div class="poster-actions">
+                            <button id="add-to-cart" class="btn btn-primary btn-large">Add to Cart</button>
+                            <a href="posters.html" class="btn btn-secondary">Back to Posters</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Price calculation
+            const sizeSelect = document.getElementById('size-select');
+            const frameSelect = document.getElementById('frame-select');
+            const quantitySelect = document.getElementById('quantity-select');
+            const totalPriceElement = document.getElementById('total-price');
+            
+            function updatePrice() {
+                let basePrice = poster.price;
+                if (sizeSelect.value === 'A3') basePrice += 100;
+                
+                let framePrice = 0;
+                if (frameSelect.value === 'basic-frame') framePrice = 150;
+                if (frameSelect.value === 'premium-frame') framePrice = 300;
+                
+                const quantity = parseInt(quantitySelect.value);
+                const total = (basePrice + framePrice) * quantity;
+                
+                totalPriceElement.textContent = total;
+            }
+            
+            sizeSelect.addEventListener('change', updatePrice);
+            frameSelect.addEventListener('change', updatePrice);
+            quantitySelect.addEventListener('change', updatePrice);
+            
+            // Add to cart functionality
+            document.getElementById('add-to-cart').addEventListener('click', function() {
+                const frameOptions = {
+                    'no-frame': { text: 'No Frame', price: 0 },
+                    'basic-frame': { text: 'Basic Frame', price: 150 },
+                    'premium-frame': { text: 'Premium Frame', price: 300 }
+                };
+                
+                let basePrice = poster.price;
+                if (sizeSelect.value === 'A3') basePrice += 100;
+                
+                const frameOption = frameOptions[frameSelect.value];
+                const finalPrice = basePrice + frameOption.price;
+                
+                const cartItem = {
+                    id: poster.id + '_' + sizeSelect.value + '_' + frameSelect.value,
+                    posterId: poster.id,
+                    name: poster.name,
+                    price: finalPrice,
+                    size: sizeSelect.value,
+                    frame: frameSelect.value,
+                    frameText: frameOption.text,
+                    quantity: parseInt(quantitySelect.value),
+                    image: poster.image_url
+                };
+                
+                cart.addItem(cartItem);
+                alert('Added to cart successfully!');
+            });
+        });
+    </script>
+</body>
+</html>
