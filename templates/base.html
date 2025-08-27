@@ -57,7 +57,8 @@
             <nav class="header-nav" role="navigation" aria-label="Main navigation">
                 <a href="{{ url_for('posters') }}" class="nav-link" {% if request.endpoint == 'posters' %}aria-current="page"{% endif %}>Posters</a>
                 <a href="{{ url_for('cart') }}" class="nav-link cart-link" {% if request.endpoint == 'cart' %}aria-current="page"{% endif %}>
-                    Cart (<span id="cart-count" aria-live="polite">0</span>)
+                    <span class="cart-icon">🛒</span>
+                    <span id="cart-count" aria-live="polite">0</span>
                 </a>
             </nav>
         </div>
