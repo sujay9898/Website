@@ -538,7 +538,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #ffffff;
+    background-color: var(--white);
 }
 
 /* Container - Mobile First */
@@ -568,7 +568,7 @@ body {
 
 /* Header */
 .header {
-    background: #333333;
+    background: var(--dark-color);
     padding: 1.5rem 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
@@ -584,7 +584,7 @@ body {
 .logo {
     font-size: 2rem;
     font-weight: bold;
-    color: #a8a8a8;
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
 }
 
@@ -602,7 +602,7 @@ body {
 }
 
 .logo a {
-    color: #a8a8a8;
+    color: var(--primary-color);
     text-decoration: none;
 }
 
@@ -671,7 +671,7 @@ body {
 }
 
 .nav-link {
-    color: #a8a8a8;
+    color: var(--primary-color);
     text-decoration: none;
     font-size: 1.1rem;
     padding: 0.5rem 0.8rem;
@@ -693,8 +693,8 @@ body {
 
 
 .cart-link {
-    background: #a8a8a8;
-    color: #ffffff;
+    background: var(--primary-color);
+    color: var(--white);
     padding: 0.6rem 1.2rem;
     border-radius: var(--border-radius);
     font-weight: 500;
@@ -740,11 +740,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #ffffff;
+    background: var(--white);
 }
 
 .posters-main {
-    background: #ffffff;
+    background: var(--white);
 }
 
 .poster-detail-main {
@@ -752,7 +752,7 @@ body {
     align-items: initial;
     justify-content: initial;
     padding-top: 2rem;
-    background: #ffffff;
+    background: var(--white);
 }
 
 /* Poster Detail Styles */
@@ -921,8 +921,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
 }
 
 .quantity-display {
@@ -1147,8 +1145,6 @@ body {
     border: 1px solid var(--border-color);
 }
 
-}
-
 .back-link {
     margin-top: 2rem;
 }
@@ -1168,8 +1164,6 @@ body {
     border-radius: var(--border-radius);
     text-decoration: none;
     font-size: 0.9rem;
-}
-
 }
 
 .preview-content {
@@ -1679,14 +1673,14 @@ body {
 .poster-content h3 {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #333333;
+    color: var(--text-color);
     margin: 0.3rem 0;
 }
 
 .price {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #808080;
+    color: var(--primary-hover);
     margin: 0.5rem 0;
 }
 
@@ -1916,7 +1910,7 @@ body {
 
 /* Checkout Form Styles */
 .checkout-main {
-    background: #ffffff;
+    background: var(--white);
     min-height: calc(100vh - 200px);
 }
 
