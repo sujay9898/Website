@@ -1437,16 +1437,25 @@ body {
 
 
 
-/* Mobile Responsive for Detail Page */
+/* Mobile Responsive for Detail Page - FORCE SIDE BY SIDE */
 @media (max-width: 768px) {
     .poster-detail {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        align-items: start;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+        align-items: start !important;
+        margin-bottom: 2rem !important;
     }
     
     .poster-detail-image {
-        order: 0;
+        order: 0 !important;
+        width: 100% !important;
+    }
+    
+    .poster-detail-info {
+        order: 1 !important;
+        width: 100% !important;
+        padding: 0 !important;
     }
     
     .poster-title {
@@ -1488,13 +1497,22 @@ body {
 }
 
 @media (max-width: 480px) {
+    .poster-detail {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.3rem !important;
+        align-items: start !important;
+    }
+    
     .poster-title {
-        font-size: 1.7rem;
+        font-size: 1.5rem !important;
+        text-align: left !important;
+        margin-bottom: 1rem !important;
     }
     
     .poster-detail-image img {
-        max-width: 100%;
-        width: 100%;
+        max-width: 100% !important;
+        width: 100% !important;
     }
     
     .toggle-btn {
