@@ -1761,7 +1761,7 @@ body {
 
 @media (max-width: 768px) {
     .poster-image {
-        aspect-ratio: 2/3;
+        aspect-ratio: auto;
         border-radius: 6px;
         width: 100%;
         height: auto;
@@ -1771,7 +1771,7 @@ body {
 
 @media (max-width: 480px) {
     .poster-image {
-        aspect-ratio: 2/3;
+        aspect-ratio: auto;
         border-radius: 4px;
         width: 100%;
         height: auto;
@@ -1790,13 +1790,17 @@ body {
 
 @media (max-width: 768px) {
     .poster-image img {
-        object-fit: contain;
+        object-fit: contain !important;
+        width: 100% !important;
+        height: auto !important;
     }
 }
 
 @media (max-width: 480px) {
     .poster-image img {
-        object-fit: contain;
+        object-fit: contain !important;
+        width: 100% !important;
+        height: auto !important;
     }
 }
 
@@ -1813,13 +1817,21 @@ body {
 
 @media (max-width: 768px) {
     .poster-content {
-        display: none;
+        display: none !important;
+    }
+    
+    .poster-card .poster-content {
+        display: none !important;
     }
 }
 
 @media (max-width: 480px) {
     .poster-content {
-        display: none;
+        display: none !important;
+    }
+    
+    .poster-card .poster-content {
+        display: none !important;
     }
 }
 
