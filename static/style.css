@@ -343,7 +343,7 @@
 /* Ultra-Fast Performance Optimizations */
 .poster-image {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     transform: translateZ(0); /* GPU acceleration */
     will-change: transform;
     contain: layout style paint;
@@ -351,9 +351,11 @@
 }
 
 .poster-image img {
-    opacity: 0;
+    opacity: 1;
     transform: translateZ(0); /* GPU acceleration */
     will-change: opacity;
+    object-fit: contain;
+    border-radius: 0 !important;
 }
 
 .poster-image img[data-loaded="true"] {
@@ -866,7 +868,7 @@ body {
 /* Ultra-Fast Skeleton loading for images */
 .poster-image {
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     transform: translateZ(0); /* GPU acceleration */
     contain: layout style paint;
