@@ -424,13 +424,15 @@ img {
 
 .poster-detail-layout {
     display: flex;
-    gap: 3rem;
-    align-items: flex-start;
-    min-height: 70vh;
+    gap: 4rem;
+    align-items: center;
+    min-height: 80vh;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .poster-image-column {
-    flex: 0 0 40%;
+    flex: 0 0 350px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -441,12 +443,12 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 1rem 0;
+    padding: 2rem 0;
 }
 
 .poster-detail-image {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
     margin: 0 auto;
 }
 
@@ -455,8 +457,8 @@ img {
     height: auto;
     object-fit: contain;
     border-radius: 0 !important;
-    max-height: none;
-    overflow: visible;
+    max-height: 500px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .poster-detail-info {
@@ -466,11 +468,12 @@ img {
 }
 
 .poster-title {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 3rem;
+    font-weight: 900;
     color: var(--light-color);
-    margin: 0;
-    line-height: 1.2;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.1;
+    text-transform: capitalize;
 }
 
 .price-display {
@@ -478,13 +481,11 @@ img {
 }
 
 .current-price {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #a8a8a8;
-    background: rgba(168, 168, 168, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    display: inline-block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--light-color);
+    display: block;
+    margin: 1rem 0 2rem 0;
 }
 
 .poster-options {
@@ -500,10 +501,11 @@ img {
 }
 
 .option-label {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--light-color);
-    margin: 0;
+    margin: 0 0 0.8rem 0;
+    text-transform: lowercase;
 }
 
 .toggle-group {
@@ -539,23 +541,23 @@ img {
 
 .action-buttons {
     display: flex;
-    gap: 1rem;
-    margin: 2rem 0 1rem 0;
+    gap: 1.5rem;
+    margin: 3rem 0 2rem 0;
 }
 
 .btn-add-cart,
 .btn-buy-now {
-    flex: 1;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 8px;
+    padding: 1.2rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 4px;
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 56px;
-    text-transform: uppercase;
+    min-height: 60px;
+    text-transform: lowercase;
     letter-spacing: 0.5px;
+    min-width: 140px;
 }
 
 .btn-add-cart {
