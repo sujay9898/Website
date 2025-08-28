@@ -479,13 +479,36 @@ def create_payment():
         
         logging.info(f"Dummy payment created: {dummy_payment_id}")
         
-        # Redirect directly to success page for dummy payment
-        return redirect(url_for('payment_success', payment_id=dummy_payment_id, payment_request_id=dummy_payment_id))
+        # Redirect to dummy payment page
+        return redirect(url_for('dummy_payment', payment_id=dummy_payment_id))
         
     except Exception as e:
         logging.error(f"Error creating dummy payment: {e}")
         flash('Error processing payment. Please try again.', 'error')
         return redirect(url_for('checkout'))
+
+@app.route('/dummy-payment')
+def dummy_payment():
+    """Display dummy payment page with UPI and card options"""
+    from flask import session
+    
+    payment_id = request.args.get('payment_id')
+    pending_order = session.get('pending_order')
+    
+    if not pending_order or not payment_id:
+        flash('Invalid payment session. Please try again.', 'error')
+        return redirect(url_for('checkout'))
+    
+    return render_template('dummy_payment.html',
+                         customer_name=pending_order['customer_name'],
+                         email=pending_order['email'],
+                         phone_number=pending_order['phone_number'],
+                         address=pending_order['address'],
+                         pincode=pending_order['pincode'],
+                         city=pending_order['city'],
+                         state=pending_order['state'],
+                         cart_total=pending_order['cart_total'],
+                         payment_id=payment_id)
 
 @app.route('/payment-success')
 def payment_success():

@@ -1,0 +1,418 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - Filmytea{% endblock %}
+
+{% block main_class %}payment-main{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-container">
+        <div class="payment-header">
+            <h2>Complete Your Payment</h2>
+            <div class="amount-display">
+                <span class="amount">₹{{ cart_total }}</span>
+            </div>
+        </div>
+
+        <div class="payment-methods">
+            <div class="payment-method active" data-method="upi">
+                <div class="method-header">
+                    <input type="radio" name="payment_method" value="upi" checked>
+                    <label>UPI</label>
+                </div>
+                <div class="method-content">
+                    <div class="upi-options">
+                        <button class="upi-btn" data-app="gpay">
+                            <span class="upi-icon">G</span> Google Pay
+                        </button>
+                        <button class="upi-btn" data-app="phonepe">
+                            <span class="upi-icon">P</span> PhonePe
+                        </button>
+                        <button class="upi-btn" data-app="paytm">
+                            <span class="upi-icon">PT</span> Paytm
+                        </button>
+                    </div>
+                    <div class="upi-input">
+                        <input type="text" placeholder="Enter UPI ID" id="upiId">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-method" data-method="card">
+                <div class="method-header">
+                    <input type="radio" name="payment_method" value="card">
+                    <label>Credit/Debit Card</label>
+                </div>
+                <div class="method-content">
+                    <div class="card-inputs">
+                        <input type="text" placeholder="Card Number" maxlength="19" id="cardNumber">
+                        <div class="card-row">
+                            <input type="text" placeholder="MM/YY" maxlength="5" id="cardExpiry">
+                            <input type="text" placeholder="CVV" maxlength="3" id="cardCvv">
+                        </div>
+                        <input type="text" placeholder="Cardholder Name" id="cardHolder">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <div class="order-items" id="orderItems">
+                <!-- Cart items will be populated by JavaScript -->
+            </div>
+            <div class="order-total">
+                <strong>Total: ₹{{ cart_total }}</strong>
+            </div>
+        </div>
+
+        <div class="payment-actions">
+            <button class="btn-pay-now" onclick="processPayment()">
+                Pay ₹{{ cart_total }}
+            </button>
+            <a href="{{ url_for('checkout') }}" class="btn-back">← Back to Checkout</a>
+        </div>
+    </div>
+
+    <!-- Payment Processing Modal -->
+    <div class="payment-modal" id="paymentModal" style="display: none;">
+        <div class="modal-content">
+            <div class="payment-loader"></div>
+            <h3>Processing Payment...</h3>
+            <p>Please wait while we process your payment</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Store order data
+const orderData = {
+    customer_name: "{{ customer_name }}",
+    email: "{{ email }}",
+    phone_number: "{{ phone_number }}",
+    address: "{{ address }}",
+    pincode: "{{ pincode }}",
+    city: "{{ city }}",
+    state: "{{ state }}",
+    cart_total: {{ cart_total }},
+    payment_id: "{{ payment_id }}"
+};
+
+// Payment method switching
+document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.classList.remove('active');
+        });
+        this.closest('.payment-method').classList.add('active');
+    });
+});
+
+// UPI app selection
+document.querySelectorAll('.upi-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.upi-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        const app = this.dataset.app;
+        document.getElementById('upiId').placeholder = `Enter your ${this.textContent.trim()} UPI ID`;
+    });
+});
+
+// Card number formatting
+document.getElementById('cardNumber')?.addEventListener('input', function() {
+    let value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+    let formattedInputValue = value.match(/.{1,4}/g)?.join(' ') || '';
+    this.value = formattedInputValue;
+});
+
+// Expiry date formatting
+document.getElementById('cardExpiry')?.addEventListener('input', function() {
+    let value = this.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0,2) + '/' + value.substring(2,4);
+    }
+    this.value = value;
+});
+
+// Populate order items
+const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+const orderItemsContainer = document.getElementById('orderItems');
+if (cart.length > 0) {
+    cart.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'order-item';
+        itemDiv.innerHTML = `
+            <span>${item.name} (${item.size}, ${item.frame})</span>
+            <span>₹${item.price}</span>
+        `;
+        orderItemsContainer.appendChild(itemDiv);
+    });
+}
+
+function processPayment() {
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    // Show processing modal
+    document.getElementById('paymentModal').style.display = 'flex';
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // Redirect to payment success
+        window.location.href = `/payment-success?payment_id=${orderData.payment_id}&payment_request_id=${orderData.payment_id}&method=${selectedMethod}`;
+    }, 3000); // 3 second delay to simulate processing
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.payment-main {
+    background: var(--dark-color);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.payment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.payment-header h2 {
+    color: var(--light-color);
+    margin-bottom: 1rem;
+}
+
+.amount-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.payment-methods {
+    margin-bottom: 2rem;
+}
+
+.payment-method {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.payment-method.active {
+    border-color: var(--primary-color);
+}
+
+.method-header {
+    padding: 1rem;
+    background: var(--darker-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.method-header label {
+    color: var(--light-color);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.method-content {
+    padding: 1rem;
+    display: none;
+}
+
+.payment-method.active .method-content {
+    display: block;
+}
+
+.upi-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.upi-btn {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+    color: var(--light-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upi-btn:hover, .upi-btn.selected {
+    border-color: var(--primary-color);
+    background: rgba(30, 136, 229, 0.1);
+}
+
+.upi-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.upi-input input, .card-inputs input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+    color: var(--light-color);
+    margin-bottom: 1rem;
+}
+
+.card-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.card-row input {
+    flex: 1;
+}
+
+.order-summary {
+    background: var(--darker-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+}
+
+.order-summary h3 {
+    color: var(--light-color);
+    margin-bottom: 1rem;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-total {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 2px solid var(--border-color);
+    text-align: right;
+    color: var(--light-color);
+    font-size: 1.2rem;
+}
+
+.payment-actions {
+    text-align: center;
+}
+
+.btn-pay-now {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.btn-pay-now:hover {
+    background: #1565c0;
+}
+
+.btn-back {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    max-width: 400px;
+}
+
+.payment-loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.modal-content h3 {
+    color: var(--light-color);
+    margin-bottom: 0.5rem;
+}
+
+.modal-content p {
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .payment-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .upi-options {
+        flex-direction: column;
+    }
+    
+    .card-row {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
