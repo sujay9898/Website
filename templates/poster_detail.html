@@ -26,19 +26,7 @@
     
     <article class="poster-detail-container">
         <div class="poster-detail-layout">
-            <!-- Left Column: Poster Image -->
-            <div class="poster-image-column">
-                <div class="poster-detail-image">
-                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
-                         alt="{{ poster.name }} movie poster"
-                         loading="eager"
-                         decoding="async"
-                         width="600"
-                         height="800">
-                </div>
-            </div>
-            
-            <!-- Right Column: Poster Details -->
+            <!-- Left Column: Poster Details -->
             <div class="poster-details-column">
                 <div class="poster-detail-info">
                     <h1 class="poster-title">{{ poster.name }}</h1>
@@ -78,6 +66,16 @@
                     <div class="back-navigation">
                         <a href="{{ url_for('posters') }}" class="btn btn-back">← Back to Posters</a>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Poster Image -->
+            <div class="poster-image-column">
+                <div class="poster-detail-image">
+                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,f_auto,q_auto/') }}" 
+                         alt="{{ poster.name }} movie poster"
+                         loading="eager"
+                         decoding="async">
                 </div>
             </div>
         </div>

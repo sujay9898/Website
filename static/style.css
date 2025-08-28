@@ -434,7 +434,6 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
-    order: 2;
 }
 
 .poster-details-column {
@@ -443,7 +442,6 @@ img {
     flex-direction: column;
     justify-content: center;
     padding: 1rem 0;
-    order: 1;
 }
 
 .poster-detail-image {
@@ -606,11 +604,6 @@ img {
     
     .poster-image-column {
         flex: 0 0 45%;
-        order: 2;
-    }
-    
-    .poster-details-column {
-        order: 1;
     }
     
     .poster-title {
