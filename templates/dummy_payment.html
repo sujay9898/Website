@@ -87,15 +87,8 @@
 <script>
 // Store order data
 const orderData = {
-    customer_name: "{{ customer_name }}",
-    email: "{{ email }}",
-    phone_number: "{{ phone_number }}",
-    address: "{{ address|replace('"', '\\"')|replace('\n', '\\n') }}",
-    pincode: "{{ pincode }}",
-    city: "{{ city }}",
-    state: "{{ state }}",
-    cart_total: {{ cart_total }},
-    payment_id: "{{ payment_id }}"
+    payment_id: "{{ payment_id }}",
+    cart_total: {{ cart_total }}
 };
 
 // Payment method switching
