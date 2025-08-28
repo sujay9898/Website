@@ -24,56 +24,63 @@
         <span aria-current="page">{{ poster.name }}</span>
     </nav>
     
-    <article class="poster-detail">
-        <div class="poster-detail-image">
-            <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
-                 alt="{{ poster.name }} movie poster"
-                 loading="eager"
-                 decoding="async"
-                 width="600"
-                 height="800">
-        </div>
-                
+    <article class="poster-detail-container">
+        <div class="poster-detail-layout">
+            <!-- Left Column: Poster Image -->
+            <div class="poster-image-column">
+                <div class="poster-detail-image">
+                    <img src="{{ poster.image_url.replace('/upload/', '/upload/w_600,h_800,c_fill,f_auto,q_auto/') }}" 
+                         alt="{{ poster.name }} movie poster"
+                         loading="eager"
+                         decoding="async"
+                         width="600"
+                         height="800">
+                </div>
+            </div>
+            
+            <!-- Right Column: Poster Details -->
+            <div class="poster-details-column">
                 <div class="poster-detail-info">
                     <h1 class="poster-title">{{ poster.name }}</h1>
                     
+                    <div class="price-display">
+                        <span id="selectedPrice" class="current-price">₹ 129.00</span>
+                    </div>
+                    
                     <div class="poster-options">
-                        <div class="price-section">
-                            <span id="selectedPrice">₹ 129.00</span>
-                        </div>
-                        
-                        <div class="size-section">
-                            <label class="section-label">Size:</label>
+                        <div class="option-group size-section">
+                            <label class="option-label">Size:</label>
                             <div class="toggle-group">
                                 <button class="toggle-btn active" data-size="A4">A4</button>
                                 <button class="toggle-btn" data-size="A3">A3</button>
                             </div>
                         </div>
                         
-                        <div class="frame-section">
-                            <label class="section-label">Frame:</label>
+                        <div class="option-group frame-section">
+                            <label class="option-label">Frame:</label>
                             <div class="toggle-group">
                                 <button class="toggle-btn active" data-frame="no">No Frame</button>
                                 <button class="toggle-btn" data-frame="black">Black Frame</button>
                                 <button class="toggle-btn" data-frame="white">White Frame</button>
                             </div>
                         </div>
-                        
-                        <div class="get-now-container">
-                            <button id="addToCartBtn" class="btn btn-primary btn-large">
-                                Add to Cart
-                            </button>
-                            <button id="getNowBtn" class="btn btn-payment btn-large" onclick="addToCartAndCheckout()">
-                                Buy Now
-                            </button>
-                        </div>
                     </div>
                     
-                    <div class="back-link">
-                        <a href="{{ url_for('posters') }}" class="btn btn-secondary">← Back to Posters</a>
+                    <div class="action-buttons">
+                        <button id="addToCartBtn" class="btn btn-add-cart">
+                            Add to Cart
+                        </button>
+                        <button id="getNowBtn" class="btn btn-buy-now" onclick="addToCartAndCheckout()">
+                            Buy Now
+                        </button>
+                    </div>
+                    
+                    <div class="back-navigation">
+                        <a href="{{ url_for('posters') }}" class="btn btn-back">← Back to Posters</a>
                     </div>
                 </div>
             </div>
+        </div>
     </article>
 </div>
 {% endblock %}
