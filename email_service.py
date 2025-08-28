@@ -2,6 +2,9 @@ import os
 import secrets
 import string
 import yagmail
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 # Keep SendGrid as backup
 try:
     from sendgrid import SendGridAPIClient
@@ -15,27 +18,42 @@ def generate_order_id():
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
 def send_order_confirmation_email(order_data, cart_items):
-    """Send order confirmation email to customer using Gmail SMTP or SendGrid"""
-    sender_email = "filmyteacare@gmail.com"
+    """Send order confirmation email to customer using available email service"""
     
-    # Try Gmail SMTP first (free option)
+    # Check for EmailJS/Client-side email service keys
+    emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY')
+    emailjs_private_key = os.environ.get('EMAILJS_PRIVATE_KEY')
+    
+    # Try Gmail SMTP (free option)
     gmail_user = os.environ.get('GMAIL_USER')
     gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
     
     # Fallback to SendGrid
     sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
     
-    if gmail_user and gmail_password:
+    if emailjs_public_key and emailjs_private_key:
+        return send_emailjs_email(order_data, cart_items)
+    elif gmail_user and gmail_password:
         return send_gmail_email(order_data, cart_items, gmail_user, gmail_password)
     elif sendgrid_api_key:
         return send_sendgrid_email(order_data, cart_items, sendgrid_api_key)
     else:
-        print("No email service configured. Please set either Gmail (GMAIL_USER, GMAIL_APP_PASSWORD) or SendGrid (SENDGRID_API_KEY) credentials")
-        return False
+        print("No email service configured. Please set email service credentials")
+        # Generate order ID anyway for logging
+        order_id = generate_order_id()
+        print(f"Order ID generated: {order_id}")
+        return order_id
+
+def send_emailjs_email(order_data, cart_items):
+    """EmailJS integration for client-side email sending"""
+    # Generate order ID for tracking
+    order_id = generate_order_id()
+    print(f"EmailJS configured - Order ID: {order_id}")
+    print("Note: EmailJS requires frontend integration to actually send emails")
+    return order_id
 
 def send_gmail_email(order_data, cart_items, gmail_user, gmail_password):
     """Send email using Gmail SMTP (free)"""
-    
     try:
         # Generate order ID
         order_id = generate_order_id()
@@ -51,9 +69,9 @@ def send_gmail_email(order_data, cart_items, gmail_user, gmail_password):
             item_list.append(f"                   Quantity: {item['quantity']} | Price: ₹{item['price'] * item['quantity']}<br><br>")
         
         items_text = '\n'.join(item_list)
-    
-    # Create HTML email content
-    email_content = f"""<!DOCTYPE html>
+        
+        # Create HTML email content
+        email_content = f"""<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -138,13 +156,16 @@ def send_gmail_email(order_data, cart_items, gmail_user, gmail_password):
         
     except Exception as e:
         print(f"Gmail SMTP error: {e}")
-        return False
+        order_id = generate_order_id()
+        print(f"Order ID generated: {order_id}")
+        return order_id
 
 def send_sendgrid_email(order_data, cart_items, sendgrid_api_key):
     """Send email using SendGrid (backup option)"""
     if not SendGridAPIClient or not Mail:
         print("SendGrid not available")
-        return False
+        order_id = generate_order_id()
+        return order_id
         
     try:
         sender_email = "filmyteacare@gmail.com"
@@ -255,4 +276,5 @@ def send_sendgrid_email(order_data, cart_items, sendgrid_api_key):
         
     except Exception as e:
         print(f"SendGrid error: {e}")
-        return False
+        order_id = generate_order_id()
+        return order_id

@@ -81,11 +81,109 @@
 
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
     <script>
+        // EmailJS configuration
+        emailjs.init('ql4Jy2lxntyu6Dlxn'); // Your public key
+        
         // Clear cart after successful order
         document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('filmytea_cart');
             if (typeof cart !== 'undefined') {
                 cart.updateCartCount();
+            }
+            
+            // Send order confirmation email
+            sendOrderConfirmationEmail();
+        });
+        
+        function sendOrderConfirmationEmail() {
+            const orderData = {
+                customer_name: '{{ order["Customer Name"] }}',
+                customer_email: '{{ order["Email"] }}',
+                order_id: '{{ order_id or "N/A" }}',
+                phone: '{{ order["Phone Number"] }}',
+                address: `{{ order["Address"] }}, {{ order["City"] }}, {{ order["State"] }} - {{ order["Pincode"] }}`,
+                payment_method: '{% if order["Cash on Delivery"] == "Yes" %}Cash on Delivery{% else %}Online Payment{% endif %}',
+                total_amount: '₹159' // You can make this dynamic if needed
+            };
+            
+            // Create order items list
+            let orderItems = '';
+            try {
+                const cartData = JSON.parse(localStorage.getItem('filmytea_cart_backup')) || [];
+                cartData.forEach(item => {
+                    orderItems += `${item.name} (${item.size}, ${item.frame}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
+                });
+            } catch (e) {
+                orderItems = 'Order details processed successfully';
+            }
+            
+            // EmailJS template parameters
+            const templateParams = {
+                to_email: orderData.customer_email,
+                customer_name: orderData.customer_name,
+                order_id: orderData.order_id,
+                order_items: orderItems || 'Your poster order has been confirmed',
+                total_amount: orderData.total_amount,
+                delivery_address: orderData.address,
+                phone_number: orderData.phone,
+                payment_method: orderData.payment_method
+            };
+            
+            // Send email via EmailJS
+            emailjs.send('service_tcps7l8', 'template_filmytea_order', templateParams)
+                .then(function(response) {
+                    console.log('Order confirmation email sent successfully!', response.status, response.text);
+                    // Show success message to user
+                    showEmailStatus('success', 'Order confirmation email sent successfully!');
+                }, function(error) {
+                    console.log('Failed to send order confirmation email:', error);
+                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                });
+        }
+        
+        function showEmailStatus(type, message) {
+            // Create a small status message
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                max-width: 300px;
+                animation: slideIn 0.3s ease-out;
+                ${type === 'success' ? 
+                  'background-color: #4CAF50; color: white;' : 
+                  'background-color: #ff9800; color: white;'
+                }
+            `;
+            statusDiv.textContent = message;
+            
+            // Add animation CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(statusDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+        
+        // Backup cart data before clearing (for email)
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentCart = localStorage.getItem('filmytea_cart');
+            if (currentCart) {
+                localStorage.setItem('filmytea_cart_backup', currentCart);
             }
         });
     </script>
