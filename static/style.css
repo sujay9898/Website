@@ -722,19 +722,20 @@ img {
 /* Mobile Responsive - Small screens */
 @media (max-width: 768px) {
     .poster-detail-layout {
-        flex-direction: column;
+        flex-direction: row;
         gap: 1rem;
     }
     
     .poster-image-column {
-        flex: none;
+        flex: 0 0 150px;
         order: 1;
         position: static;
     }
     
     .poster-details-column {
-        flex: none;
+        flex: 1;
         order: 2;
+        padding-left: 1rem;
     }
     
     .product-title {
@@ -743,6 +744,10 @@ img {
     
     .current-price {
         font-size: 1.5rem;
+    }
+    
+    .poster-detail-image img {
+        max-width: 140px;
     }
     
     .action-buttons {
@@ -759,21 +764,27 @@ img {
     
     .poster-detail-layout {
         gap: 0.8rem;
-        flex-direction: column;
-    }
-    
-    .poster-image-column,
-    .poster-details-column {
-        flex: none;
-        width: 100%;
+        flex-direction: row;
     }
     
     .poster-image-column {
-        order: 2;
+        flex: 0 0 120px;
+        order: 1;
     }
     
     .poster-details-column {
-        order: 1;
+        flex: 1;
+        order: 2;
+        padding-left: 0.8rem;
+    }
+    
+    .poster-detail-image img {
+        max-width: 110px;
+    }
+    
+    .toggle-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
     }
     
     .poster-title {
