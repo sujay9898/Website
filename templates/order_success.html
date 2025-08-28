@@ -149,8 +149,31 @@
                 payment_method: orderData.payment_method
             };
             
-            // Send email via EmailJS
-            emailjs.send('service_tcps7l8', 'template_filmytea_order', templateParams)
+            // Try to send email with basic parameters (works with any template)
+            emailjs.send('service_tcps7l8', 'template_filmytea_order', {
+                from_name: 'Filmytea',
+                to_email: orderData.customer_email,
+                subject: `Order Confirmation - ${orderData.order_id}`,
+                message: `Dear ${orderData.customer_name},
+
+Thank you for your order with Filmytea!
+
+Order Details:
+- Order ID: ${orderData.order_id}
+- Items: ${orderItems}
+- Total Amount: ${orderData.total_amount}
+- Payment Method: ${orderData.payment_method}
+
+Delivery Address:
+${orderData.address}
+
+We'll process your order and send tracking details soon.
+
+Best regards,
+Filmytea Team
+Contact: filmyteacare@gmail.com`,
+                ...templateParams
+            })
                 .then(function(response) {
                     console.log('Order confirmation email sent successfully!', response.status, response.text);
                     // Show success message to user
