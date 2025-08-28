@@ -80,9 +80,16 @@
     </footer>
 
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-        // EmailJS configuration
-        emailjs.init('ql4Jy2lxntyu6Dlxn'); // Your public key
+        // Wait for EmailJS to load and initialize
+        function initEmailJS() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init('ql4Jy2lxntyu6Dlxn'); // Your public key
+                return true;
+            }
+            return false;
+        }
         
         // Clear cart after successful order
         document.addEventListener('DOMContentLoaded', function() {
@@ -91,11 +98,24 @@
                 cart.updateCartCount();
             }
             
-            // Send order confirmation email
-            sendOrderConfirmationEmail();
+            // Wait for EmailJS to load, then send email
+            setTimeout(() => {
+                if (initEmailJS()) {
+                    sendOrderConfirmationEmail();
+                } else {
+                    console.log('EmailJS failed to load');
+                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                }
+            }, 1000); // Wait 1 second for EmailJS to load
         });
         
         function sendOrderConfirmationEmail() {
+            // Double-check EmailJS is available
+            if (typeof emailjs === 'undefined') {
+                console.log('EmailJS not loaded');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
             const orderData = {
                 customer_name: '{{ order["Customer Name"] }}',
                 customer_email: '{{ order["Email"] }}',
