@@ -140,40 +140,27 @@
             // EmailJS template parameters
             const templateParams = {
                 to_email: orderData.customer_email,
+                to_name: orderData.customer_name,  // EmailJS often needs this
                 customer_name: orderData.customer_name,
                 order_id: orderData.order_id,
                 order_items: orderItems || 'Your poster order has been confirmed',
                 total_amount: orderData.total_amount,
                 delivery_address: orderData.address,
                 phone_number: orderData.phone,
-                payment_method: orderData.payment_method
+                payment_method: orderData.payment_method,
+                from_name: 'Filmytea Team',
+                reply_to: 'filmyteacare@gmail.com'
             };
             
-            // Try to send email with basic parameters (works with any template)
-            emailjs.send('service_tcps7l8', 'template_filmytea_order', {
-                from_name: 'Filmytea',
-                to_email: orderData.customer_email,
-                subject: `Order Confirmation - ${orderData.order_id}`,
-                message: `Dear ${orderData.customer_name},
-
-Thank you for your order with Filmytea!
-
-Order Details:
-- Order ID: ${orderData.order_id}
-- Items: ${orderItems}
-- Total Amount: ${orderData.total_amount}
-- Payment Method: ${orderData.payment_method}
-
-Delivery Address:
-${orderData.address}
-
-We'll process your order and send tracking details soon.
-
-Best regards,
-Filmytea Team
-Contact: filmyteacare@gmail.com`,
-                ...templateParams
-            })
+            // Debug: Log email parameters
+            console.log('Email Parameters:', {
+                customer_email: orderData.customer_email,
+                customer_name: orderData.customer_name,
+                order_id: orderData.order_id
+            });
+            
+            // Send email using templateParams
+            emailjs.send('service_tcps7l8', 'template_filmytea_order', templateParams)
                 .then(function(response) {
                     console.log('Order confirmation email sent successfully!', response.status, response.text);
                     // Show success message to user
