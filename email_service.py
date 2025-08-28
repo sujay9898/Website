@@ -1,21 +1,20 @@
 import os
 import secrets
 import string
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 def generate_order_id():
     """Generate a random order ID"""
     return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
 def send_order_confirmation_email(order_data, cart_items):
-    """Send order confirmation email to customer using Gmail SMTP"""
-    gmail_user = "filmyteacare@gmail.com"
-    gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
+    """Send order confirmation email to customer using SendGrid"""
+    sender_email = "filmyteacare@gmail.com"
+    sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
     
-    if not gmail_password:
-        print("Gmail app password not found")
+    if not sendgrid_api_key:
+        print("SendGrid API key not found")
         return False
     
     # Generate order ID
@@ -106,29 +105,23 @@ def send_order_confirmation_email(order_data, cart_items):
 </html>"""
 
     try:
-        # Create message
-        msg = MIMEMultipart()
-        msg['From'] = f"Filmytea <{gmail_user}>"
-        msg['To'] = order_data['Email']
-        msg['Subject'] = f"Order Confirmation - {order_id} - Filmytea"
+        # Create SendGrid message
+        message = Mail(
+            from_email=sender_email,
+            to_emails=order_data['Email'],
+            subject=f"Order Confirmation - {order_id} - Filmytea",
+            html_content=email_content
+        )
         
-        # Add body to email
-        msg.attach(MIMEText(email_content, 'html'))
-        
-        # Gmail SMTP configuration
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()  # Enable security
-        server.login(gmail_user, gmail_password)
-        
-        # Send email
-        text = msg.as_string()
-        server.sendmail(gmail_user, order_data['Email'], text)
-        server.quit()
+        # Send email using SendGrid
+        sg = SendGridAPIClient(sendgrid_api_key)
+        response = sg.send(message)
         
         print(f"Order confirmation email sent successfully to {order_data['Email']}")
         print(f"Order ID: {order_id}")
+        print(f"SendGrid Response: {response.status_code}")
         return order_id
         
     except Exception as e:
-        print(f"Gmail SMTP error: {e}")
+        print(f"SendGrid error: {e}")
         return False
