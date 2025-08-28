@@ -424,15 +424,15 @@ img {
 
 .poster-detail-layout {
     display: flex;
-    gap: 4rem;
+    gap: 3rem;
     align-items: center;
-    min-height: 80vh;
-    max-width: 1200px;
+    min-height: 75vh;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .poster-image-column {
-    flex: 0 0 350px;
+    flex: 0 0 280px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -448,7 +448,7 @@ img {
 
 .poster-detail-image {
     width: 100%;
-    max-width: 350px;
+    max-width: 280px;
     margin: 0 auto;
 }
 
@@ -457,8 +457,8 @@ img {
     height: auto;
     object-fit: contain;
     border-radius: 0 !important;
-    max-height: 500px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    max-height: 400px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .poster-detail-info {
