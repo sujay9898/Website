@@ -461,8 +461,10 @@ img {
     width: 100%;
     height: auto;
     object-fit: contain;
-    border-radius: 4px;
+    border-radius: 0;
     max-height: 380px;
+    border: none;
+    background: transparent;
 }
 
 .poster-detail-info {
@@ -1271,7 +1273,7 @@ body {
     align-items: initial;
     justify-content: initial;
     padding-top: 2rem;
-    background: var(--white);
+    background: var(--dark-color);
 }
 
 /* Poster Detail Styles */
@@ -1286,6 +1288,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    background: transparent;
 }
 
 .poster-detail-image img {
@@ -1297,11 +1300,12 @@ body {
 
 /* Ultra-Fast Image loading optimization */
 .poster-image img, .poster-detail-image img {
-    opacity: 0;
-    animation: fadeIn 0.3s ease forwards;
+    opacity: 1;
     will-change: opacity, transform;
     background: transparent;
     transform: translateZ(0); /* GPU acceleration */
+    border: none;
+    box-shadow: none;
 }
 
 @keyframes fadeIn {
