@@ -430,13 +430,16 @@ img {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
+    min-height: 600px;
 }
 
 .poster-image-column {
     flex: 0 0 300px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    position: sticky;
+    top: 2rem;
 }
 
 .poster-details-column {
@@ -444,7 +447,7 @@ img {
     display: flex;
     flex-direction: column;
     padding: 0;
-    margin-right: 1rem;
+    min-width: 0;
 }
 
 .poster-detail-image {
@@ -698,71 +701,51 @@ img {
 /* Tablet Responsive - Medium screens */
 @media (max-width: 968px) {
     .poster-detail-layout {
-        gap: 2rem;
+        gap: 1.5rem;
     }
     
     .poster-image-column {
-        flex: 0 0 45%;
+        flex: 0 0 280px;
     }
     
-    .poster-title {
-        font-size: 2.2rem;
+    .product-title {
+        font-size: 1.3rem;
     }
     
     .current-price {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 }
 
 /* Mobile Responsive - Small screens */
 @media (max-width: 768px) {
     .poster-detail-layout {
-        flex-direction: row;
+        flex-direction: column;
         gap: 1rem;
-        align-items: flex-start;
     }
     
     .poster-image-column {
-        flex: 0 0 45%;
+        flex: none;
+        order: 1;
+        position: static;
     }
     
     .poster-details-column {
-        flex: 1;
+        flex: none;
+        order: 2;
     }
     
-    .poster-title {
-        font-size: 2rem;
-        text-align: center;
-    }
-    
-    .price-display {
-        text-align: center;
+    .product-title {
+        font-size: 1.2rem;
     }
     
     .current-price {
-        font-size: 1.6rem;
-    }
-    
-    .option-label {
-        font-size: 1.1rem;
-    }
-    
-    .toggle-btn {
-        padding: 0.9rem 1.2rem;
-        font-size: 0.95rem;
-        min-height: 52px;
+        font-size: 1.5rem;
     }
     
     .action-buttons {
         flex-direction: column;
         gap: 1rem;
-    }
-    
-    .btn-add-cart,
-    .btn-buy-now {
-        flex: none;
-        min-height: 60px;
-        font-size: 1.2rem;
     }
 }
 
