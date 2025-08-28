@@ -1777,6 +1777,7 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 0.5rem;
+    border-radius: 0 !important;
 }
 
 @media (max-width: 768px) {
@@ -1803,6 +1804,7 @@ body {
     height: auto;
     object-fit: cover;
     display: block;
+    border-radius: 0 !important;
 }
 
 @media (max-width: 768px) {
