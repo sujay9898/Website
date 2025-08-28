@@ -88,7 +88,7 @@
 // Store order data
 const orderData = {
     payment_id: "{{ payment_id }}",
-    cart_total: {{ cart_total }}
+    cart_total: {{ cart_total|default(0)|tojson }}
 };
 
 // Payment method switching
@@ -128,10 +128,10 @@ document.getElementById('cardExpiry')?.addEventListener('input', function() {
 });
 
 // Populate order items
-const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+const dummyPaymentCart = JSON.parse(localStorage.getItem('filmytea_cart') || '[]');
 const orderItemsContainer = document.getElementById('orderItems');
-if (cart.length > 0) {
-    cart.forEach(item => {
+if (dummyPaymentCart.length > 0) {
+    dummyPaymentCart.forEach(item => {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'order-item';
         itemDiv.innerHTML = `
