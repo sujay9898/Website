@@ -176,12 +176,35 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+    .new-hero-container {
+        padding: 1rem;
+    }
+    
+    .new-hero-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    
     .crafted-title {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        height: auto;
         font-size: 3rem;
+        line-height: 0.9;
         margin-bottom: 2rem;
+        text-align: center;
     }
     
     .posters-button {
+        position: relative;
+        top: auto;
+        left: auto;
         padding: 0.7rem 2rem;
         font-size: 1rem;
         width: auto;
@@ -196,14 +219,30 @@
 }
 
 @media (max-width: 480px) {
+    .new-hero-container {
+        padding: 0.5rem;
+    }
+    
     .crafted-title {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        height: auto;
         font-size: 2.5rem;
+        line-height: 0.9;
+        margin-bottom: 1.5rem;
+        text-align: center;
     }
     
     .posters-button {
+        position: relative;
+        top: auto;
+        left: auto;
         width: auto;
         min-width: 140px;
         font-size: 1.2rem;
+        padding: 0.8rem 1.5rem;
     }
 }
 
