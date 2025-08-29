@@ -73,11 +73,11 @@ api_key = os.environ.get("INSTAMOJO_API_KEY")
 auth_token = os.environ.get("INSTAMOJO_AUTH_TOKEN")
 
 if api_key and auth_token:
-    # Use test endpoint - change to production endpoint when going live
+    # Use production endpoint with test credentials for testing
     instamojo_api = Instamojo(
         api_key=api_key,
         auth_token=auth_token,
-        endpoint='https://test.instamojo.com/api/1.1/'
+        endpoint='https://www.instamojo.com/api/1.1/'
     )
 else:
     instamojo_api = None
