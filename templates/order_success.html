@@ -138,6 +138,14 @@
                 emailjs.init(EMAILJS_PUBLIC_KEY);
                 console.log('EmailJS initialized successfully');
 
+                // Debug: Check cart items
+                console.log('DEBUG: Cart items check:', {
+                    'orderInfo exists': !!orderInfo,
+                    'cartItems exists': !!orderInfo.cartItems,
+                    'cartItems length': orderInfo.cartItems ? orderInfo.cartItems.length : 'N/A',
+                    'cartItems content': orderInfo.cartItems
+                });
+
                 // Format cart items as HTML table for email
                 let itemsHtml = '';
                 let totalAmount = 0;
