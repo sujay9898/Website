@@ -51,7 +51,8 @@
         <p>Loading...</p>
     </div>
 
-    <!-- Header -->
+    <!-- Header - Hidden on home page -->
+    {% if request.endpoint != 'index' %}
     <header class="header" role="banner">
         <div class="container">
             <h1 class="logo">
@@ -66,6 +67,7 @@
             </nav>
         </div>
     </header>
+    {% endif %}
 
     <!-- Main Content -->
     <main class="main {% block main_class %}{% endblock %}" role="main">
