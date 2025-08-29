@@ -118,6 +118,9 @@
     color: #9095A1FF;
     margin: 0;
     transition: opacity 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .posters-button {
@@ -197,12 +200,15 @@
         top: auto;
         left: auto;
         width: auto;
-        height: auto;
+        height: 120px;
         font-size: 3rem;
         line-height: 0.5;
         margin-bottom: 1.5rem;
         text-align: center;
         transition: opacity 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .posters-button {
@@ -237,12 +243,15 @@
         top: auto;
         left: auto;
         width: auto;
-        height: auto;
+        height: 100px;
         font-size: 2.5rem;
         line-height: 0.5;
         margin-bottom: 1.2rem;
         text-align: center;
         transition: opacity 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .posters-button {
