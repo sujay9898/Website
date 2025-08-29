@@ -191,12 +191,26 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // For COD, add cash_on_delivery field
+        // For COD, add cash_on_delivery field and cart items
         const codInput = document.createElement('input');
         codInput.type = 'hidden';
         codInput.name = 'cash_on_delivery';
         codInput.value = 'Yes';
         form.appendChild(codInput);
+        
+        // Add cart items for COD orders too
+        const cartItemsInput = document.createElement('input');
+        cartItemsInput.type = 'hidden';
+        cartItemsInput.name = 'cart_items';
+        cartItemsInput.value = JSON.stringify(checkoutCart);
+        form.appendChild(cartItemsInput);
+        
+        // Add cart total for COD orders
+        const cartTotalInput = document.createElement('input');
+        cartTotalInput.type = 'hidden';
+        cartTotalInput.name = 'cart_total';
+        cartTotalInput.value = total;
+        form.appendChild(cartTotalInput);
     });
 });
 </script>
