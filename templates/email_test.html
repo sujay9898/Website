@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Test - Filmytea</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-container { max-width: 600px; margin: 0 auto; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .log { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>EmailJS Test</h1>
+        <button onclick="testEmailJS()">Test Send Email</button>
+        <button onclick="clearLog()">Clear Log</button>
+        <div id="log" class="log">Ready to test...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        const logDiv = document.getElementById('log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            logDiv.textContent = 'Log cleared...\n';
+        }
+        
+        function testEmailJS() {
+            log('Starting EmailJS test...');
+            
+            // Configuration
+            const EMAILJS_PUBLIC_KEY = '{{ emailjs_public_key }}';
+            const SERVICE_ID = 'service_tcps7l8';
+            const TEMPLATE_ID = 'template_1mfigpi';
+            
+            log('Public Key: ' + (EMAILJS_PUBLIC_KEY ? 'Present' : 'Missing'));
+            log('Service ID: ' + SERVICE_ID);
+            log('Template ID: ' + TEMPLATE_ID);
+            
+            if (typeof emailjs === 'undefined') {
+                log('ERROR: EmailJS library not loaded');
+                return;
+            }
+            
+            if (!EMAILJS_PUBLIC_KEY) {
+                log('ERROR: EmailJS public key missing');
+                return;
+            }
+            
+            try {
+                // Initialize EmailJS
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+                log('EmailJS initialized successfully');
+                
+                // Test template parameters
+                const templateParams = {
+                    customer_name: 'Test Customer',
+                    order_id: 'TEST123',
+                    order_items: 'Test Poster Order',
+                    total_amount: '₹299',
+                    delivery_address: 'Test Address, Test City, Test State - 123456',
+                    phone_number: '9876543210',
+                    payment_method: 'Test Payment'
+                };
+                
+                log('Template parameters prepared: ' + JSON.stringify(templateParams, null, 2));
+                log('Attempting to send email...');
+                
+                // Send email
+                emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        log('✅ SUCCESS: Email sent! Status: ' + response.status + ', Text: ' + response.text);
+                    })
+                    .catch(function(error) {
+                        log('❌ FAILED: ' + JSON.stringify(error, null, 2));
+                        log('Error status: ' + (error.status || 'undefined'));
+                        log('Error text: ' + (error.text || 'undefined'));
+                        log('Error message: ' + (error.message || 'undefined'));
+                    });
+                    
+            } catch (error) {
+                log('EXCEPTION: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

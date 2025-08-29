@@ -430,6 +430,12 @@ def confirm_order():
                          cart_items=cart_items,
                          emailjs_public_key=emailjs_public_key)
 
+@app.route('/email-test')
+def email_test():
+    # EmailJS configuration for testing
+    emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
+    return render_template('email_test.html', emailjs_public_key=emailjs_public_key)
+
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
