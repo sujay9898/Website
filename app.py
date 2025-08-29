@@ -549,6 +549,12 @@ def payment_success():
     # Get order data from session
     pending_order = session.get('pending_order')
     
+    # Debug: Log session data
+    logging.info(f"Payment success accessed with payment_id: {payment_id}")
+    logging.info(f"Session pending_order exists: {pending_order is not None}")
+    if pending_order:
+        logging.info(f"Pending order customer: {pending_order.get('customer_name', 'Unknown')}")
+    
     if pending_order:
         try:
             # For dummy payment, always consider it successful

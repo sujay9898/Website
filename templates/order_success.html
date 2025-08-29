@@ -85,7 +85,7 @@
         // Wait for EmailJS to load and initialize
         function initEmailJS() {
             if (typeof emailjs !== 'undefined') {
-                const publicKey = '{{ os.environ.get("EMAILJS_PUBLIC_KEY") }}';
+                const publicKey = 'ql4Jy2lxntyu6Dlxn'; // Your EmailJS public key
                 console.log('Initializing EmailJS with public key:', publicKey);
                 emailjs.init(publicKey); // Use environment variable
                 return true;
