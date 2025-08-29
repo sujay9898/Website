@@ -133,7 +133,13 @@
             let orderItems = '';
             
             // Try to get cart items from backend first
-            const backendCartItems = {{ cart_items | tojson | safe }};
+            let backendCartItems = [];
+            try {
+                backendCartItems = {{ (cart_items or []) | tojson | safe }};
+            } catch(e) {
+                console.log('No cart items from backend');
+                backendCartItems = [];
+            }
             
             if (backendCartItems && backendCartItems.length > 0) {
                 // Use cart items from backend (most reliable) - format as clean text
@@ -187,6 +193,7 @@
                     }
                 } catch (e) {
                     orderItems = 'Your poster order has been confirmed successfully!';
+                }
             }
             
             // EmailJS template parameters
