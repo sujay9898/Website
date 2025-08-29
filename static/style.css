@@ -82,51 +82,102 @@
     margin: 0;
 }
 
-/* Hero Container - Poster Style */
-.hero-container {
-    min-height: 80vh;
-    background: #a8a8a8;
-    background-size: 200% 200%;
-    animation: gradientShift 8s ease-in-out infinite;
+/* New Hero Container - Minimalist Design */
+.new-hero-container {
+    min-height: 100vh;
+    background: #1a1a1a;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow: hidden;
-    margin: 0;
     padding: 2rem;
     box-sizing: border-box;
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-.hero-content {
+.new-hero-content {
     text-align: center;
     z-index: 2;
     position: relative;
     max-width: 600px;
     width: 100%;
+    margin-bottom: auto;
+    margin-top: auto;
 }
 
-.brand-section {
+.crafted-title {
+    font-size: 4.5rem;
+    font-weight: 300;
+    color: #9ca3af;
+    line-height: 1.1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: -0.02em;
     margin-bottom: 3rem;
 }
 
-.brand-title {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #FFF;
-    text-shadow: 3px 3px 0px rgba(96, 96, 96, 0.8), 
-                 6px 6px 0px rgba(96, 96, 96, 0.6),
-                 9px 9px 0px rgba(96, 96, 96, 0.4);
-    letter-spacing: 0.1em;
-    line-height: 1;
-    margin: 0;
-    transform: perspective(1000px) rotateX(5deg);
+.posters-button {
+    display: inline-block;
+    background: #e5e7eb;
+    color: #1f2937;
+    padding: 0.8rem 2.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.posters-button:hover {
+    background: #d1d5db;
+    color: #111827;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.made-with-footer {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.logo-placeholder {
+    color: #8b5cf6;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .crafted-title {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+    
+    .posters-button {
+        padding: 0.7rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .made-with-footer {
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .crafted-title {
+        font-size: 2.5rem;
+    }
 }
 
 .brand-subtitle {

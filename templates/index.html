@@ -5,25 +5,17 @@
 {% block description %}Discover premium movie posters and entertainment art. Shop high-quality prints in A4 and A3 sizes with custom framing options. Fast shipping across India.{% endblock %}
 
 {% block content %}
-<div class="hero-container">
-    <div class="hero-content">
-        <div class="brand-section">
-            <h1 class="brand-title">FILMYTEA</h1>
-            <div class="brand-subtitle">PREMIUM MOVIE POSTERS</div>
-            <div class="brand-tagline">Entertainment Art Collection</div>
-        </div>
-        
-        <div class="cta-section">
-            <a href="{{ url_for('posters') }}" class="cta-button" aria-label="Browse our poster collection">
-                EXPLORE COLLECTION
-            </a>
-        </div>
+<div class="new-hero-container">
+    <div class="new-hero-content">
+        <h1 class="crafted-title">Crafted<br>for you</h1>
+        <a href="{{ url_for('posters') }}" class="posters-button" aria-label="Browse our poster collection">
+            Posters
+        </a>
     </div>
     
-    <div class="hero-decorative">
-        <div class="decorative-text">SMOKING</div>
-        <div class="decorative-text">CHILLS</div>
-        <div class="decorative-accent"></div>
+    <div class="made-with-footer">
+        <span>Made with</span>
+        <div class="logo-placeholder">⚡</div>
     </div>
 </div>
 {% endblock %}
