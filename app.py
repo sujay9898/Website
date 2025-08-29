@@ -2,6 +2,14 @@ import os
 import logging
 import json
 
+# Load environment variables from .env file
+if os.path.exists('.env'):
+    with open('.env', 'r') as f:
+        for line in f:
+            if line.strip() and not line.startswith('#'):
+                key, value = line.strip().split('=', 1)
+                os.environ[key] = value
+
 from flask import Flask, render_template, abort, request, redirect, url_for, jsonify, flash
 from email_service import send_order_confirmation_email
 from flask_sqlalchemy import SQLAlchemy
