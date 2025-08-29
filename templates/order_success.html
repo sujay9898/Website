@@ -139,8 +139,8 @@
             
             // EmailJS template parameters
             const templateParams = {
+                to_name: orderData.customer_name,
                 to_email: orderData.customer_email,
-                to_name: orderData.customer_name,  // EmailJS often needs this
                 customer_name: orderData.customer_name,
                 order_id: orderData.order_id,
                 order_items: orderItems || 'Your poster order has been confirmed',
