@@ -85,9 +85,12 @@
         // Wait for EmailJS to load and initialize
         function initEmailJS() {
             if (typeof emailjs !== 'undefined') {
-                emailjs.init('ql4Jy2lxntyu6Dlxn'); // Your public key
+                const publicKey = '{{ os.environ.get("EMAILJS_PUBLIC_KEY") }}';
+                console.log('Initializing EmailJS with public key:', publicKey);
+                emailjs.init(publicKey); // Use environment variable
                 return true;
             }
+            console.error('EmailJS library not loaded');
             return false;
         }
         
@@ -212,13 +215,23 @@
             console.log('Order Items being sent:', orderItems);
             
             // Send email using templateParams
+            console.log('Attempting to send email with EmailJS...');
+            console.log('Service ID: service_tcps7l8');
+            console.log('Template ID: template_1mfigpi');
+            console.log('Template Params:', templateParams);
+            
             emailjs.send('service_tcps7l8', 'template_1mfigpi', templateParams)
                 .then(function(response) {
-                    console.log('Order confirmation email sent successfully!', response.status, response.text);
+                    console.log('✅ Order confirmation email sent successfully!', response.status, response.text);
                     // Show success message to user
                     showEmailStatus('success', 'Order confirmation email sent successfully!');
                 }, function(error) {
-                    console.log('Failed to send order confirmation email:', error);
+                    console.error('❌ Failed to send order confirmation email:', error);
+                    console.error('Error details:', {
+                        status: error.status,
+                        text: error.text,
+                        message: error.message
+                    });
                     showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
                 });
         }
