@@ -133,25 +133,93 @@
             const backendCartItems = {{ cart_items | tojson | safe }};
             
             if (backendCartItems && backendCartItems.length > 0) {
-                // Use cart items from backend (most reliable)
+                // Use cart items from backend (most reliable) - format as HTML table
+                orderItems = `
+                    <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: bold;">Poster</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Size</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Frame</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Qty</th>
+                                <th style="border: 1px solid #ddd; padding: 12px; text-align: right; font-weight: bold;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                
                 backendCartItems.forEach(item => {
-                    orderItems += `${item.name} (Size: ${item.size}, Frame: ${item.frameText || 'No Frame'}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
+                    orderItems += `
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 12px;">${item.name}</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.size}</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.frameText || 'No Frame'}</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.quantity}</td>
+                                <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">₹${item.price * item.quantity}</td>
+                            </tr>`;
                 });
+                
+                orderItems += `
+                        </tbody>
+                    </table>`;
             } else {
-                // Fallback to localStorage
+                // Fallback to localStorage - format as HTML table
                 try {
                     let cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || 
                                   JSON.parse(localStorage.getItem('filmytea_cart_backup')) || [];
                     
                     if (cartData.length > 0) {
+                        orderItems = `
+                            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                                <thead>
+                                    <tr style="background-color: #f8f9fa;">
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: bold;">Poster</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Size</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Frame</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Qty</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: right; font-weight: bold;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                        
                         cartData.forEach(item => {
-                            orderItems += `${item.name} (Size: ${item.size}, Frame: ${item.frameText || item.frame || 'No Frame'}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
+                            orderItems += `
+                                    <tr>
+                                        <td style="border: 1px solid #ddd; padding: 12px;">${item.name}</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.size}</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.frameText || item.frame || 'No Frame'}</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${item.quantity}</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">₹${item.price * item.quantity}</td>
+                                    </tr>`;
                         });
+                        
+                        orderItems += `
+                                </tbody>
+                            </table>`;
                     } else {
-                        orderItems = 'Movie Poster (Size: A4, Frame: Custom) - Qty: 1 - ₹159\n';
+                        orderItems = `
+                            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                                <thead>
+                                    <tr style="background-color: #f8f9fa;">
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left; font-weight: bold;">Poster</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Size</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Frame</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">Qty</th>
+                                        <th style="border: 1px solid #ddd; padding: 12px; text-align: right; font-weight: bold;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid #ddd; padding: 12px;">Movie Poster</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">A4</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">Custom</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">1</td>
+                                        <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">₹159</td>
+                                    </tr>
+                                </tbody>
+                            </table>`;
                     }
                 } catch (e) {
-                    orderItems = 'Your poster order has been confirmed\n';
+                    orderItems = '<p style="padding: 10px; background-color: #f8f9fa; border-radius: 4px;">Your poster order has been confirmed successfully!</p>';
                 }
             }
             
