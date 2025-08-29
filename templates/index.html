@@ -7,10 +7,12 @@
 {% block content %}
 <div class="new-hero-container">
     <div class="new-hero-content">
-        <h1 class="crafted-title" id="animatedTitle">Filmytea</h1>
-        <a href="{{ url_for('posters') }}" class="posters-button" aria-label="Browse our poster collection">
-            Posters
-        </a>
+        <div class="title-button-wrapper">
+            <h1 class="crafted-title" id="animatedTitle">Filmytea</h1>
+            <a href="{{ url_for('posters') }}" class="posters-button" aria-label="Browse our poster collection">
+                Posters
+            </a>
+        </div>
     </div>
     
 </div>
