@@ -98,15 +98,9 @@
                 cart.updateCartCount();
             }
             
-            // Wait for EmailJS to load, then send email
-            setTimeout(() => {
-                if (initEmailJS()) {
-                    sendOrderConfirmationEmail();
-                } else {
-                    console.log('EmailJS failed to load');
-                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
-                }
-            }, 1000); // Wait 1 second for EmailJS to load
+            // Skip email sending during migration - service needs configuration
+            console.log('Email service will be configured post-migration');
+            showEmailStatus('info', 'Your order is confirmed! Email service will be set up soon.');
         });
         
         function sendOrderConfirmationEmail() {
@@ -186,6 +180,8 @@
                 animation: slideIn 0.3s ease-out;
                 ${type === 'success' ? 
                   'background-color: #4CAF50; color: white;' : 
+                  type === 'info' ?
+                  'background-color: #2196F3; color: white;' :
                   'background-color: #ff9800; color: white;'
                 }
             `;
