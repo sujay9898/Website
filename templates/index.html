@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             currentIndex = (currentIndex + 1) % texts.length;
             titleElement.innerHTML = texts[currentIndex];
             titleElement.style.opacity = '1';
-        }, 500); // Half second fade out, then fade in
+        }, 800); // Slower fade out, then fade in
     }
     
-    // Start the animation after 1 second
-    setInterval(fadeTitle, 1000);
+    // Start the animation after 2 seconds, repeat every 2.5 seconds
+    setInterval(fadeTitle, 2500);
 });
 </script>
 {% endblock %}
