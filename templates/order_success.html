@@ -112,6 +112,10 @@
 
         // Load order data from JSON script tag
         const orderInfo = JSON.parse(document.getElementById('order-data').textContent);
+        
+        // Debug: Log order info to see cart items
+        console.log('Order Info:', orderInfo);
+        console.log('Cart Items:', orderInfo.cartItems);
 
         // Initialize EmailJS and send email
         console.log('Order success page loaded, will attempt to send email in 2 seconds...');
