@@ -45,10 +45,10 @@ def send_order_confirmation_email(order_data, cart_items):
         return order_id
 
 def send_emailjs_email(order_data, cart_items):
-    """EmailJS integration for client-side email sending"""
+    """EmailJS integration - order ID generation for frontend email sending"""
     # Generate order ID for tracking
     order_id = generate_order_id()
-    print(f"Order confirmation email sent successfully to {order_data['Email']}")
+    print(f"Order confirmation will be sent via EmailJS to {order_data['Email']}")
     print(f"EmailJS configured - Order ID: {order_id}")
     print("Email will be sent via frontend EmailJS integration")
     return order_id

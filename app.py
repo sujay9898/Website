@@ -423,7 +423,12 @@ def confirm_order():
             order_id = "EMAIL_FAILED"
     
     # Render success page with order details and cart items
-    return render_template('order_success.html', order=order, order_id=order_id, cart_items=cart_items)
+    emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
+    return render_template('order_success.html', 
+                         order=order, 
+                         order_id=order_id, 
+                         cart_items=cart_items,
+                         emailjs_public_key=emailjs_public_key)
 
 # Error handlers
 @app.errorhandler(404)
@@ -599,7 +604,13 @@ def payment_success():
             # Clear session data
             session.pop('pending_order', None)
             
-            return render_template('order_success.html', order=order, order_id=order_id, cart_items=cart_items, paid=True)
+            emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
+            return render_template('order_success.html', 
+                                 order=order, 
+                                 order_id=order_id, 
+                                 cart_items=cart_items, 
+                                 paid=True,
+                                 emailjs_public_key=emailjs_public_key)
         except Exception as e:
             logging.error(f"Error verifying payment: {e}")
             flash('Error verifying payment. Please contact support.', 'error')
