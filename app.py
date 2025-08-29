@@ -459,11 +459,31 @@ def create_payment():
         phone = request.form.get('phone_number')
         cart_total = float(request.form.get('cart_total', 0))
         
-        # Get cart items
+        # Get cart items and sanitize them
         cart_items_json = request.form.get('cart_items', '[]')
         try:
             cart_items = json.loads(cart_items_json)
-        except:
+            # Sanitize cart items to remove any undefined values
+            sanitized_cart_items = []
+            for item in cart_items:
+                if isinstance(item, dict):
+                    sanitized_item = {}
+                    for key, value in item.items():
+                        # Skip undefined/null values or replace with defaults
+                        if value is not None and str(value).lower() != 'undefined':
+                            sanitized_item[key] = value
+                        elif key == 'frameText':
+                            sanitized_item[key] = 'No Frame'
+                        elif key == 'quantity':
+                            sanitized_item[key] = 1
+                        elif key == 'price':
+                            sanitized_item[key] = 159
+                    # Only add items with required fields
+                    if 'name' in sanitized_item and 'price' in sanitized_item:
+                        sanitized_cart_items.append(sanitized_item)
+            cart_items = sanitized_cart_items
+        except Exception as e:
+            logging.error(f"Error parsing cart items: {e}")
             cart_items = []
         
         # Store order data in session for dummy payment
@@ -545,7 +565,14 @@ def payment_success():
                 'Amount': pending_order['cart_total']
             }
             
-            cart_items = pending_order['cart_items']
+            # Sanitize cart items from session
+            cart_items = pending_order.get('cart_items', [])
+            if cart_items:
+                sanitized_cart_items = []
+                for item in cart_items:
+                    if isinstance(item, dict) and 'name' in item:
+                        sanitized_cart_items.append(item)
+                cart_items = sanitized_cart_items
             
             # Log successful order
             logging.info("Order completed successfully with payment!")
@@ -561,11 +588,12 @@ def payment_success():
                         logging.info(f"Order confirmation email sent successfully to {order['Email']}")
                 except Exception as e:
                     logging.error(f"Failed to send order confirmation email: {e}")
+                    order_id = "EMAIL_FAILED"
             
             # Clear session data
             session.pop('pending_order', None)
             
-            return render_template('order_success.html', order=order, order_id=order_id, paid=True)
+            return render_template('order_success.html', order=order, order_id=order_id, cart_items=cart_items, paid=True)
         except Exception as e:
             logging.error(f"Error verifying payment: {e}")
             flash('Error verifying payment. Please contact support.', 'error')
