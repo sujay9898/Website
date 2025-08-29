@@ -82,51 +82,198 @@
     margin: 0;
 }
 
-/* Hero Container - Poster Style */
-.hero-container {
-    min-height: 80vh;
-    background: #a8a8a8;
-    background-size: 200% 200%;
-    animation: gradientShift 8s ease-in-out infinite;
+/* New Hero Container - Minimalist Design */
+.new-hero-container {
+    min-height: 100vh;
+    background: #1a1a1a;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow: hidden;
-    margin: 0;
     padding: 2rem;
     box-sizing: border-box;
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-.hero-content {
+.new-hero-content {
     text-align: center;
     z-index: 2;
     position: relative;
     max-width: 600px;
     width: 100%;
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 500px;
 }
 
-.brand-section {
-    margin-bottom: 3rem;
+.title-button-wrapper {
+    position: relative;
+    width: 245px;
+    height: 200px;
+    margin: 0 auto;
 }
 
-.brand-title {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #FFF;
-    text-shadow: 3px 3px 0px rgba(96, 96, 96, 0.8), 
-                 6px 6px 0px rgba(96, 96, 96, 0.6),
-                 9px 9px 0px rgba(96, 96, 96, 0.4);
-    letter-spacing: 0.1em;
-    line-height: 1;
+.crafted-title {
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    width: 245px; 
+    height: 110px; 
+    font-family: Outfit; 
+    font-size: 64px; 
+    line-height: 45px; 
+    font-weight: 700; 
+    color: #9095A1FF;
     margin: 0;
-    transform: perspective(1000px) rotateX(5deg);
+    transition: opacity 0.8s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.posters-button {
+    position: absolute;
+    top: 130px;
+    left: 0px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 225px;
+    height: 44px;
+    padding: 0 16px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 700;
+    font-style: italic;
+    color: #1C1C1BFF;
+    background: #F7F7F7FF;
+    opacity: 1;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.posters-button:hover {
+    color: #1C1C1BFF;
+    background: #DDDDDBFF;
+    text-decoration: none;
+}
+
+.posters-button:hover:active {
+    color: #1C1C1BFF;
+    background: #C2C2BFFF;
+}
+
+.posters-button:disabled {
+    opacity: 0.4;
+}
+
+.made-with-footer {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.logo-placeholder {
+    color: #8b5cf6;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .new-hero-container {
+        padding: 1rem;
+    }
+    
+    .new-hero-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 100vh;
+        padding-top: 20vh;
+    }
+    
+    .crafted-title {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        height: 120px;
+        font-size: 3rem;
+        line-height: 0.5;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        transition: opacity 0.8s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .posters-button {
+        position: relative;
+        top: auto;
+        left: auto;
+        padding: 0.7rem 2rem;
+        font-size: 1rem;
+        width: auto;
+        min-width: 160px;
+    }
+    
+    .made-with-footer {
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .new-hero-container {
+        padding: 0.5rem;
+    }
+    
+    .new-hero-content {
+        height: 100vh;
+        padding-top: 25vh;
+    }
+    
+    .crafted-title {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        height: 100px;
+        font-size: 2.5rem;
+        line-height: 0.5;
+        margin-bottom: 1.2rem;
+        text-align: center;
+        transition: opacity 0.8s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .posters-button {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: auto;
+        min-width: 140px;
+        font-size: 1.2rem;
+        padding: 0.8rem 1.5rem;
+    }
 }
 
 .brand-subtitle {
@@ -343,7 +490,7 @@
 /* Ultra-Fast Performance Optimizations */
 .poster-image {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     transform: translateZ(0); /* GPU acceleration */
     will-change: transform;
     contain: layout style paint;
@@ -351,9 +498,11 @@
 }
 
 .poster-image img {
-    opacity: 0;
+    opacity: 1;
     transform: translateZ(0); /* GPU acceleration */
     will-change: opacity;
+    object-fit: contain;
+    border-radius: 0 !important;
 }
 
 .poster-image img[data-loaded="true"] {
@@ -413,6 +562,453 @@ button:focus {
 img {
     max-width: 100%;
     height: auto;
+}
+
+/* Amazon-Style E-commerce Layout */
+.poster-detail-container {
+    padding: 1.5rem 0;
+    background: var(--dark-color);
+}
+
+.poster-detail-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    min-height: 600px;
+}
+
+.poster-image-column {
+    flex: 0 0 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 2rem;
+    order: 1;
+}
+
+.poster-details-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    min-width: 0;
+    order: 2;
+}
+
+.poster-detail-image {
+    width: 100%;
+    max-width: 280px;
+}
+
+.poster-detail-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0;
+    max-height: 380px;
+    border: none;
+    background: transparent;
+}
+
+.poster-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Product Title */
+.product-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--light-color);
+    line-height: 1.3;
+    margin: 0;
+}
+
+/* Store Link */
+.store-link {
+    font-size: 0.9rem;
+    color: #1e88e5;
+    margin-bottom: 0.5rem;
+}
+
+.store-link strong {
+    color: #1e88e5;
+}
+
+/* Rating Section */
+.rating-section {
+    margin-bottom: 0.5rem;
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.rating-score {
+    color: var(--light-color);
+    font-weight: 600;
+}
+
+.stars {
+    color: #ff9800;
+    font-size: 1rem;
+}
+
+.rating-count {
+    color: #1e88e5;
+}
+
+/* Badges */
+.popular-badge {
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    background: #ff6b35;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.sales-info {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.deal-badge {
+    margin-bottom: 0.5rem;
+}
+
+.limited-deal {
+    background: #d32f2f;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Pricing Section */
+.pricing-section {
+    margin-bottom: 1.5rem;
+}
+
+.discount-info {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.discount-percent {
+    color: #d32f2f;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.current-price {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--light-color);
+}
+
+.original-price {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.tax-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Product Options */
+.product-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.option-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--light-color);
+    margin: 0;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.toggle-btn {
+    padding: 0.5rem 1rem;
+    background: var(--dark-color);
+    color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 40px;
+}
+
+.toggle-btn:hover {
+    background: rgba(168, 168, 168, 0.1);
+}
+
+.toggle-btn.active {
+    background: #1e88e5;
+    color: white;
+    border-color: #1e88e5;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-add-cart,
+.btn-buy-now {
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    text-align: center;
+}
+
+.btn-add-cart {
+    background: #ffa726;
+    color: black;
+}
+
+.btn-add-cart:hover {
+    background: #ff9800;
+}
+
+.btn-buy-now {
+    background: #ff6b35;
+    color: white;
+}
+
+.btn-buy-now:hover {
+    background: #f4511e;
+}
+
+
+
+/* Back Navigation */
+.back-navigation {
+    margin-top: 1rem;
+}
+
+.btn-back {
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: rgba(168, 168, 168, 0.1);
+    color: var(--light-color);
+}
+
+/* Tablet Responsive - Medium screens */
+@media (max-width: 968px) {
+    .poster-detail-layout {
+        gap: 1.5rem;
+    }
+    
+    .poster-image-column {
+        flex: 0 0 280px;
+    }
+    
+    .product-title {
+        font-size: 1.3rem;
+    }
+    
+    .current-price {
+        font-size: 1.6rem;
+    }
+}
+
+/* Mobile Responsive - Small screens */
+@media (max-width: 768px) {
+    .poster-detail-layout {
+        flex-direction: row;
+        gap: 1rem;
+    }
+    
+    .poster-image-column {
+        flex: 0 0 150px;
+        order: 1;
+        position: static;
+    }
+    
+    .poster-details-column {
+        flex: 1;
+        order: 2;
+        padding-left: 1rem;
+    }
+    
+    .poster-detail-info {
+        gap: 1.2rem;
+    }
+    
+    .product-title {
+        margin-bottom: 0.5rem;
+    }
+    
+    .pricing-section {
+        margin-bottom: 1rem;
+    }
+    
+    .product-options {
+        margin-bottom: 1.2rem;
+    }
+    
+    .product-title {
+        font-size: 1.2rem;
+    }
+    
+    .current-price {
+        font-size: 1.5rem;
+    }
+    
+    .poster-detail-image img {
+        max-width: 140px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* Very Small Mobile - Extra responsive */
+@media (max-width: 480px) {
+    .poster-detail-container {
+        padding: 0.5rem 0;
+    }
+    
+    .poster-detail-layout {
+        gap: 0.8rem;
+        flex-direction: row;
+    }
+    
+    .poster-image-column {
+        flex: 0 0 120px;
+        order: 1;
+    }
+    
+    .poster-details-column {
+        flex: 1;
+        order: 2;
+        padding-left: 0.8rem;
+    }
+    
+    .poster-detail-info {
+        gap: 1rem;
+    }
+    
+    .product-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .pricing-section {
+        margin-bottom: 0.8rem;
+    }
+    
+    .product-options {
+        margin-bottom: 1rem;
+    }
+    
+    .option-group {
+        margin-bottom: 0.8rem;
+    }
+    
+    .poster-detail-image img {
+        max-width: 110px;
+    }
+    
+    .toggle-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .poster-title {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+    
+    .price-display {
+        text-align: center;
+    }
+    
+    .current-price {
+        font-size: 1.3rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .poster-options {
+        gap: 1rem;
+    }
+    
+    .toggle-group {
+        justify-content: center;
+    }
+    
+    .toggle-btn {
+        padding: 0.8rem 0.8rem;
+        font-size: 0.85rem;
+        min-width: 60px;
+        flex: 1;
+        max-width: 100px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-add-cart,
+    .btn-buy-now {
+        min-height: 60px;
+        font-size: 1rem;
+        padding: 1rem 1rem;
+    }
 }
 
 /* Print Styles */
@@ -824,7 +1420,7 @@ body {
     align-items: initial;
     justify-content: initial;
     padding-top: 2rem;
-    background: var(--white);
+    background: var(--dark-color);
 }
 
 /* Poster Detail Styles */
@@ -839,6 +1435,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    background: transparent;
 }
 
 .poster-detail-image img {
@@ -850,11 +1447,12 @@ body {
 
 /* Ultra-Fast Image loading optimization */
 .poster-image img, .poster-detail-image img {
-    opacity: 0;
-    animation: fadeIn 0.3s ease forwards;
+    opacity: 1;
     will-change: opacity, transform;
     background: transparent;
     transform: translateZ(0); /* GPU acceleration */
+    border: none;
+    box-shadow: none;
 }
 
 @keyframes fadeIn {
@@ -866,7 +1464,7 @@ body {
 /* Ultra-Fast Skeleton loading for images */
 .poster-image {
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     transform: translateZ(0); /* GPU acceleration */
     contain: layout style paint;
@@ -1771,13 +2369,12 @@ body {
 .poster-image {
     width: 100%;
     height: auto;
-    overflow: hidden;
-    aspect-ratio: 2/3;
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
     margin-bottom: 0.5rem;
+    border-radius: 0 !important;
 }
 
 @media (max-width: 768px) {
@@ -1802,8 +2399,9 @@ body {
 .poster-image img {
     width: 100%;
     height: auto;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+    border-radius: 0 !important;
 }
 
 @media (max-width: 768px) {
