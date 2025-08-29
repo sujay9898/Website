@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header { 
+            background-color: #2c3e50; 
+            color: white; 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: normal;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content { 
+            padding: 30px; 
+        }
+        .greeting {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .intro-text {
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .order-section { 
+            border-left: 4px solid #3498db; 
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+        }
+        .order-id { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 20px; 
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .item-details { 
+            background-color: #ecf0f1; 
+            padding: 15px; 
+            border-radius: 4px; 
+            margin: 10px 0; 
+        }
+        .item-row {
+            margin-bottom: 8px;
+        }
+        .total-row { 
+            text-align: right; 
+            margin-top: 15px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #27ae60; 
+        }
+        .address-section {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .address-info {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .closing-text {
+            margin: 25px 0;
+            line-height: 1.6;
+        }
+        .footer { 
+            margin-top: 30px; 
+            padding-top: 20px; 
+            border-top: 2px solid #3498db; 
+            text-align: center; 
+        }
+        .signature { 
+            color: #7f8c8d; 
+            font-size: 14px; 
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Filmytea</h1>
+            <p>Your Order Confirmation</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Dear {{customer_name}},</div>
+            
+            <div class="intro-text">
+                Thank you for placing your order with <strong>Filmytea</strong>! We are excited to let you know that your order has been successfully received and is currently being processed.
+            </div>
+            
+            <div class="order-section">
+                <div class="order-id">Order ID: {{order_id}}</div>
+                
+                <div class="section-title">Item Details:</div>
+                <div class="item-details">
+                    {{order_items}}
+                </div>
+                
+                <div class="total-row">Total Amount: {{total_amount}}</div>
+            </div>
+            
+            <div class="address-section">
+                <div class="section-title">Delivery Information:</div>
+                <div class="address-info">
+                    <strong>Delivery Address:</strong><br>
+                    {{delivery_address}}<br><br>
+                    <strong>Phone:</strong> {{phone_number}}<br>
+                    <strong>Payment Method:</strong> {{payment_method}}
+                </div>
+            </div>
+            
+            <div class="closing-text">
+                Once your order is shipped, you will receive another email with tracking details.<br><br>
+                
+                If you have any questions or need further assistance, feel free to reach out to us!<br><br>
+                
+                Thank you for your support, and we look forward to delivering your amazing posters soon!
+            </div>
+            
+            <div class="footer">
+                <p><strong>Best Regards,</strong><br>
+                <em>Filmytea Team</em></p>
+                
+                <div class="signature">
+                    Contact: <a href="mailto:filmyteacare@gmail.com">filmyteacare@gmail.com</a><br>
+                    Visit us at Filmytea for more amazing posters!
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

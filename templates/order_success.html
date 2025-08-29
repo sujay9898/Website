@@ -134,19 +134,15 @@
                 emailjs.init(EMAILJS_PUBLIC_KEY);
                 console.log('EmailJS initialized successfully');
 
-                // Prepare email template parameters
+                // Prepare email template parameters to match your EmailJS template
                 const templateParams = {
-                    to_name: orderInfo.customerName,
-                    to_email: orderInfo.customerEmail,
                     customer_name: orderInfo.customerName,
                     order_id: orderInfo.orderId,
                     order_items: 'Your poster order has been confirmed successfully!',
                     total_amount: '₹499', // You can make this dynamic
                     delivery_address: orderInfo.address + ', ' + orderInfo.city + ', ' + orderInfo.state + ' - ' + orderInfo.pincode,
                     phone_number: orderInfo.phone,
-                    payment_method: orderInfo.paymentMethod,
-                    from_name: 'Filmytea Team',
-                    reply_to: 'filmyteacare@gmail.com'
+                    payment_method: orderInfo.paymentMethod
                 };
 
                 console.log('Sending email with parameters:', {
