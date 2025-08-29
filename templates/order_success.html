@@ -82,6 +82,21 @@
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
+    <!-- Order data as separate JSON -->
+    <script type="application/json" id="order-data">
+        {
+            "customerName": {{ order["Customer Name"]|tojson }},
+            "customerEmail": {{ order["Email"]|tojson }},
+            "orderId": {{ (order_id or "N/A")|tojson }},
+            "phone": {{ order["Phone Number"]|tojson }},
+            "address": {{ order["Address"]|tojson }},
+            "city": {{ order["City"]|tojson }},
+            "state": {{ order["State"]|tojson }},
+            "pincode": {{ order["Pincode"]|tojson }},
+            "paymentMethod": {% if order['Cash on Delivery'] == 'Yes' %}"Cash on Delivery"{% else %}"Online Payment"{% endif %}
+        }
+    </script>
+    
     <script>
         // Clear cart
         localStorage.removeItem('filmytea_cart');
@@ -94,18 +109,8 @@
         const SERVICE_ID = 'service_tcps7l8';
         const TEMPLATE_ID = 'template_1mfigpi';
 
-        // Order data
-        const orderInfo = {
-            customerName: '{{ order["Customer Name"]|replace("'", "\\'") }}',
-            customerEmail: '{{ order["Email"] }}',
-            orderId: '{{ order_id or "N/A" }}',
-            phone: '{{ order["Phone Number"] }}',
-            address: '{{ order["Address"]|replace("'", "\\'") }}',
-            city: '{{ order["City"] }}',
-            state: '{{ order["State"] }}',
-            pincode: '{{ order["Pincode"] }}',
-            paymentMethod: {% if order['Cash on Delivery'] == 'Yes' %}'Cash on Delivery'{% else %}'Online Payment'{% endif %}
-        };
+        // Load order data from JSON script tag
+        const orderInfo = JSON.parse(document.getElementById('order-data').textContent);
 
         // Initialize EmailJS and send email
         console.log('Order success page loaded, will attempt to send email in 2 seconds...');
