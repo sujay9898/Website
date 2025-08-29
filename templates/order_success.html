@@ -126,15 +126,33 @@
                 total_amount: '₹159' // You can make this dynamic if needed
             };
             
-            // Create order items list
+            // Create order items list from backend data (more reliable)
             let orderItems = '';
-            try {
-                const cartData = JSON.parse(localStorage.getItem('filmytea_cart_backup')) || [];
-                cartData.forEach(item => {
-                    orderItems += `${item.name} (${item.size}, ${item.frame}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
+            
+            // Try to get cart items from backend first
+            const backendCartItems = {{ cart_items | tojson | safe }};
+            
+            if (backendCartItems && backendCartItems.length > 0) {
+                // Use cart items from backend (most reliable)
+                backendCartItems.forEach(item => {
+                    orderItems += `${item.name} (Size: ${item.size}, Frame: ${item.frameText || 'No Frame'}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
                 });
-            } catch (e) {
-                orderItems = 'Order details processed successfully';
+            } else {
+                // Fallback to localStorage
+                try {
+                    let cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || 
+                                  JSON.parse(localStorage.getItem('filmytea_cart_backup')) || [];
+                    
+                    if (cartData.length > 0) {
+                        cartData.forEach(item => {
+                            orderItems += `${item.name} (Size: ${item.size}, Frame: ${item.frameText || item.frame || 'No Frame'}) - Qty: ${item.quantity} - ₹${item.price * item.quantity}\n`;
+                        });
+                    } else {
+                        orderItems = 'Movie Poster (Size: A4, Frame: Custom) - Qty: 1 - ₹159\n';
+                    }
+                } catch (e) {
+                    orderItems = 'Your poster order has been confirmed\n';
+                }
             }
             
             // EmailJS template parameters
@@ -158,6 +176,9 @@
                 customer_name: orderData.customer_name,
                 order_id: orderData.order_id
             });
+            
+            // Debug: Log cart items being sent
+            console.log('Order Items being sent:', orderItems);
             
             // Send email using templateParams
             emailjs.send('service_tcps7l8', 'template_1mfigpi', templateParams)

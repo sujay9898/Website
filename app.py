@@ -422,8 +422,8 @@ def confirm_order():
             logging.error(f"Failed to send order confirmation email: {e}")
             order_id = "EMAIL_FAILED"
     
-    # Render success page with order details
-    return render_template('order_success.html', order=order, order_id=order_id)
+    # Render success page with order details and cart items
+    return render_template('order_success.html', order=order, order_id=order_id, cart_items=cart_items)
 
 # Error handlers
 @app.errorhandler(404)
