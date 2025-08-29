@@ -138,6 +138,7 @@
 
                 // Prepare email template parameters to match your EmailJS template
                 const templateParams = {
+                    to_email: orderInfo.customerEmail,  // Add recipient email
                     customer_name: orderInfo.customerName,
                     order_id: orderInfo.orderId,
                     order_items: 'Your poster order has been confirmed successfully!',
