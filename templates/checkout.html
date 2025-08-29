@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add all form data
         const formData = new FormData(form);
         formData.append('cart_total', total);
-        formData.append('cart_items', JSON.stringify(cart));
+        formData.append('cart_items', JSON.stringify(checkoutCart));
         
         for (let [key, value] of formData.entries()) {
             const input = document.createElement('input');
