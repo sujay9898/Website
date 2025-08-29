@@ -513,43 +513,7 @@ def create_payment():
             'cart_total': cart_total
         }
         
-        # Try to create real Instamojo payment
-        if instamojo_api:
-            try:
-                # Create payment request with Instamojo
-                payment_request = instamojo_api.payment_request_create(
-                    amount=str(cart_total),
-                    purpose=f"Filmytea Poster Order - {customer_name}",
-                    send_email=True,
-                    email=email,
-                    buyer_name=customer_name,
-                    phone=phone,
-                    redirect_url=request.url_root + 'payment-success',
-                    webhook=request.url_root + 'payment-webhook',
-                    allow_repeated_payments=False
-                )
-                
-                if payment_request['success']:
-                    payment_url = payment_request['payment_request']['longurl']
-                    payment_id = payment_request['payment_request']['id']
-                    
-                    # Store payment ID in session
-                    session['pending_order']['payment_request_id'] = payment_id
-                    
-                    logging.info(f"Instamojo payment created: {payment_id}")
-                    
-                    # Redirect to Instamojo payment page
-                    return redirect(payment_url)
-                else:
-                    logging.error(f"Instamojo payment creation failed: {payment_request}")
-                    raise Exception("Payment creation failed")
-                    
-            except Exception as e:
-                logging.error(f"Instamojo payment error: {e}")
-                # Fall back to dummy payment
-                pass
-        
-        # Fallback to dummy payment system
+        # Always use on-site payment system for better user experience
         dummy_payment_id = f"dummy_{int(time.time())}"
         session['pending_order']['payment_id'] = dummy_payment_id
         
