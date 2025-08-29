@@ -104,11 +104,7 @@
             city: '{{ order["City"] }}',
             state: '{{ order["State"] }}',
             pincode: '{{ order["Pincode"] }}',
-            {% if order['Cash on Delivery'] == 'Yes' %}
-            paymentMethod: 'Cash on Delivery'
-            {% else %}
-            paymentMethod: 'Online Payment'
-            {% endif %}
+            paymentMethod: {% if order['Cash on Delivery'] == 'Yes' %}'Cash on Delivery'{% else %}'Online Payment'{% endif %}
         };
 
         // Initialize EmailJS and send email
