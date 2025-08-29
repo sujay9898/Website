@@ -7,13 +7,36 @@
 {% block content %}
 <div class="new-hero-container">
     <div class="new-hero-content">
-        <h1 class="crafted-title">Crafted<br>for you</h1>
+        <h1 class="crafted-title" id="animatedTitle">Filmytea</h1>
         <a href="{{ url_for('posters') }}" class="posters-button" aria-label="Browse our poster collection">
             Posters
         </a>
     </div>
     
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleElement = document.getElementById('animatedTitle');
+    const texts = ['Filmytea', 'Crafted<br>for you'];
+    let currentIndex = 0;
+    
+    function fadeTitle() {
+        titleElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % texts.length;
+            titleElement.innerHTML = texts[currentIndex];
+            titleElement.style.opacity = '1';
+        }, 500); // Half second fade out, then fade in
+    }
+    
+    // Start the animation after 1 second
+    setInterval(fadeTitle, 1000);
+});
+</script>
 {% endblock %}
 
 {% block structured_data %}
