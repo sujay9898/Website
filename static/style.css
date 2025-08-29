@@ -124,6 +124,9 @@
 }
 
 .posters-button {
+    position: absolute;
+    top: 430px;
+    left: 82px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
