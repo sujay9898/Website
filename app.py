@@ -462,7 +462,7 @@ def api_search():
 
 @app.route('/create-payment', methods=['POST'])
 def create_payment():
-    """Dummy payment system for development"""
+    """Create Instamojo payment or fallback to dummy system"""
     try:
         # Get order details from form
         customer_name = request.form.get('customer_name')
@@ -497,12 +497,10 @@ def create_payment():
             logging.error(f"Error parsing cart items: {e}")
             cart_items = []
         
-        # Store order data in session for dummy payment
         from flask import session
         import time
         
-        dummy_payment_id = f"dummy_{int(time.time())}"
-        
+        # Store order data in session
         session['pending_order'] = {
             'customer_name': customer_name,
             'email': email,
@@ -512,17 +510,56 @@ def create_payment():
             'city': request.form.get('city'),
             'state': request.form.get('state'),
             'cart_items': cart_items,
-            'cart_total': cart_total,
-            'payment_id': dummy_payment_id
+            'cart_total': cart_total
         }
         
-        logging.info(f"Dummy payment created: {dummy_payment_id}")
+        # Try to create real Instamojo payment
+        if instamojo_api:
+            try:
+                # Create payment request with Instamojo
+                payment_request = instamojo_api.payment_request_create(
+                    amount=str(cart_total),
+                    purpose=f"Filmytea Poster Order - {customer_name}",
+                    send_email=True,
+                    email=email,
+                    buyer_name=customer_name,
+                    phone=phone,
+                    redirect_url=request.url_root + 'payment-success',
+                    webhook=request.url_root + 'payment-webhook',
+                    allow_repeated_payments=False
+                )
+                
+                if payment_request['success']:
+                    payment_url = payment_request['payment_request']['longurl']
+                    payment_id = payment_request['payment_request']['id']
+                    
+                    # Store payment ID in session
+                    session['pending_order']['payment_request_id'] = payment_id
+                    
+                    logging.info(f"Instamojo payment created: {payment_id}")
+                    
+                    # Redirect to Instamojo payment page
+                    return redirect(payment_url)
+                else:
+                    logging.error(f"Instamojo payment creation failed: {payment_request}")
+                    raise Exception("Payment creation failed")
+                    
+            except Exception as e:
+                logging.error(f"Instamojo payment error: {e}")
+                # Fall back to dummy payment
+                pass
+        
+        # Fallback to dummy payment system
+        dummy_payment_id = f"dummy_{int(time.time())}"
+        session['pending_order']['payment_id'] = dummy_payment_id
+        
+        logging.info(f"Using dummy payment: {dummy_payment_id}")
         
         # Redirect to dummy payment page
         return redirect(url_for('dummy_payment', payment_id=dummy_payment_id))
         
     except Exception as e:
-        logging.error(f"Error creating dummy payment: {e}")
+        logging.error(f"Error creating payment: {e}")
         flash('Error processing payment. Please try again.', 'error')
         return redirect(url_for('checkout'))
 
@@ -551,7 +588,7 @@ def dummy_payment():
 
 @app.route('/payment-success')
 def payment_success():
-    """Handle successful dummy payment redirect"""
+    """Handle successful payment redirect from Instamojo or dummy payment"""
     from flask import session
     
     payment_id = request.args.get('payment_id')
@@ -562,13 +599,34 @@ def payment_success():
     
     # Debug: Log session data
     logging.info(f"Payment success accessed with payment_id: {payment_id}")
+    logging.info(f"Payment request ID: {payment_request_id}")
     logging.info(f"Session pending_order exists: {pending_order is not None}")
     if pending_order:
         logging.info(f"Pending order customer: {pending_order.get('customer_name', 'Unknown')}")
     
     if pending_order:
         try:
-            # For dummy payment, always consider it successful
+            payment_status = 'Paid (Demo)'
+            final_payment_id = payment_id or 'DEMO_PAYMENT'
+            
+            # Check if this is a real Instamojo payment
+            if payment_request_id and instamojo_api:
+                try:
+                    # Verify payment status with Instamojo
+                    payment_details = instamojo_api.payment_request_status(payment_request_id)
+                    if payment_details['success']:
+                        payments = payment_details['payment_request']['payments']
+                        if payments and len(payments) > 0:
+                            payment_status = 'Paid (Instamojo)'
+                            final_payment_id = payments[0]['payment_id']
+                            logging.info(f"Instamojo payment verified: {final_payment_id}")
+                        else:
+                            logging.warning("No payments found for this request")
+                    else:
+                        logging.error(f"Payment verification failed: {payment_details}")
+                except Exception as e:
+                    logging.error(f"Error verifying Instamojo payment: {e}")
+            
             order = {
                 'Customer Name': pending_order['customer_name'],
                 'Email': pending_order['email'],
@@ -577,8 +635,8 @@ def payment_success():
                 'Pincode': pending_order['pincode'],
                 'City': pending_order['city'],
                 'State': pending_order['state'],
-                'Payment Status': 'Paid (Demo)',
-                'Payment ID': payment_id or 'DEMO_PAYMENT',
+                'Payment Status': payment_status,
+                'Payment ID': final_payment_id,
                 'Amount': pending_order['cart_total']
             }
             
