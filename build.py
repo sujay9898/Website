@@ -24,6 +24,17 @@ def create_dist_directory():
     if Path('static').exists():
         shutil.copytree('static', dist_dir / 'static')
         print("✓ Copied static files")
+        
+        # Create a manifest for static files
+        static_files = []
+        for root, dirs, files in os.walk(dist_dir / 'static'):
+            for file in files:
+                rel_path = os.path.relpath(os.path.join(root, file), dist_dir)
+                static_files.append(rel_path)
+        
+        with open(dist_dir / 'static_manifest.json', 'w') as f:
+            json.dump({'static_files': static_files}, f)
+        print("✓ Created static files manifest")
     
     # Copy any standalone HTML files (if they exist)
     html_files = ['index.html', 'poster.html', 'posters.html', 'cart.html', 'checkout.html', 'order-success.html']

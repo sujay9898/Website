@@ -1,18 +1,28 @@
 # Netlify configuration for Flask application
 [build]
   publish = "dist"
-  command = "python build.py"
+  command = "pip install -e . && python build.py"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
+  PIP_DISABLE_PIP_VERSION_CHECK = "1"
 
 [functions]
   directory = "netlify/functions"
+
+[functions.app]
+  included_files = ["app.py", "email_service.py", "templates/**/*", "static/**/*", "instance/**/*"]
 
 # Redirect all API routes to serverless function
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/app/:splat"
+  status = 200
+
+# Handle static files directly (not through function)
+[[redirects]]
+  from = "/static/*"
+  to = "/static/:splat"
   status = 200
 
 # Handle all other routes through the Flask app

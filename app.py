@@ -65,8 +65,11 @@ def add_cache_headers(response):
 db.init_app(app)
 
 with app.app_context():
-    # Create tables if needed
-    db.create_all()
+    # Create tables if needed (only if database is available)
+    try:
+        db.create_all()
+    except Exception as e:
+        logging.warning(f"Database not available during startup: {e}")
 
 # Initialize Instamojo
 api_key = os.environ.get("INSTAMOJO_API_KEY")
