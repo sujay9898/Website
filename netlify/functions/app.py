@@ -18,7 +18,18 @@ if os.path.exists(env_path):
                 except ValueError:
                     pass
 
-from app import app
+# Import Flask app with error handling
+try:
+    from app import app
+except ImportError as e:
+    print(f"Import error: {e}")
+    # Create a simple Flask app as fallback
+    from flask import Flask
+    app = Flask(__name__)
+    
+    @app.route('/')
+    def index():
+        return f"Import Error: {str(e)}. Check function deployment."
 
 def handler(event, context):
     """
