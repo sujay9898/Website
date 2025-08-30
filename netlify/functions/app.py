@@ -18,18 +18,38 @@ if os.path.exists(env_path):
                 except ValueError:
                     pass
 
-# Import Flask app with error handling
+# Import Flask app with better error handling
 try:
     from app import app
+    print("Successfully imported Flask app")
 except ImportError as e:
     print(f"Import error: {e}")
+    print(f"Current directory: {os.getcwd()}")
+    print(f"Python path: {sys.path}")
+    
     # Create a simple Flask app as fallback
     from flask import Flask
     app = Flask(__name__)
     
     @app.route('/')
-    def index():
-        return f"Import Error: {str(e)}. Check function deployment."
+    @app.route('/<path:path>')
+    def debug_info(path=''):
+        import traceback
+        return f"""
+        <h1>Netlify Function Debug Info</h1>
+        <h2>Import Error:</h2>
+        <pre>{str(e)}</pre>
+        <h2>Current Directory:</h2>
+        <pre>{os.getcwd()}</pre>
+        <h2>Files Available:</h2>
+        <pre>{str(os.listdir('.'))}</pre>
+        <h2>Python Path:</h2>
+        <pre>{chr(10).join(sys.path)}</pre>
+        <h2>Environment Variables:</h2>
+        <pre>{chr(10).join([f'{k}={v}' for k, v in os.environ.items() if 'PATH' in k or 'PYTHON' in k])}</pre>
+        <h2>Traceback:</h2>
+        <pre>{traceback.format_exc()}</pre>
+        """
 
 def handler(event, context):
     """

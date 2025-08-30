@@ -11,14 +11,7 @@
   directory = "netlify/functions"
 
 [functions.app]
-  included_files = ["app.py", "email_service.py", "templates/**/*", "static/**/*", "instance/**/*"]
-  
-[functions."*"]
-  node_bundler = "esbuild"
-  
-[[functions.app.environment]]
-  name = "PYTHONPATH"
-  value = "/opt/buildhome/repo"
+  included_files = ["*.py", "templates/**/*", "static/**/*"]
 
 # Redirect all API routes to serverless function
 [[redirects]]
