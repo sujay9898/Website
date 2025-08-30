@@ -50,6 +50,12 @@ def create_dist_directory():
             shutil.copy2(js_file, dist_dir / js_file)
             print(f"✓ Copied {js_file}")
     
+    # Copy _redirects file to dist directory
+    redirects_file = Path('_redirects')
+    if redirects_file.exists():
+        shutil.copy2(redirects_file, dist_dir / '_redirects')
+        print("✓ Copied _redirects file")
+    
     # Create a simple index.html fallback if it doesn't exist
     index_path = dist_dir / 'index.html'
     if not index_path.exists():
