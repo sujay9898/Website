@@ -1,33 +1,44 @@
-import os
-import logging
 import json
+import sys
+import os
+from urllib.parse import unquote
 
-# Load environment variables from .env file
-if os.path.exists('.env'):
-    with open('.env', 'r') as f:
+# Load environment variables from .env file if it exists
+env_path = os.path.join(os.path.dirname(__file__), '..', '..', '.env')
+if os.path.exists(env_path):
+    with open(env_path, 'r') as f:
         for line in f:
             if line.strip() and not line.startswith('#'):
-                key, value = line.strip().split('=', 1)
-                os.environ[key] = value
+                try:
+                    key, value = line.strip().split('=', 1)
+                    os.environ[key] = value
+                except ValueError:
+                    pass
 
+# Import all the required modules for Flask app
+import logging
 from flask import Flask, render_template, abort, request, redirect, url_for, jsonify, flash
-from email_service import send_order_confirmation_email
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
-from instamojo_wrapper import Instamojo
 
+# Import email service from same directory
+from email_service import send_order_confirmation_email
+
+try:
+    from instamojo_wrapper import Instamojo
+except ImportError:
+    Instamojo = None
 
 class Base(DeclarativeBase):
     pass
 
-
 db = SQLAlchemy(model_class=Base)
 
 # create the app
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = os.environ.get("SESSION_SECRET", "dummy-secret-key-for-development-123")
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # needed for url_for to generate with https
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # configure the database, relative to the app instance folder
 database_url = os.environ.get("DATABASE_URL")
@@ -75,8 +86,7 @@ with app.app_context():
 api_key = os.environ.get("INSTAMOJO_API_KEY")
 auth_token = os.environ.get("INSTAMOJO_AUTH_TOKEN")
 
-if api_key and auth_token:
-    # Use production endpoint with test credentials for testing
+if api_key and auth_token and Instamojo:
     instamojo_api = Instamojo(
         api_key=api_key,
         auth_token=auth_token,
@@ -86,7 +96,7 @@ else:
     instamojo_api = None
     logging.warning("Instamojo credentials not configured")
 
-# Poster data - prices from individual items not used (pricing handled by cart.js)
+# Poster data
 ALL_POSTERS = [
     {
         'id': 'poster_1',
@@ -324,18 +334,15 @@ ALL_POSTERS = [
     }
 ]
 
-
 @app.route('/')
 def index():
     """Homepage with posters button"""
     return render_template('index.html')
 
-
 @app.route('/posters')
 def posters():
     """Posters page displaying all posters"""
     return render_template('posters.html', posters=ALL_POSTERS)
-
 
 @app.route('/poster/<poster_id>')
 def poster_detail(poster_id):
@@ -351,26 +358,21 @@ def poster_detail(poster_id):
     
     return render_template('poster_detail.html', poster=poster)
 
-
 @app.route('/cart')
 def cart():
     """Cart page displaying items from localStorage"""
     return render_template('cart.html')
-
 
 @app.route('/checkout')
 def checkout():
     """Checkout page for order processing"""
     return render_template('checkout.html')
 
-
 @app.route('/process-order', methods=['POST'])
 def process_order():
     """Show order preview with customer details and edit options"""
-    # Collect order details from form (simulating the input() calls from the Python code)
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
-    # Shipping Address section
     order['Address'] = request.form.get('address')
     order['Pincode'] = request.form.get('pincode')
     order['City'] = request.form.get('city')
@@ -384,7 +386,6 @@ def process_order():
 @app.route('/confirm-order', methods=['POST'])
 def confirm_order():
     """Final order confirmation after preview"""
-    # Collect order details from form again
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
     order['Address'] = request.form.get('address')
@@ -395,25 +396,21 @@ def confirm_order():
     order['Email'] = request.form.get('email')
     order['Cash on Delivery'] = request.form.get('cash_on_delivery')
     
-    # Get cart items from the hidden form field
     cart_items_json = request.form.get('cart_items', '[]')
     try:
         cart_items = json.loads(cart_items_json)
     except:
         cart_items = []
     
-    # Exact output as in the Python code
     print("Order captured successfully! Here are the details:")
     print()
     for key, value in order.items():
         print(f"{key}: {value}")
     
-    # Also log to application logger
     logging.info("Order captured successfully! Here are the details:")
     for key, value in order.items():
         logging.info(f"{key}: {value}")
     
-    # Send order confirmation email immediately
     order_id = None
     if order.get('Email'):
         try:
@@ -425,7 +422,6 @@ def confirm_order():
             logging.error(f"Failed to send order confirmation email: {e}")
             order_id = "EMAIL_FAILED"
     
-    # Render success page with order details and cart items
     emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
     return render_template('order_success.html', 
                          order=order, 
@@ -435,11 +431,9 @@ def confirm_order():
 
 @app.route('/email-test')
 def email_test():
-    # EmailJS configuration for testing
     emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
     return render_template('email_test.html', emailjs_public_key=emailjs_public_key)
 
-# Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('error.html', 
@@ -452,7 +446,6 @@ def internal_error(error):
                          error_code=500, 
                          error_message="Internal server error"), 500
 
-# API endpoint for poster search
 @app.route('/api/search')
 def api_search():
     query = request.args.get('q', '').lower()
@@ -461,227 +454,75 @@ def api_search():
     
     results = [poster for poster in ALL_POSTERS 
               if query in poster['name'].lower()]
-    return jsonify(results[:10])  # Limit to 10 results
+    return jsonify(results[:10])
 
-@app.route('/create-payment', methods=['POST'])
-def create_payment():
-    """Create Instamojo payment or fallback to dummy system"""
+# Netlify serverless function handler
+def handler(event, context):
+    """
+    Netlify function handler for Flask app
+    """
     try:
-        # Get order details from form
-        customer_name = request.form.get('customer_name')
-        email = request.form.get('email')
-        phone = request.form.get('phone_number')
-        cart_total = float(request.form.get('cart_total', 0))
+        # Get the request path and method
+        raw_path = event.get('path', '/')
+        method = event.get('httpMethod', 'GET')
+        headers = event.get('headers', {})
+        query_params = event.get('queryStringParameters') or {}
+        body = event.get('body', '')
+        is_base64 = event.get('isBase64Encoded', False)
         
-        # Get cart items and sanitize them
-        cart_items_json = request.form.get('cart_items', '[]')
-        try:
-            cart_items = json.loads(cart_items_json)
-            # Sanitize cart items to remove any undefined values
-            sanitized_cart_items = []
-            for item in cart_items:
-                if isinstance(item, dict):
-                    sanitized_item = {}
-                    for key, value in item.items():
-                        # Skip undefined/null values or replace with defaults
-                        if value is not None and str(value).lower() != 'undefined':
-                            sanitized_item[key] = value
-                        elif key == 'frameText':
-                            sanitized_item[key] = 'No Frame'
-                        elif key == 'quantity':
-                            sanitized_item[key] = 1
-                        elif key == 'price':
-                            sanitized_item[key] = 159
-                    # Only add items with required fields
-                    if 'name' in sanitized_item and 'price' in sanitized_item:
-                        sanitized_cart_items.append(sanitized_item)
-            cart_items = sanitized_cart_items
-        except Exception as e:
-            logging.error(f"Error parsing cart items: {e}")
-            cart_items = []
+        # Clean the path - remove function prefix if present
+        path = raw_path
+        if path.startswith('/.netlify/functions/app'):
+            path = path[len('/.netlify/functions/app'):]
+        if not path:
+            path = '/'
         
-        from flask import session
-        import time
+        # Decode URL encoding
+        path = unquote(path)
         
-        # Store order data in session
-        session['pending_order'] = {
-            'customer_name': customer_name,
-            'email': email,
-            'phone_number': phone,
-            'address': request.form.get('address'),
-            'pincode': request.form.get('pincode'),
-            'city': request.form.get('city'),
-            'state': request.form.get('state'),
-            'cart_items': cart_items,
-            'cart_total': cart_total
-        }
+        # Handle form data for POST requests
+        if method == 'POST' and body:
+            if is_base64:
+                import base64
+                body = base64.b64decode(body).decode('utf-8')
         
-        # Always use on-site payment system for better user experience
-        dummy_payment_id = f"dummy_{int(time.time())}"
-        session['pending_order']['payment_id'] = dummy_payment_id
-        
-        logging.info(f"Using dummy payment: {dummy_payment_id}")
-        
-        # Redirect to dummy payment page
-        return redirect(url_for('dummy_payment', payment_id=dummy_payment_id))
-        
-    except Exception as e:
-        logging.error(f"Error creating payment: {e}")
-        flash('Error processing payment. Please try again.', 'error')
-        return redirect(url_for('checkout'))
-
-@app.route('/dummy-payment')
-def dummy_payment():
-    """Display dummy payment page with UPI and card options"""
-    from flask import session
-    
-    payment_id = request.args.get('payment_id')
-    pending_order = session.get('pending_order')
-    
-    if not pending_order or not payment_id:
-        flash('Invalid payment session. Please try again.', 'error')
-        return redirect(url_for('checkout'))
-    
-    return render_template('dummy_payment.html',
-                         customer_name=pending_order['customer_name'],
-                         email=pending_order['email'],
-                         phone_number=pending_order['phone_number'],
-                         address=pending_order['address'],
-                         pincode=pending_order['pincode'],
-                         city=pending_order['city'],
-                         state=pending_order['state'],
-                         cart_total=pending_order['cart_total'],
-                         payment_id=payment_id)
-
-@app.route('/payment-success')
-def payment_success():
-    """Handle successful payment redirect from Instamojo or dummy payment"""
-    from flask import session
-    
-    payment_id = request.args.get('payment_id')
-    payment_request_id = request.args.get('payment_request_id')
-    
-    # Get order data from session
-    pending_order = session.get('pending_order')
-    
-    # Debug: Log session data
-    logging.info(f"Payment success accessed with payment_id: {payment_id}")
-    logging.info(f"Payment request ID: {payment_request_id}")
-    logging.info(f"Session pending_order exists: {pending_order is not None}")
-    if pending_order:
-        logging.info(f"Pending order customer: {pending_order.get('customer_name', 'Unknown')}")
-    
-    if pending_order:
-        try:
-            payment_status = 'Paid (Demo)'
-            final_payment_id = payment_id or 'DEMO_PAYMENT'
-            
-            # Check if this is a real Instamojo payment
-            if payment_request_id and instamojo_api:
-                try:
-                    # Verify payment status with Instamojo
-                    payment_details = instamojo_api.payment_request_status(payment_request_id)
-                    if payment_details['success']:
-                        payments = payment_details['payment_request']['payments']
-                        if payments and len(payments) > 0:
-                            payment_status = 'Paid (Instamojo)'
-                            final_payment_id = payments[0]['payment_id']
-                            logging.info(f"Instamojo payment verified: {final_payment_id}")
-                        else:
-                            logging.warning("No payments found for this request")
+        # Set up Flask app context
+        with app.test_request_context(path=path, method=method, headers=headers, query_string=query_params, data=body):
+            # Create a test client
+            with app.test_client() as client:
+                # Handle the request
+                if method == 'POST':
+                    content_type = headers.get('content-type', '')
+                    if 'application/x-www-form-urlencoded' in content_type:
+                        response = client.post(path, data=body, headers=headers, query_string=query_params)
+                    elif 'application/json' in content_type:
+                        response = client.post(path, json=json.loads(body) if body else {}, headers=headers, query_string=query_params)
                     else:
-                        logging.error(f"Payment verification failed: {payment_details}")
-                except Exception as e:
-                    logging.error(f"Error verifying Instamojo payment: {e}")
-            
-            order = {
-                'Customer Name': pending_order['customer_name'],
-                'Email': pending_order['email'],
-                'Phone Number': pending_order['phone_number'],
-                'Address': pending_order['address'],
-                'Pincode': pending_order['pincode'],
-                'City': pending_order['city'],
-                'State': pending_order['state'],
-                'Payment Status': payment_status,
-                'Payment ID': final_payment_id,
-                'Amount': pending_order['cart_total']
-            }
-            
-            # Sanitize cart items from session
-            cart_items = pending_order.get('cart_items', [])
-            if cart_items:
-                sanitized_cart_items = []
-                for item in cart_items:
-                    if isinstance(item, dict) and 'name' in item:
-                        sanitized_cart_items.append(item)
-                cart_items = sanitized_cart_items
-            
-            # Log successful order
-            logging.info("Order completed successfully with payment!")
-            for key, value in order.items():
-                logging.info(f"{key}: {value}")
-            
-            # Send order confirmation email
-            order_id = None
-            if order.get('Email'):
-                try:
-                    order_id = send_order_confirmation_email(order, cart_items)
-                    if order_id:
-                        logging.info(f"Order confirmation email sent successfully to {order['Email']}")
-                except Exception as e:
-                    logging.error(f"Failed to send order confirmation email: {e}")
-                    order_id = "EMAIL_FAILED"
-            
-            # Clear session data
-            session.pop('pending_order', None)
-            
-            emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
-            return render_template('order_success.html', 
-                                 order=order, 
-                                 order_id=order_id, 
-                                 cart_items=cart_items, 
-                                 paid=True,
-                                 emailjs_public_key=emailjs_public_key)
-        except Exception as e:
-            logging.error(f"Error verifying payment: {e}")
-            flash('Error verifying payment. Please contact support.', 'error')
-            return redirect(url_for('checkout'))
-    
-    flash('Invalid payment session. Please try again.', 'error')
-    return redirect(url_for('checkout'))
-
-@app.route('/payment-webhook', methods=['POST'])
-def payment_webhook():
-    """Handle Instamojo payment webhook"""
-    try:
-        data = request.form.to_dict()
-        logging.info(f"Payment webhook received: {data}")
-        
-        # Here you would typically verify the webhook MAC and update order status
-        # For now, just log the payment notification
-        if data.get('status') == 'Credit':
-            logging.info(f"Payment successful webhook: {data.get('payment_id')}")
-        
-        return "OK"
+                        response = client.post(path, data=body, headers=headers, query_string=query_params)
+                elif method == 'GET':
+                    response = client.get(path, headers=headers, query_string=query_params)
+                else:
+                    response = client.open(path, method=method, data=body, headers=headers, query_string=query_params)
+                
+                # Prepare response headers
+                response_headers = dict(response.headers)
+                
+                # Handle CORS for API requests
+                if path.startswith('/api/'):
+                    response_headers['Access-Control-Allow-Origin'] = '*'
+                    response_headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+                    response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+                
+                # Return the response
+                return {
+                    'statusCode': response.status_code,
+                    'headers': response_headers,
+                    'body': response.get_data(as_text=True)
+                }
+                
     except Exception as e:
-        logging.error(f"Webhook error: {e}")
-        return "Error", 500
-
-@app.route('/send-order-email', methods=['POST'])
-def send_order_email():
-    """Send order confirmation email with cart data"""
-    try:
-        data = request.get_json()
-        order_data = data.get('order', {})
-        cart_items = data.get('cart_items', [])
-        
-        order_id = send_order_confirmation_email(order_data, cart_items)
-        
-        if order_id:
-            return {'success': True, 'order_id': order_id}
-        else:
-            return {'success': False, 'error': 'Failed to send email'}, 500
-            
-    except Exception as e:
-        logging.error(f"Error sending order email: {e}")
-        return {'success': False, 'error': str(e)}, 500
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json'},
+            'body': json.dumps({'error': str(e), 'type': type(e).__name__})
+        }
