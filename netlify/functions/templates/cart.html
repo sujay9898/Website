@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - Filmytea{% endblock %}
+
+{% block description %}Review your selected movie posters before checkout. Secure payment and fast delivery across India.{% endblock %}
+
+{% block main_class %}cart-main{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href="{{ url_for('index') }}">Home</a> → 
+        <span aria-current="page">Cart</span>
+    </nav>
+    
+    <section class="cart-hero">
+        <h2>Your Shopping Cart</h2>
+    </section>
+
+            <section class="cart-content">
+                <div id="cart-empty" class="cart-empty" style="display: none;">
+                    <div class="empty-cart-message">
+                        <h3>Your cart is empty</h3>
+                        <p>Browse our collection and add some posters to get started!</p>
+                        <a href="{{ url_for('posters') }}" class="btn btn-primary">Browse Posters</a>
+                    </div>
+                </div>
+
+                <div id="cart-items" class="cart-items">
+                    <!-- Cart items will be populated by JavaScript -->
+                </div>
+
+                <div id="cart-summary" class="cart-summary" style="display: none;">
+                    <div class="summary-row">
+                        <span class="summary-label">Total Items:</span>
+                        <span id="total-items">0</span>
+                    </div>
+                    <div class="summary-row total-price">
+                        <span class="summary-label">Total Price:</span>
+                        <span id="total-price">₹0.00</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button id="clear-cart" class="btn btn-secondary">Clear Cart</button>
+                        <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-large">Proceed to Checkout</a>
+                    </div>
+                </div>
+            </section>
+    </section>
+</div>
+{% endblock %}

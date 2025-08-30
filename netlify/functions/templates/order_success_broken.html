@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Filmytea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+<main class="main order-success-main">
+    <div class="container">
+        <section class="order-success-hero">
+            <h2>Order confirmed successfully!</h2>
+            <p>Order ID: <span class="order-id">{{ order_id or 'Generating...' }}</span></p>
+            <p>A confirmation email has been sent to {{ order['Email'] }}</p>
+        </section>
+
+        <div class="order-details">
+            <div class="order-info-card">
+                <h3>Order Information</h3>
+                <div class="order-detail-row">
+                    <span class="label">Customer Name:</span>
+                    <span class="value">{{ order['Customer Name'] }}</span>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Shipping Address</h3>
+                <div class="address-details">
+                    <p>{{ order['Address'] }}</p>
+                    <p>{{ order['City'] }}, {{ order['State'] }} - {{ order['Pincode'] }}</p>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Contact Details</h3>
+                <div class="order-detail-row">
+                    <span class="label">Phone:</span>
+                    <span class="value">{{ order['Phone Number'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ order['Email'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Payment Method:</span>
+                    <span class="value">
+                        {% if order['Cash on Delivery'] == 'Yes' %}
+                            Cash on Delivery
+                        {% else %}
+                            Online Payment
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="{{ url_for('posters') }}" class="btn btn-primary">Continue Shopping</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- Pass data to JavaScript safely -->
+    <script>
+        window.orderData = {
+            customerName: {{ order['Customer Name']|tojson|safe }},
+            customerEmail: {{ order['Email']|tojson|safe }},
+            orderId: {{ order_id|tojson|safe }},
+            phone: {{ order['Phone Number']|tojson|safe }},
+            address: {{ order['Address']|tojson|safe }},
+            city: {{ order['City']|tojson|safe }},
+            state: {{ order['State']|tojson|safe }},
+            pincode: {{ order['Pincode']|tojson|safe }},
+            paymentMethod: {% if order['Cash on Delivery'] == 'Yes' %}'Cash on Delivery'{% else %}'Online Payment'{% endif %},
+            emailJsPublicKey: {{ emailjs_public_key|tojson|safe }}
+        };
+        window.cartItems = {{ (cart_items or [])|tojson|safe }};
+    </script>
+    
+    <script>
+        // Initialize EmailJS and send email
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear cart
+            localStorage.removeItem('filmytea_cart');
+            if (typeof cart !== 'undefined') {
+                cart.updateCartCount();
+            }
+            
+            // Initialize EmailJS after a short delay
+            setTimeout(initializeEmailJS, 1000);
+        });
+
+        function initializeEmailJS() {
+            if (typeof emailjs === 'undefined') {
+                console.error('EmailJS library not loaded');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
+
+            // Initialize EmailJS with public key
+            const publicKey = window.orderData.emailJsPublicKey;
+            if (!publicKey) {
+                console.error('EmailJS public key not found');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
+
+            emailjs.init(publicKey);
+            console.log('EmailJS initialized with key:', publicKey);
+            
+            // Send email
+            sendOrderConfirmationEmail();
+        }
+
+        function sendOrderConfirmationEmail() {
+            // Prepare order items text
+            let orderItemsText = '';
+            let totalAmount = 0;
+
+            if (window.cartItems && window.cartItems.length > 0) {
+                orderItemsText = "ORDER DETAILS:\n";
+                orderItemsText += "═══════════════════════════════════════════════════════════════════════════════════════════\n\n";
+                
+                window.cartItems.forEach((item, index) => {
+                    const itemTotal = (item.price || 0) * (item.quantity || 1);
+                    totalAmount += itemTotal;
+                    orderItemsText += `${index + 1}. ${item.name || 'Poster'}\n`;
+                    orderItemsText += `   Size: ${item.size || 'A4'}\n`;
+                    orderItemsText += `   Frame: ${item.frameText || 'No Frame'}\n`;
+                    orderItemsText += `   Quantity: ${item.quantity || 1}\n`;
+                    orderItemsText += `   Price: ₹${itemTotal}\n\n`;
+                });
+                
+                orderItemsText += "═══════════════════════════════════════════════════════════════════════════════════════════\n";
+                orderItemsText += `TOTAL AMOUNT: ₹${totalAmount}`;
+            } else {
+                orderItemsText = "ORDER DETAILS:\n";
+                orderItemsText += "═══════════════════════════════════════════════════════════════════════════════════════════\n\n";
+                orderItemsText += "Your poster order has been confirmed\n\n";
+                orderItemsText += "═══════════════════════════════════════════════════════════════════════════════════════════\n";
+                totalAmount = 159; // Default amount
+            }
+
+            // EmailJS template parameters
+            const templateParams = {
+                to_name: window.orderData.customerName,
+                to_email: window.orderData.customerEmail,
+                customer_name: window.orderData.customerName,
+                order_id: window.orderData.orderId,
+                order_items: orderItemsText,
+                total_amount: `₹${totalAmount}`,
+                delivery_address: `${window.orderData.address}, ${window.orderData.city}, ${window.orderData.state} - ${window.orderData.pincode}`,
+                phone_number: window.orderData.phone,
+                payment_method: window.orderData.paymentMethod,
+                from_name: 'Filmytea Team',
+                reply_to: 'filmyteacare@gmail.com'
+            };
+
+            console.log('Sending email with parameters:', templateParams);
+
+            // Send email
+            emailjs.send('service_tcps7l8', 'template_1mfigpi', templateParams)
+                .then(function(response) {
+                    console.log('✅ Email sent successfully!', response.status, response.text);
+                    showEmailStatus('success', 'Order confirmation email sent successfully!');
+                })
+                .catch(function(error) {
+                    console.error('❌ Email failed to send:', error);
+                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                });
+        }
+
+        function showEmailStatus(type, message) {
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                max-width: 300px;
+                background-color: ${type === 'success' ? '#4CAF50' : '#ff9800'};
+                color: white;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            `;
+            statusDiv.textContent = message;
+            
+            document.body.appendChild(statusDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Movie Posters Collection - Filmytea{% endblock %}
+
+{% block description %}Browse our premium collection of movie posters and entertainment art. High-quality prints available in A4 and A3 sizes with framing options.{% endblock %}
+
+{% block keywords %}movie posters, film prints, entertainment art, poster collection, movie art, cinema posters{% endblock %}
+
+{% block main_class %}posters-main{% endblock %}
+
+{% block content %}
+<div class="container">
+
+
+    <section class="posters" aria-label="Poster collection">
+        <div class="posters-grid" role="grid">
+            {% for poster in posters %}
+            <article class="poster-card" role="gridcell">
+                <a href="{{ url_for('poster_detail', poster_id=poster.id) }}" class="poster-link" aria-label="View {{ poster.name }} poster details" style="cursor: default;">
+                    <div class="poster-image">
+                        <img src="{{ poster.image_url.replace('upload/', 'upload/f_webp,q_auto,w_400/') }}" 
+                             alt="{{ poster.name }}" 
+                             loading="lazy"
+                             decoding="async"
+                             width="400" 
+                             height="600"
+                             fetchpriority="low">
+                    </div>
+                    <div class="poster-content">
+                        <h3>{{ poster.name }}</h3>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.poster-image img');
+    images.forEach((img) => {
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (!img.src) img.src = img.dataset.src;
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            observer.observe(img);
+        }
+    });
+});
+        
+        // Grid items no longer have add to cart functionality - removed
+</script>
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Movie Poster Collection",
+    "description": "Browse our premium collection of movie posters",
+    "url": "{{ request.url }}",
+    "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": {{ posters|length }},
+        "itemListElement": [
+            {% for poster in posters %}
+            {
+                "@type": "Product",
+                "name": "{{ poster.name }}",
+                "image": "{{ poster.image_url }}",
+                "url": "{{ url_for('poster_detail', poster_id=poster.id, _external=True) }}"
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }
+}
+</script>
+{% endblock %}

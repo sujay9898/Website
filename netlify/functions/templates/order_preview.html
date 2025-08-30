@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Preview - Filmytea</title>
+    <link href="https://replit.com/@replit/Bootstrap-Dark-Theme/bootstrap-dark.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-brand">
+                <a href="{{ url_for('index') }}" class="brand-link">
+                    <h1 class="brand-name">Filmytea</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <a href="{{ url_for('index') }}" class="nav-link">
+                    <i data-feather="home"></i> Home
+                </a>
+                <a href="{{ url_for('posters') }}" class="nav-link">
+                    <i data-feather="image"></i> Posters
+                </a>
+                <a href="{{ url_for('cart') }}" class="nav-link">
+                    <i data-feather="shopping-cart"></i> Cart
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="checkout-hero">
+                <h2>Order Preview</h2>
+                <p>Please review your order details</p>
+                <a href="{{ url_for('checkout') }}" class="edit-btn">✏️ Edit</a>
+            </section>
+
+            <div class="preview-content">
+                <div class="preview-info-section">
+                    <!-- Customer Information -->
+                    <div class="info-section">
+                        <h3>Customer Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Customer Name:</span>
+                            <span class="info-value">{{ order['Customer Name'] }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="info-section">
+                        <h3>Shipping Address</h3>
+                        <div class="info-item">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value address-value">{{ order['Address'] }}</span>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Pincode:</span>
+                                <span class="info-value">{{ order['Pincode'] }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">City:</span>
+                                <span class="info-value">{{ order['City'] }}</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">State:</span>
+                            <span class="info-value">{{ order['State'] }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="info-section">
+                        <h3>Contact Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Phone Number:</span>
+                            <span class="info-value">{{ order['Phone Number'] }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ order['Email'] }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="info-section">
+                        <h3>Payment Method</h3>
+                        <div class="info-item">
+                            <span class="info-label">Cash on Delivery:</span>
+                            <span class="info-value">{{ order['Cash on Delivery'] }}</span>
+                        </div>
+                    </div>
+
+                    <div class="preview-actions">
+                        <form method="POST" action="{{ url_for('confirm_order') }}" style="width: 100%;" id="order-form">
+                            <input type="hidden" name="customer_name" value="{{ order['Customer Name'] }}">
+                            <input type="hidden" name="address" value="{{ order['Address'] }}">
+                            <input type="hidden" name="pincode" value="{{ order['Pincode'] }}">
+                            <input type="hidden" name="city" value="{{ order['City'] }}">
+                            <input type="hidden" name="state" value="{{ order['State'] }}">
+                            <input type="hidden" name="phone_number" value="{{ order['Phone Number'] }}">
+                            <input type="hidden" name="email" value="{{ order['Email'] }}">
+                            <input type="hidden" name="cash_on_delivery" value="{{ order['Cash on Delivery'] }}">
+                            <input type="hidden" name="cart_items" id="cart_items_field" value="">
+                            <button type="submit" class="btn btn-primary btn-large order-now-btn">Order Now</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="preview-items"></div>
+                    <div class="summary-total">
+                        <strong>Total: ₹<span id="preview-total">0.00</span></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script>
+        feather.replace();
+
+        // Load cart items and display in preview
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || [];
+            const previewItems = document.getElementById('preview-items');
+            const previewTotal = document.getElementById('preview-total');
+            
+            let total = 0;
+            
+            cartData.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.innerHTML = `
+                    <div class="item-details">
+                        <img src="${item.image.replace('/upload/', '/upload/w_60,h_60,c_fill,f_auto,q_auto/')}" alt="${item.name}" class="item-image">
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <p>Size: ${item.size}, Frame: ${item.frameText}</p>
+                            <p>Qty: ${item.quantity}</p>
+                        </div>
+                        <div class="item-price">₹${itemTotal}.00</div>
+                    </div>
+                `;
+                previewItems.appendChild(itemDiv);
+            });
+            
+            previewTotal.textContent = total.toFixed(2);
+            
+            if (cartData.length === 0) {
+                previewItems.innerHTML = '<p>Your cart is empty.</p>';
+                document.querySelector('button[type="submit"]').disabled = true;
+            } else {
+                // Populate the cart items field with the cart data
+                document.getElementById('cart_items_field').value = JSON.stringify(cartData);
+            }
+        });
+    </script>
+</body>
+</html>

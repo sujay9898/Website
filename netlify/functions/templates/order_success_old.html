@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Filmytea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+<main class="main order-success-main">
+    <div class="container">
+        <section class="order-success-hero">
+            <h2>Order confirmed successfully!</h2>
+            <p>Order ID: <span class="order-id">{{ order_id or 'Generating...' }}</span></p>
+            <p>A confirmation email has been sent to {{ order['Email'] }}</p>
+        </section>
+
+        <div class="order-details">
+            <div class="order-info-card">
+                <h3>Order Information</h3>
+                <div class="order-detail-row">
+                    <span class="label">Customer Name:</span>
+                    <span class="value">{{ order['Customer Name'] }}</span>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Shipping Address</h3>
+                <div class="address-details">
+                    <p>{{ order['Address'] }}</p>
+                    <p>{{ order['City'] }}, {{ order['State'] }} - {{ order['Pincode'] }}</p>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Contact Details</h3>
+                <div class="order-detail-row">
+                    <span class="label">Phone:</span>
+                    <span class="value">{{ order['Phone Number'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ order['Email'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Payment Method:</span>
+                    <span class="value">
+                        {% if order['Cash on Delivery'] == 'Yes' %}
+                            Cash on Delivery
+                        {% else %}
+                            Online Payment
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="{{ url_for('posters') }}" class="btn btn-primary">Continue Shopping</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        // Wait for EmailJS to load and initialize
+        function initEmailJS() {
+            if (typeof emailjs !== 'undefined') {
+                const publicKey = '{{ emailjs_public_key }}'; // Your EmailJS public key
+                console.log('Initializing EmailJS with public key:', publicKey);
+                emailjs.init(publicKey); // Use environment variable
+                return true;
+            }
+            console.error('EmailJS library not loaded');
+            return false;
+        }
+        
+        // Clear cart after successful order
+        document.addEventListener('DOMContentLoaded', function() {
+            localStorage.removeItem('filmytea_cart');
+            if (typeof cart !== 'undefined') {
+                cart.updateCartCount();
+            }
+            
+            // Wait for EmailJS to load, then send email
+            setTimeout(() => {
+                if (initEmailJS()) {
+                    sendOrderConfirmationEmail();
+                } else {
+                    console.log('EmailJS failed to load');
+                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                }
+            }, 1000); // Wait 1 second for EmailJS to load
+        });
+        
+        function sendOrderConfirmationEmail() {
+            // Double-check EmailJS is available
+            if (typeof emailjs === 'undefined') {
+                console.log('EmailJS not loaded');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
+            const orderData = {
+                customer_name: '{{ order["Customer Name"] }}',
+                customer_email: '{{ order["Email"] }}',
+                order_id: '{{ order_id or "N/A" }}',
+                phone: '{{ order["Phone Number"] }}',
+                address: `{{ order["Address"] }}, {{ order["City"] }}, {{ order["State"] }} - {{ order["Pincode"] }}`,
+                payment_method: '{% if order["Cash on Delivery"] == "Yes" %}Cash on Delivery{% else %}Online Payment{% endif %}',
+                total_amount: '₹159' // You can make this dynamic if needed
+            };
+            
+            // Create order items list from backend data (more reliable)
+            let orderItems = '';
+            
+            // Try to get cart items from backend first
+            let backendCartItems = [];
+            try {
+                backendCartItems = {{ (cart_items or []) | tojson | safe }};
+            } catch(e) {
+                console.log('No cart items from backend');
+                backendCartItems = [];
+            }
+            
+            if (backendCartItems && backendCartItems.length > 0) {
+                // Use cart items from backend (most reliable) - format as clean text
+                orderItems = "ORDER DETAILS:\n";
+                orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+                
+                backendCartItems.forEach((item, index) => {
+                    orderItems += `${index + 1}. ${item.name}\n`;
+                    orderItems += `   Size: ${item.size}\n`;
+                    orderItems += `   Frame: ${item.frameText || 'No Frame'}\n`;
+                    orderItems += `   Quantity: ${item.quantity}\n`;
+                    orderItems += `   Price: ₹${item.price * item.quantity}\n\n`;
+                });
+                
+                // Calculate total
+                const total = backendCartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                orderItems += `TOTAL AMOUNT: ₹${total}`;
+            } else {
+                // Fallback to localStorage - format as HTML table
+                try {
+                    let cartData = JSON.parse(localStorage.getItem('filmytea_cart')) || 
+                                  JSON.parse(localStorage.getItem('filmytea_cart_backup')) || [];
+                    
+                    if (cartData.length > 0) {
+                        orderItems = "ORDER DETAILS:\n";
+                        orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+                        
+                        cartData.forEach((item, index) => {
+                            orderItems += `${index + 1}. ${item.name}\n`;
+                            orderItems += `   Size: ${item.size}\n`;
+                            orderItems += `   Frame: ${item.frameText || item.frame || 'No Frame'}\n`;
+                            orderItems += `   Quantity: ${item.quantity}\n`;
+                            orderItems += `   Price: ₹${item.price * item.quantity}\n\n`;
+                        });
+                        
+                        // Calculate total
+                        const total = cartData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                        orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                        orderItems += `TOTAL AMOUNT: ₹${total}`;
+                    } else {
+                        orderItems = "ORDER DETAILS:\n";
+                        orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+                        orderItems += "1. Movie Poster\n";
+                        orderItems += "   Size: A4\n";
+                        orderItems += "   Frame: Custom\n";
+                        orderItems += "   Quantity: 1\n";
+                        orderItems += "   Price: ₹159\n\n";
+                        orderItems += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                        orderItems += "TOTAL AMOUNT: ₹159";
+                    }
+                } catch (e) {
+                    orderItems = 'Your poster order has been confirmed successfully!';
+                }
+            }
+            
+            // EmailJS template parameters
+            const templateParams = {
+                to_name: orderData.customer_name,
+                to_email: orderData.customer_email,
+                customer_name: orderData.customer_name,
+                order_id: orderData.order_id,
+                order_items: orderItems || 'Your poster order has been confirmed',
+                total_amount: orderData.total_amount,
+                delivery_address: orderData.address,
+                phone_number: orderData.phone,
+                payment_method: orderData.payment_method,
+                from_name: 'Filmytea Team',
+                reply_to: 'filmyteacare@gmail.com'
+            };
+            
+            // Debug: Log email parameters
+            console.log('Email Parameters:', {
+                customer_email: orderData.customer_email,
+                customer_name: orderData.customer_name,
+                order_id: orderData.order_id
+            });
+            
+            // Debug: Log cart items being sent
+            console.log('Order Items being sent:', orderItems);
+            
+            // Send email using templateParams
+            console.log('Attempting to send email with EmailJS...');
+            console.log('Service ID: service_tcps7l8');
+            console.log('Template ID: template_1mfigpi');
+            console.log('Template Params:', templateParams);
+            
+            emailjs.send('service_tcps7l8', 'template_1mfigpi', templateParams)
+                .then(function(response) {
+                    console.log('✅ Order confirmation email sent successfully!', response.status, response.text);
+                    // Show success message to user
+                    showEmailStatus('success', 'Order confirmation email sent successfully!');
+                }, function(error) {
+                    console.error('❌ Failed to send order confirmation email:', error);
+                    console.error('Error details:', {
+                        status: error.status,
+                        text: error.text,
+                        message: error.message
+                    });
+                    showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                });
+        }
+        
+        function showEmailStatus(type, message) {
+            // Create a small status message
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                max-width: 300px;
+                animation: slideIn 0.3s ease-out;
+                ${type === 'success' ? 
+                  'background-color: #4CAF50; color: white;' : 
+                  type === 'info' ?
+                  'background-color: #2196F3; color: white;' :
+                  'background-color: #ff9800; color: white;'
+                }
+            `;
+            statusDiv.textContent = message;
+            
+            // Add animation CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(statusDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+        
+        // Backup cart data before clearing (for email)
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentCart = localStorage.getItem('filmytea_cart');
+            if (currentCart) {
+                localStorage.setItem('filmytea_cart_backup', currentCart);
+            }
+        });
+    </script>
+</body>
+</html>

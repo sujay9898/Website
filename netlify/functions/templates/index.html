@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Filmytea - Premium Movie Posters & Entertainment Art{% endblock %}
+
+{% block description %}Discover premium movie posters and entertainment art. Shop high-quality prints in A4 and A3 sizes with custom framing options. Fast shipping across India.{% endblock %}
+
+{% block content %}
+<div class="new-hero-container">
+    <div class="new-hero-content">
+        <div class="title-button-wrapper">
+            <h1 class="crafted-title" id="animatedTitle">Filmytea</h1>
+            <a href="{{ url_for('posters') }}" class="posters-button" aria-label="Browse our poster collection">
+                Posters
+            </a>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleElement = document.getElementById('animatedTitle');
+    const texts = ['Filmytea', 'Crafted for you'];
+    let currentIndex = 0;
+    
+    function fadeTitle() {
+        titleElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % texts.length;
+            titleElement.innerHTML = texts[currentIndex];
+            titleElement.style.opacity = '1';
+        }, 800); // Slower fade out, then fade in
+    }
+    
+    // Start the animation after 2 seconds, repeat every 2.5 seconds
+    setInterval(fadeTitle, 2500);
+});
+</script>
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Filmytea",
+    "url": "{{ request.url_root }}",
+    "description": "Premium movie posters and entertainment art",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ url_for('posters', _external=True) }}?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Filmytea</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo"><a href="{{ url_for('index') }}">Filmytea</a></h1>
+            <nav class="header-nav">
+                <a href="{{ url_for('posters') }}" class="nav-link">Posters</a>
+                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                    Cart (<span id="cart-count">0</span>)
+                </a>
+            </nav>
+        </div>
+    </header>
+<main class="main order-success-main">
+    <div class="container">
+        <section class="order-success-hero">
+            <h2>Order confirmed successfully!</h2>
+            <p>Order ID: <span class="order-id">{{ order_id or 'Generating...' }}</span></p>
+            <p>A confirmation email has been sent to {{ order['Email'] }}</p>
+        </section>
+
+        <div class="order-details">
+            <div class="order-info-card">
+                <h3>Order Information</h3>
+                <div class="order-detail-row">
+                    <span class="label">Customer Name:</span>
+                    <span class="value">{{ order['Customer Name'] }}</span>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Shipping Address</h3>
+                <div class="address-details">
+                    <p>{{ order['Address'] }}</p>
+                    <p>{{ order['City'] }}, {{ order['State'] }} - {{ order['Pincode'] }}</p>
+                </div>
+            </div>
+
+            <div class="order-info-card">
+                <h3>Contact Details</h3>
+                <div class="order-detail-row">
+                    <span class="label">Phone:</span>
+                    <span class="value">{{ order['Phone Number'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ order['Email'] }}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="label">Payment Method:</span>
+                    <span class="value">
+                        {% if order['Cash on Delivery'] == 'Yes' %}
+                            Cash on Delivery
+                        {% else %}
+                            Online Payment
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="{{ url_for('posters') }}" class="btn btn-primary">Continue Shopping</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Filmytea. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        // Clear cart
+        localStorage.removeItem('filmytea_cart');
+        if (typeof cart !== 'undefined') {
+            cart.updateCartCount();
+        }
+
+        // EmailJS Configuration
+        const EMAILJS_PUBLIC_KEY = '{{ emailjs_public_key }}';
+        const SERVICE_ID = 'service_tcps7l8';
+        const TEMPLATE_ID = 'template_1mfigpi';
+
+        // Order data
+        const orderInfo = {
+            customerName: '{{ order["Customer Name"]|replace("'", "\\'") }}',
+            customerEmail: '{{ order["Email"] }}',
+            orderId: '{{ order_id or "N/A" }}',
+            phone: '{{ order["Phone Number"] }}',
+            address: '{{ order["Address"]|replace("'", "\\'") }}',
+            city: '{{ order["City"] }}',
+            state: '{{ order["State"] }}',
+            pincode: '{{ order["Pincode"] }}',
+            {% if order['Cash on Delivery'] == 'Yes' %}
+            paymentMethod: 'Cash on Delivery'
+            {% else %}
+            paymentMethod: 'Online Payment'
+            {% endif %}
+        };
+
+        // Initialize EmailJS and send email
+        setTimeout(() => {
+            initializeAndSendEmail();
+        }, 1000);
+
+        function initializeAndSendEmail() {
+            if (typeof emailjs === 'undefined') {
+                console.error('EmailJS not loaded');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
+
+            if (!EMAILJS_PUBLIC_KEY) {
+                console.error('EmailJS public key missing');
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+                return;
+            }
+
+            try {
+                // Initialize EmailJS
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+                console.log('EmailJS initialized successfully');
+
+                // Prepare email template parameters
+                const templateParams = {
+                    to_name: orderInfo.customerName,
+                    to_email: orderInfo.customerEmail,
+                    customer_name: orderInfo.customerName,
+                    order_id: orderInfo.orderId,
+                    order_items: 'Your poster order has been confirmed successfully!',
+                    total_amount: '₹499', // You can make this dynamic
+                    delivery_address: orderInfo.address + ', ' + orderInfo.city + ', ' + orderInfo.state + ' - ' + orderInfo.pincode,
+                    phone_number: orderInfo.phone,
+                    payment_method: orderInfo.paymentMethod,
+                    from_name: 'Filmytea Team',
+                    reply_to: 'filmyteacare@gmail.com'
+                };
+
+                console.log('Sending email with parameters:', {
+                    service_id: SERVICE_ID,
+                    template_id: TEMPLATE_ID,
+                    customer_email: templateParams.to_email,
+                    order_id: templateParams.order_id
+                });
+
+                // Send email
+                emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        console.log('✅ Email sent successfully!', response.status, response.text);
+                        showEmailStatus('success', 'Order confirmation email sent successfully!');
+                    })
+                    .catch(function(error) {
+                        console.error('❌ Email failed:', error);
+                        showEmailStatus('error', 'Email service error: ' + (error.text || error.message || 'Unknown error'));
+                    });
+
+            } catch (error) {
+                console.error('EmailJS initialization error:', error);
+                showEmailStatus('error', 'Email service temporarily unavailable, but your order is confirmed!');
+            }
+        }
+
+        function showEmailStatus(type, message) {
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                max-width: 300px;
+                background-color: ${type === 'success' ? '#4CAF50' : '#ff9800'};
+                color: white;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            `;
+            statusDiv.textContent = message;
+            
+            document.body.appendChild(statusDiv);
+            
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.remove();
+                }
+            }, 8000);
+        }
+    </script>
+</body>
+</html>

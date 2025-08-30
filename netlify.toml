@@ -10,13 +10,13 @@
 [functions]
   directory = "netlify/functions"
 
-[functions.app]
-  included_files = ["dist/*.py", "dist/templates/**/*", "dist/static/**/*"]
+[functions.handler]
+  included_files = ["netlify/functions/*.py", "netlify/functions/templates/**/*", "netlify/functions/static/**/*"]
 
 # Redirect all API routes to serverless function
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/app/:splat"
+  to = "/.netlify/functions/handler/:splat"
   status = 200
 
 # Handle static files directly (not through function)
@@ -28,7 +28,7 @@
 # Handle all other routes through the Flask app
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/app/:splat"
+  to = "/.netlify/functions/handler/:splat"
   status = 200
   force = false
 
