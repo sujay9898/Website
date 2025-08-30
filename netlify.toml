@@ -1,10 +1,10 @@
 # Netlify configuration for Flask application
 [build]
   publish = "dist"
-  command = "pip install -e . && python build.py"
+  command = "python build.py"
 
 [build.environment]
-  PYTHON_VERSION = "3.11"
+  PYTHON_VERSION = "3.9"
   PIP_DISABLE_PIP_VERSION_CHECK = "1"
 
 [functions]
