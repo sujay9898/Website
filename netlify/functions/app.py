@@ -3,8 +3,9 @@ import sys
 import os
 from urllib.parse import unquote
 
-# Add the parent directory to Python path so we can import the Flask app
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+# Add the dist directory to Python path so we can import the Flask app
+dist_path = os.path.join(os.path.dirname(__file__), '..', '..', 'dist')
+sys.path.insert(0, dist_path)
 
 # Load environment variables from .env file if it exists
 env_path = os.path.join(os.path.dirname(__file__), '..', '..', '.env')
@@ -18,14 +19,32 @@ if os.path.exists(env_path):
                 except ValueError:
                     pass
 
+# Also try loading environment from the current directory
+current_env_path = os.path.join(os.getcwd(), '.env')
+if os.path.exists(current_env_path):
+    with open(current_env_path, 'r') as f:
+        for line in f:
+            if line.strip() and not line.startswith('#'):
+                try:
+                    key, value = line.strip().split('=', 1)
+                    os.environ[key] = value
+                except ValueError:
+                    pass
+
 # Import Flask app with better error handling
 try:
+    # Change working directory to dist for proper file access
+    os.chdir(dist_path)
     from app import app
-    print("Successfully imported Flask app")
+    print("Successfully imported Flask app from dist directory")
 except ImportError as e:
     print(f"Import error: {e}")
     print(f"Current directory: {os.getcwd()}")
     print(f"Python path: {sys.path}")
+    print(f"Dist path: {dist_path}")
+    print(f"Dist path exists: {os.path.exists(dist_path)}")
+    if os.path.exists(dist_path):
+        print(f"Files in dist: {os.listdir(dist_path)}")
     
     # Create a simple Flask app as fallback
     from flask import Flask
@@ -35,13 +54,26 @@ except ImportError as e:
     @app.route('/<path:path>')
     def debug_info(path=''):
         import traceback
-        return f"""
+        debug_content = f"""
         <h1>Netlify Function Debug Info</h1>
         <h2>Import Error:</h2>
         <pre>{str(e)}</pre>
         <h2>Current Directory:</h2>
         <pre>{os.getcwd()}</pre>
-        <h2>Files Available:</h2>
+        <h2>Dist Path:</h2>
+        <pre>{dist_path}</pre>
+        <h2>Dist Path Exists:</h2>
+        <pre>{os.path.exists(dist_path)}</pre>
+        """
+        
+        if os.path.exists(dist_path):
+            debug_content += f"""
+        <h2>Files in Dist:</h2>
+        <pre>{os.listdir(dist_path)}</pre>
+            """
+        
+        debug_content += f"""
+        <h2>Files Available (current dir):</h2>
         <pre>{str(os.listdir('.'))}</pre>
         <h2>Python Path:</h2>
         <pre>{chr(10).join(sys.path)}</pre>
@@ -50,6 +82,7 @@ except ImportError as e:
         <h2>Traceback:</h2>
         <pre>{traceback.format_exc()}</pre>
         """
+        return debug_content
 
 def handler(event, context):
     """

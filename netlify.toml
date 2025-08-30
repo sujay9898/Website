@@ -11,7 +11,7 @@
   directory = "netlify/functions"
 
 [functions.app]
-  included_files = ["*.py", "templates/**/*", "static/**/*"]
+  included_files = ["dist/*.py", "dist/templates/**/*", "dist/static/**/*"]
 
 # Redirect all API routes to serverless function
 [[redirects]]

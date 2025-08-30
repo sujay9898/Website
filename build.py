@@ -36,6 +36,18 @@ def create_dist_directory():
             json.dump({'static_files': static_files}, f)
         print("✓ Created static files manifest")
     
+    # Copy Python files that the Flask app needs
+    python_files = ['app.py', 'email_service.py', 'main.py']
+    for py_file in python_files:
+        if Path(py_file).exists():
+            shutil.copy2(py_file, dist_dir / py_file)
+            print(f"✓ Copied {py_file}")
+    
+    # Copy templates directory for Flask
+    if Path('templates').exists():
+        shutil.copytree('templates', dist_dir / 'templates')
+        print("✓ Copied templates directory")
+    
     # Copy JavaScript data files that the Flask app needs
     js_files = ['posters-data.js', 'posters_data.js']
     for js_file in js_files:
