@@ -36,14 +36,7 @@ def create_dist_directory():
             json.dump({'static_files': static_files}, f)
         print("✓ Created static files manifest")
     
-    # Copy any standalone HTML files (if they exist)
-    html_files = ['index.html', 'poster.html', 'posters.html', 'cart.html', 'checkout.html', 'order-success.html']
-    for html_file in html_files:
-        if Path(html_file).exists():
-            shutil.copy2(html_file, dist_dir / html_file)
-            print(f"✓ Copied {html_file}")
-    
-    # Copy JavaScript data files
+    # Copy JavaScript data files that the Flask app needs
     js_files = ['posters-data.js', 'posters_data.js']
     for js_file in js_files:
         if Path(js_file).exists():
