@@ -203,7 +203,7 @@
         justify-content: center;
         text-align: center;
         height: 100vh;
-        padding-top: 20vh;
+        padding-top: 15vh;
     }
     
     .crafted-title {
@@ -211,15 +211,16 @@
         top: auto;
         left: auto;
         width: auto;
-        height: 120px;
+        height: auto;
         font-size: 3rem;
-        line-height: 0.5;
-        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        margin-bottom: 2rem;
         text-align: center;
         transition: opacity 0.8s ease-in-out;
         display: flex;
         align-items: center;
         justify-content: center;
+        white-space: nowrap;
     }
     
     .posters-button {
@@ -246,7 +247,7 @@
     
     .new-hero-content {
         height: 100vh;
-        padding-top: 25vh;
+        padding-top: 20vh;
     }
     
     .crafted-title {
@@ -254,9 +255,9 @@
         top: auto;
         left: auto;
         width: auto;
-        height: 100px;
-        font-size: 2.5rem;
-        line-height: 0.5;
+        height: auto;
+        font-size: 2.2rem;
+        line-height: 1.1;
         margin-bottom: 1.2rem;
         text-align: center;
         transition: opacity 0.8s ease-in-out;
