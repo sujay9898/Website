@@ -3190,3 +3190,14 @@ body {
   height: 844px; 
   background: #303236FF; 
 }
+
+/* Rectangle 1 */
+.rectangle {
+  position: absolute; 
+  top: 68px; 
+  left: 12px; 
+  width: 159px; 
+  height: 216px; 
+  background: #DEE1E6FF; /* neutral-300 */
+  border-radius: 0px; 
+}
