@@ -596,63 +596,75 @@ if os.environ.get('REPL_URL'):
 
 # Netlify serverless function handler
 def handler(event, context):
-    """AWS Lambda/Netlify function handler"""
+    """Netlify function handler"""
     try:
+        # Get request information
+        http_method = event.get('httpMethod', 'GET')
+        path = event.get('path', '/')
+        query_params = event.get('queryStringParameters') or {}
+        headers = event.get('headers', {})
+        body = event.get('body', '')
+        
+        # Clean up the path - remove function prefix
+        if path.startswith('/.netlify/functions/app'):
+            path = path.replace('/.netlify/functions/app', '') or '/'
+        
+        # Handle URL decoding
+        path = unquote(path)
+        
+        # Create Flask test environment
+        environ_base = {
+            'REQUEST_METHOD': http_method,
+            'PATH_INFO': path,
+            'QUERY_STRING': '&'.join([f"{k}={v}" for k, v in query_params.items() if v]),
+            'CONTENT_TYPE': headers.get('content-type', ''),
+            'CONTENT_LENGTH': str(len(body)) if body else '0',
+            'HTTP_HOST': headers.get('host', 'localhost'),
+            'wsgi.url_scheme': 'https'
+        }
+        
+        # Add other headers with HTTP_ prefix
+        for header_name, header_value in headers.items():
+            if header_name.lower() not in ['content-type', 'content-length', 'host']:
+                environ_key = f"HTTP_{header_name.upper().replace('-', '_')}"
+                environ_base[environ_key] = header_value
+        
+        # Create WSGI environment
+        from werkzeug.test import EnvironBuilder
+        builder = EnvironBuilder(
+            path=path,
+            method=http_method,
+            data=body,
+            query_string=environ_base['QUERY_STRING'],
+            headers=headers
+        )
+        
+        # Get response from Flask app
         with app.test_client() as client:
-            # Extract information from the event
-            http_method = event.get('httpMethod', 'GET')
-            path = event.get('path', '/')
-            query_params = event.get('queryStringParameters') or {}
-            headers = event.get('headers', {})
-            body = event.get('body', '')
-            
-            # Convert query parameters to query string
-            query_string = []
-            for key, value in query_params.items():
-                if value:
-                    query_string.append(f"{key}={value}")
-            query_string = '&'.join(query_string)
-            
-            # Remove /api prefix if present (for API routes)
-            if path.startswith('/.netlify/functions/app'):
-                path = path.replace('/.netlify/functions/app', '') or '/'
-            elif path.startswith('/api'):
-                path = path.replace('/api', '') or '/'
-            
-            # Make the request to Flask app
-            with app.test_request_context():
-                if http_method == 'POST':
-                    content_type = headers.get('content-type', '')
-                    if 'application/x-www-form-urlencoded' in content_type:
-                        response = client.post(path, data=body, headers=headers, query_string=query_params)
-                    elif 'application/json' in content_type:
-                        response = client.post(path, json=json.loads(body) if body else {}, headers=headers, query_string=query_params)
-                    else:
-                        response = client.post(path, data=body, headers=headers, query_string=query_params)
-                elif http_method == 'GET':
-                    response = client.get(path, headers=headers, query_string=query_params)
+            if http_method == 'POST':
+                if 'application/json' in headers.get('content-type', ''):
+                    json_data = json.loads(body) if body else {}
+                    response = client.post(path, json=json_data, query_string=query_params)
                 else:
-                    response = client.open(path, method=http_method, data=body, headers=headers, query_string=query_params)
-                
-                # Prepare response headers
-                response_headers = dict(response.headers)
-                
-                # Handle CORS for API requests
-                if path.startswith('/api/'):
-                    response_headers['Access-Control-Allow-Origin'] = '*'
-                    response_headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-                    response_headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-                
-                # Return the response
-                return {
-                    'statusCode': response.status_code,
-                    'headers': response_headers,
-                    'body': response.get_data(as_text=True)
-                }
-                
+                    response = client.post(path, data=body, query_string=query_params)
+            else:
+                response = client.get(path, query_string=query_params)
+        
+        # Convert Flask response to Netlify format
+        response_headers = {}
+        for key, value in response.headers:
+            response_headers[key] = value
+            
+        return {
+            'statusCode': response.status_code,
+            'headers': response_headers,
+            'body': response.get_data(as_text=True)
+        }
+        
     except Exception as e:
+        logging.error(f"Function handler error: {e}")
         return {
             'statusCode': 500,
-            'headers': {'Content-Type': 'application/json'},
-            'body': json.dumps({'error': str(e), 'type': type(e).__name__})
+            'headers': {'Content-Type': 'text/html'},
+            'body': f'<h1>Internal Server Error</h1><p>Error: {str(e)}</p>'
         }
