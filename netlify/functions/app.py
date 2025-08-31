@@ -96,7 +96,7 @@ else:
     instamojo_api = None
     logging.warning("Instamojo credentials not configured")
 
-# Poster data
+# Poster data - prices from individual items not used (pricing handled by cart.js)
 ALL_POSTERS = [
     {
         'id': 'poster_1',
@@ -334,15 +334,18 @@ ALL_POSTERS = [
     }
 ]
 
+
 @app.route('/')
 def index():
     """Homepage with posters button"""
     return render_template('index.html')
 
+
 @app.route('/posters')
 def posters():
     """Posters page displaying all posters"""
     return render_template('posters.html', posters=ALL_POSTERS)
+
 
 @app.route('/poster/<poster_id>')
 def poster_detail(poster_id):
@@ -358,21 +361,26 @@ def poster_detail(poster_id):
     
     return render_template('poster_detail.html', poster=poster)
 
+
 @app.route('/cart')
 def cart():
     """Cart page displaying items from localStorage"""
     return render_template('cart.html')
+
 
 @app.route('/checkout')
 def checkout():
     """Checkout page for order processing"""
     return render_template('checkout.html')
 
+
 @app.route('/process-order', methods=['POST'])
 def process_order():
     """Show order preview with customer details and edit options"""
+    # Collect order details from form (simulating the input() calls from the Python code)
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
+    # Shipping Address section
     order['Address'] = request.form.get('address')
     order['Pincode'] = request.form.get('pincode')
     order['City'] = request.form.get('city')
@@ -386,6 +394,7 @@ def process_order():
 @app.route('/confirm-order', methods=['POST'])
 def confirm_order():
     """Final order confirmation after preview"""
+    # Collect order details from form again
     order = {}
     order['Customer Name'] = request.form.get('customer_name')
     order['Address'] = request.form.get('address')
@@ -396,21 +405,25 @@ def confirm_order():
     order['Email'] = request.form.get('email')
     order['Cash on Delivery'] = request.form.get('cash_on_delivery')
     
+    # Get cart items from the hidden form field
     cart_items_json = request.form.get('cart_items', '[]')
     try:
         cart_items = json.loads(cart_items_json)
     except:
         cart_items = []
     
+    # Exact output as in the Python code
     print("Order captured successfully! Here are the details:")
     print()
     for key, value in order.items():
         print(f"{key}: {value}")
     
+    # Also log to application logger
     logging.info("Order captured successfully! Here are the details:")
     for key, value in order.items():
         logging.info(f"{key}: {value}")
     
+    # Send order confirmation email immediately
     order_id = None
     if order.get('Email'):
         try:
@@ -422,6 +435,7 @@ def confirm_order():
             logging.error(f"Failed to send order confirmation email: {e}")
             order_id = "EMAIL_FAILED"
     
+    # Render success page with order details and cart items
     emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
     return render_template('order_success.html', 
                          order=order, 
@@ -431,9 +445,11 @@ def confirm_order():
 
 @app.route('/email-test')
 def email_test():
+    # EmailJS configuration for testing
     emailjs_public_key = os.environ.get('EMAILJS_PUBLIC_KEY', '')
     return render_template('email_test.html', emailjs_public_key=emailjs_public_key)
 
+# Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('error.html', 
@@ -446,6 +462,7 @@ def internal_error(error):
                          error_code=500, 
                          error_message="Internal server error"), 500
 
+# API endpoint for poster search
 @app.route('/api/search')
 def api_search():
     query = request.args.get('q', '').lower()
@@ -454,44 +471,157 @@ def api_search():
     
     results = [poster for poster in ALL_POSTERS 
               if query in poster['name'].lower()]
-    return jsonify(results[:10])
+    return jsonify(results[:10])  # Limit to 10 results
+
+@app.route('/create-payment', methods=['POST'])
+def create_payment():
+    """Create Instamojo payment or fallback to dummy system"""
+    try:
+        # Get order details from form
+        customer_name = request.form.get('customer_name')
+        email = request.form.get('email')
+        phone = request.form.get('phone_number')
+        cart_total = float(request.form.get('cart_total', 0))
+        
+        # Get cart items and sanitize them
+        cart_items_json = request.form.get('cart_items', '[]')
+        try:
+            cart_items = json.loads(cart_items_json)
+            # Sanitize cart items to remove any undefined values
+            sanitized_cart_items = []
+            for item in cart_items:
+                if isinstance(item, dict):
+                    sanitized_item = {}
+                    for key, value in item.items():
+                        # Skip undefined/null values or replace with defaults
+                        if value is not None and str(value).lower() != 'undefined':
+                            sanitized_item[key] = value
+                        elif key == 'frameText':
+                            sanitized_item[key] = 'No Frame'
+                        elif key == 'quantity':
+                            sanitized_item[key] = 1
+                        elif key == 'price':
+                            sanitized_item[key] = 159
+                    # Only add items with required fields
+                    if 'name' in sanitized_item and 'price' in sanitized_item:
+                        sanitized_cart_items.append(sanitized_item)
+            cart_items = sanitized_cart_items
+        except Exception as e:
+            logging.error(f"Error parsing cart items: {e}")
+            cart_items = []
+        
+        # If Instamojo is available and configured, use it
+        if instamojo_api:
+            # Create payment request
+            payment_request = instamojo_api.payment_request_create(
+                amount=cart_total,
+                purpose=f'Filmytea Poster Order - {customer_name}',
+                buyer_name=customer_name,
+                email=email,
+                phone=phone,
+                redirect_url=request.host_url + 'order-success.html',
+                send_email=False,
+                webhook=request.host_url + 'webhook'
+            )
+            
+            if payment_request['success']:
+                payment_url = payment_request['payment_request']['longurl']
+                return redirect(payment_url)
+            else:
+                logging.error(f"Instamojo payment creation failed: {payment_request}")
+                # Fall through to dummy payment
+        
+        # Dummy payment system fallback
+        return render_template('dummy_payment.html',
+                             customer_name=customer_name,
+                             email=email,
+                             phone=phone,
+                             cart_total=cart_total,
+                             cart_items=cart_items)
+    
+    except Exception as e:
+        logging.error(f"Payment creation error: {e}")
+        return render_template('error.html', 
+                             error_code=500, 
+                             error_message="Payment processing error"), 500
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    """Handle Instamojo payment webhook"""
+    if instamojo_api:
+        mac_provided = request.form.get('mac')
+        payment_id = request.form.get('payment_id')
+        
+        # Verify the payment
+        payment_details = instamojo_api.payment_detail(
+            payment_id=payment_id
+        )
+        
+        if payment_details['success']:
+            # Payment successful, handle order processing
+            logging.info(f"Payment successful for payment_id: {payment_id}")
+            return "OK", 200
+        else:
+            logging.error(f"Payment verification failed for payment_id: {payment_id}")
+            return "Failed", 400
+    
+    return "Webhook not configured", 400
+
+# Keep alive service (for Replit deployment)
+def keep_alive():
+    """Minimal keep-alive service to prevent hibernation"""
+    import threading
+    import time
+    import requests
+    
+    def ping_self():
+        try:
+            repl_url = os.environ.get('REPL_URL')
+            if repl_url:
+                requests.get(f"{repl_url}/")
+        except:
+            pass  # Ignore errors in keep-alive
+    
+    def background_task():
+        while True:
+            time.sleep(300)  # 5 minutes
+            ping_self()
+    
+    thread = threading.Thread(target=background_task, daemon=True)
+    thread.start()
+
+# Start keep-alive service if running on Replit
+if os.environ.get('REPL_URL'):
+    keep_alive()
 
 # Netlify serverless function handler
 def handler(event, context):
-    """
-    Netlify function handler for Flask app
-    """
+    """AWS Lambda/Netlify function handler"""
     try:
-        # Get the request path and method
-        raw_path = event.get('path', '/')
-        method = event.get('httpMethod', 'GET')
-        headers = event.get('headers', {})
-        query_params = event.get('queryStringParameters') or {}
-        body = event.get('body', '')
-        is_base64 = event.get('isBase64Encoded', False)
-        
-        # Clean the path - remove function prefix if present
-        path = raw_path
-        if path.startswith('/.netlify/functions/app'):
-            path = path[len('/.netlify/functions/app'):]
-        if not path:
-            path = '/'
-        
-        # Decode URL encoding
-        path = unquote(path)
-        
-        # Handle form data for POST requests
-        if method == 'POST' and body:
-            if is_base64:
-                import base64
-                body = base64.b64decode(body).decode('utf-8')
-        
-        # Set up Flask app context
-        with app.test_request_context(path=path, method=method, headers=headers, query_string=query_params, data=body):
-            # Create a test client
-            with app.test_client() as client:
-                # Handle the request
-                if method == 'POST':
+        with app.test_client() as client:
+            # Extract information from the event
+            http_method = event.get('httpMethod', 'GET')
+            path = event.get('path', '/')
+            query_params = event.get('queryStringParameters') or {}
+            headers = event.get('headers', {})
+            body = event.get('body', '')
+            
+            # Convert query parameters to query string
+            query_string = []
+            for key, value in query_params.items():
+                if value:
+                    query_string.append(f"{key}={value}")
+            query_string = '&'.join(query_string)
+            
+            # Remove /api prefix if present (for API routes)
+            if path.startswith('/.netlify/functions/app'):
+                path = path.replace('/.netlify/functions/app', '') or '/'
+            elif path.startswith('/api'):
+                path = path.replace('/api', '') or '/'
+            
+            # Make the request to Flask app
+            with app.test_request_context():
+                if http_method == 'POST':
                     content_type = headers.get('content-type', '')
                     if 'application/x-www-form-urlencoded' in content_type:
                         response = client.post(path, data=body, headers=headers, query_string=query_params)
@@ -499,10 +629,10 @@ def handler(event, context):
                         response = client.post(path, json=json.loads(body) if body else {}, headers=headers, query_string=query_params)
                     else:
                         response = client.post(path, data=body, headers=headers, query_string=query_params)
-                elif method == 'GET':
+                elif http_method == 'GET':
                     response = client.get(path, headers=headers, query_string=query_params)
                 else:
-                    response = client.open(path, method=method, data=body, headers=headers, query_string=query_params)
+                    response = client.open(path, method=http_method, data=body, headers=headers, query_string=query_params)
                 
                 # Prepare response headers
                 response_headers = dict(response.headers)
