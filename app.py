@@ -337,6 +337,14 @@ def posters():
     return render_template('posters.html', posters=ALL_POSTERS)
 
 
+@app.route('/wallpapers')
+def wallpapers():
+    """Wallpapers page displaying all wallpapers"""
+    # For now, using same poster data as wallpapers
+    # You can create a separate ALL_WALLPAPERS list later
+    return render_template('posters.html', posters=ALL_POSTERS, page_title="Wallpapers")
+
+
 @app.route('/poster/<poster_id>')
 def poster_detail(poster_id):
     """Individual poster details page"""
