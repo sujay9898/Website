@@ -86,6 +86,87 @@ else:
     instamojo_api = None
     logging.warning("Instamojo credentials not configured")
 
+# Wallpaper data for digital downloads
+ALL_WALLPAPERS = [
+    {
+        'id': 'WP1',
+        'name': 'Beast Mode (Red)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478108/33_ql13nw.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=13H3KAcNeB3Kt35ve3ZyKkhW8lXuAqbly'
+    },
+    {
+        'id': 'WP2',
+        'name': 'Beast Mode (Yellow)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478112/34_ck9hsa.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=16q64tJretb9q0rPDLI0tnXu1Cn6ULsCL'
+    },
+    {
+        'id': 'WP3',
+        'name': 'Kendrick Live (Red)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478114/30_kblz1n.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1xbPiuyue7cWUZbCagcEz7DDVw1bX2jAN'
+    },
+    {
+        'id': 'WP4',
+        'name': 'Kendrick Live (Blue)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478108/31_lqd1ml.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1jRkY012BqMHbcPXpghNP1IxaTTWj6MEo'
+    },
+    {
+        'id': 'WP5',
+        'name': 'Leo Minimal (Coffee)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478107/6_hhdqqb.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1z5E1xW_3EAnoYQmeITIlk1Je9vJegAhJ'
+    },
+    {
+        'id': 'WP6',
+        'name': 'Leo Minimal (Blood)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478106/7_vinq87.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1pU9OSHl2jG6alnYzpQpX48q7nnsRsNQZ'
+    },
+    {
+        'id': 'WP7',
+        'name': 'Vintage Duo',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478108/12_y25qc1.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1qXHEgASlRjmUv1qLBF5ro6wQBQh1VQDC'
+    },
+    {
+        'id': 'WP8',
+        'name': 'Smoking Chills Red Text',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478111/46_fnicon.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1BDFYX4gr50d5hFlOv3NZrF84UArei87F'
+    },
+    {
+        'id': 'WP9',
+        'name': 'Smoking Chills Yellow Text',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478111/45_v9kxgp.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1CclRXC12Vn6gP3tFw1NJwlYT7t31iW6D'
+    },
+    {
+        'id': 'WP10',
+        'name': 'Life Itself (TK Quote)',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478112/1_ev80yl.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1Kd8jqCAHMmNaw8TfhBWY5Lbjy-0n1isj'
+    },
+    {
+        'id': 'WP11',
+        'name': 'Virat Hundred',
+        'price': 99,
+        'image_url': 'https://res.cloudinary.com/dxv6byz2q/image/upload/v1752478105/2_v4osgw.png',
+        'download_url': 'https://drive.google.com/uc?export=download&id=1IufODZCwxwll0zeo23TNXqXqRlGmj1pU'
+    }
+]
+
 # Poster data - prices from individual items not used (pricing handled by cart.js)
 ALL_POSTERS = [
     {
@@ -340,9 +421,22 @@ def posters():
 @app.route('/wallpapers')
 def wallpapers():
     """Wallpapers page displaying all wallpapers"""
-    # For now, using same poster data as wallpapers
-    # You can create a separate ALL_WALLPAPERS list later
-    return render_template('posters.html', posters=ALL_POSTERS, page_title="Wallpapers")
+    return render_template('wallpapers.html', wallpapers=ALL_WALLPAPERS)
+
+
+@app.route('/wallpaper/<wallpaper_id>')
+def wallpaper_detail(wallpaper_id):
+    """Individual wallpaper details page"""
+    wallpaper = None
+    for w in ALL_WALLPAPERS:
+        if w['id'] == wallpaper_id:
+            wallpaper = w
+            break
+    
+    if not wallpaper:
+        abort(404)
+    
+    return render_template('wallpaper_detail.html', wallpaper=wallpaper)
 
 
 @app.route('/poster/<poster_id>')

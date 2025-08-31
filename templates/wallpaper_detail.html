@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}{{ wallpaper.name }} Digital Wallpaper - Filmytea{% endblock %}
+
+{% block description %}Download {{ wallpaper.name }} digital wallpaper in HD quality. Instant download after purchase. Perfect for mobile and desktop.{% endblock %}
+
+{% block keywords %}{{ wallpaper.name }}, digital wallpaper, HD wallpaper, mobile wallpaper, desktop wallpaper{% endblock %}
+
+{% block main_class %}wallpaper-detail-main{% endblock %}
+
+{% block content %}
+<div class="wallpaper-detail-page">
+    <div class="wallpaper-detail-container">
+        <!-- Wallpaper Image -->
+        <div class="wallpaper-image-container">
+            <img src="{{ wallpaper.image_url }}" 
+                 alt="{{ wallpaper.name }}" 
+                 class="wallpaper-image-main">
+        </div>
+        
+        <!-- Wallpaper Info -->
+        <div class="wallpaper-info">
+            <h1 class="wallpaper-title">{{ wallpaper.name }}</h1>
+            <p class="wallpaper-price">₹{{ wallpaper.price }}</p>
+            <p class="wallpaper-type">Digital Download</p>
+            
+            <div class="purchase-section">
+                <button class="buy-wallpaper-btn" onclick="purchaseWallpaper('{{ wallpaper.id }}', '{{ wallpaper.name }}', {{ wallpaper.price }})">
+                    Buy & Download
+                </button>
+            </div>
+            
+            <div class="wallpaper-details">
+                <h3>Details</h3>
+                <ul>
+                    <li>High-quality digital wallpaper</li>
+                    <li>Suitable for mobile and desktop</li>
+                    <li>Instant download after payment</li>
+                    <li>HD resolution</li>
+                    <li>Personal use license</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.wallpaper-detail-main {
+    background: #1a1a1a;
+    min-height: 100vh;
+    color: #ffffff;
+}
+
+.wallpaper-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.wallpaper-detail-container {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.wallpaper-image-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.wallpaper-image-main {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0;
+    object-fit: contain;
+}
+
+.wallpaper-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.wallpaper-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+}
+
+.wallpaper-price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #a6a6a6;
+    margin: 0 0 0.5rem 0;
+}
+
+.wallpaper-type {
+    font-size: 1rem;
+    color: #a6a6a6;
+    margin: 0 0 2rem 0;
+}
+
+.purchase-section {
+    margin: 2rem 0;
+}
+
+.buy-wallpaper-btn {
+    background: #303236;
+    color: #ffffff;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(48, 50, 54, 0.3);
+}
+
+.buy-wallpaper-btn:hover {
+    background: #dddddb;
+    color: #303236;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(221, 221, 219, 0.4);
+}
+
+.wallpaper-details {
+    margin-top: 2rem;
+}
+
+.wallpaper-details h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+}
+
+.wallpaper-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wallpaper-details li {
+    padding: 0.5rem 0;
+    color: #a6a6a6;
+    border-bottom: 1px solid #333;
+}
+
+.wallpaper-details li:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .wallpaper-detail-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .wallpaper-title {
+        font-size: 1.5rem;
+    }
+    
+    .wallpaper-price {
+        font-size: 1.3rem;
+    }
+    
+    .buy-wallpaper-btn {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function purchaseWallpaper(id, name, price) {
+    // For now, just redirect to checkout with wallpaper info
+    // You can implement digital checkout flow here
+    alert(`Purchase ${name} for ₹${price} - Digital checkout coming soon!`);
+    
+    // Future: Implement digital purchase flow
+    // window.location.href = `/checkout-wallpaper/${id}`;
+}
+</script>
+{% endblock %}
