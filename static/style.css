@@ -3183,23 +3183,31 @@ body {
 
 /* Poster selected */
 .page {
-  position: absolute; 
-  top: -14px; 
-  left: 486px; 
-  width: 390px; 
-  height: 844px; 
+  position: relative; 
+  width: 100vw; 
+  min-height: 100vh; 
   background: #303236FF; 
+  padding: 20px 15px;
+  box-sizing: border-box;
 }
 
-/* Rectangle 1 */
-.rectangle {
+/* Poster Image Container */
+.poster-image-container {
   position: absolute; 
   top: 68px; 
   left: 12px; 
   width: 159px; 
   height: 216px; 
-  background: #DEE1E6FF; /* neutral-300 */
-  border-radius: 0px; 
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.poster-image-main {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 /* Poster Title */
@@ -3249,16 +3257,24 @@ body {
   height: 32px;
   background: #666666;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: Inter;
   font-size: 12px;
   font-weight: 500;
   color: #FFFFFF;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-btn:hover {
+  background: #777777;
+  transform: translateY(-1px);
 }
 
 .size-btn.active {
-  background: #999999;
+  background: #FFFFFF;
+  color: #303236FF;
+  font-weight: 600;
 }
 
 /* Frame Label */
@@ -3285,16 +3301,24 @@ body {
   padding: 6px 8px;
   background: #666666;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: Inter;
   font-size: 10px;
   font-weight: 400;
   color: #FFFFFF;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.frame-btn:hover {
+  background: #777777;
+  transform: translateY(-1px);
 }
 
 .frame-btn.active {
-  background: #999999;
+  background: #FFFFFF;
+  color: #303236FF;
+  font-weight: 600;
 }
 
 /* Add to Cart Button */
@@ -3303,17 +3327,26 @@ body {
   top: 248px;
   left: 189px;
   width: 185px;
-  height: 32px;
+  height: 36px;
   background: #FFFFFF;
-  border-radius: 4px;
+  border: none;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: Inter;
-  font-size: 12px;
-  font-weight: 500;
-  color: #000000;
+  font-size: 13px;
+  font-weight: 600;
+  color: #303236FF;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.add-to-cart-btn:hover {
+  background: #F5F5F5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 /* Buy Now Button */
@@ -3322,17 +3355,26 @@ body {
   top: 288px;
   left: 189px;
   width: 185px;
-  height: 32px;
-  background: #FFFFFF;
-  border-radius: 4px;
+  height: 36px;
+  background: #FF6B6B;
+  border: none;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: Inter;
-  font-size: 12px;
-  font-weight: 500;
-  color: #000000;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.buy-now-btn:hover {
+  background: #FF5252;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
 }
 
 /* Details Title */
