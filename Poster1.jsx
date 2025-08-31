@@ -181,21 +181,38 @@ const Poster1 = () => {
       position: 'absolute',
       top: '370px',
       left: '30px',
-      width: '330px'
+      width: '400px'
     },
-    detailCategory: {
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      backgroundColor: '#1c1c1b'
+    },
+    tableRow: {
+      borderBottom: '1px solid #a6a6a6'
+    },
+    tableHeader: {
       fontSize: '14px',
       fontWeight: 600,
       color: '#FFFFFF',
-      marginTop: '16px',
-      marginBottom: '4px'
+      padding: '8px 12px',
+      textAlign: 'left',
+      backgroundColor: '#a6a6a6',
+      color: '#1c1c1b'
     },
-    detailItem: {
+    tableCell: {
       fontSize: '12px',
       fontWeight: 400,
       color: '#a6a6a6',
-      marginBottom: '2px',
-      paddingLeft: '16px'
+      padding: '6px 12px',
+      verticalAlign: 'top'
+    },
+    tableCellBold: {
+      fontSize: '12px',
+      fontWeight: 600,
+      color: '#FFFFFF',
+      padding: '6px 12px',
+      verticalAlign: 'top'
     }
   };
 
@@ -272,25 +289,36 @@ const Poster1 = () => {
       <div style={styles.detailsTitle}>Poster Details</div>
       
       <div style={styles.detailsSection}>
-        <div style={styles.detailCategory}>Sizes:</div>
-        <div style={styles.detailItem}>A4 → 8.3 x 11.7 in</div>
-        <div style={styles.detailItem}>A3 → 11.7 x 16.5 in</div>
-        
-        <div style={styles.detailCategory}>Paper:</div>
-        <div style={styles.detailItem}>300 GSM premium art board</div>
-        <div style={styles.detailItem}>Thick, durable & long-lasting</div>
-        
-        <div style={styles.detailCategory}>Frame Choices:</div>
-        <div style={styles.detailItem}>No Frame (poster only)</div>
-        <div style={styles.detailItem}>Black/White Frame (fiberwood, matte, 0.75 in)</div>
-        
-        <div style={styles.detailCategory}>Dimensions with Frame:</div>
-        <div style={styles.detailItem}>A4 → ~9.8 x 13.2 in</div>
-        <div style={styles.detailItem}>A3 → ~13.2 x 18 in</div>
-        
-        <div style={styles.detailCategory}>Finish:</div>
-        <div style={styles.detailItem}>Smooth matte look</div>
-        <div style={styles.detailItem}>Sharp & vibrant colors</div>
+        <table style={styles.table}>
+          <thead>
+            <tr style={styles.tableRow}>
+              <th style={styles.tableHeader}>Specification</th>
+              <th style={styles.tableHeader}>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style={styles.tableRow}>
+              <td style={styles.tableCellBold}>Sizes</td>
+              <td style={styles.tableCell}>A4 → 8.3 x 11.7 in<br/>A3 → 11.7 x 16.5 in</td>
+            </tr>
+            <tr style={styles.tableRow}>
+              <td style={styles.tableCellBold}>Paper</td>
+              <td style={styles.tableCell}>300 GSM premium art board<br/>Thick, durable & long-lasting</td>
+            </tr>
+            <tr style={styles.tableRow}>
+              <td style={styles.tableCellBold}>Frame Choices</td>
+              <td style={styles.tableCell}>No Frame (poster only)<br/>Black/White Frame (fiberwood, matte, 0.75 in)</td>
+            </tr>
+            <tr style={styles.tableRow}>
+              <td style={styles.tableCellBold}>Dimensions with Frame</td>
+              <td style={styles.tableCell}>A4 → ~9.8 x 13.2 in<br/>A3 → ~13.2 x 18 in</td>
+            </tr>
+            <tr style={styles.tableRow}>
+              <td style={styles.tableCellBold}>Finish</td>
+              <td style={styles.tableCell}>Smooth matte look<br/>Sharp & vibrant colors</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
