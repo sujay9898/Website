@@ -1,7 +1,7 @@
-# Netlify configuration for Flask application
+# Netlify configuration for Python Flask application
 [build]
   publish = "dist"
-  command = "python build.py"
+  command = "pip install -r requirements.txt && python build.py"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
@@ -9,9 +9,6 @@
 
 [functions]
   directory = "netlify/functions"
-
-[functions.app]
-  included_files = ["netlify/functions/*.py", "netlify/functions/templates/**/*", "netlify/functions/static/**/*"]
 
 # Redirect all API routes to serverless function
 [[redirects]]
