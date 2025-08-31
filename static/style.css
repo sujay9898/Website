@@ -203,7 +203,8 @@
         justify-content: center;
         text-align: center;
         height: 100vh;
-        padding-top: 15vh;
+        padding-top: 0;
+        margin-top: -10vh;
     }
     
     .crafted-title {
@@ -247,7 +248,8 @@
     
     .new-hero-content {
         height: 100vh;
-        padding-top: 20vh;
+        padding-top: 0;
+        margin-top: -15vh;
     }
     
     .crafted-title {
